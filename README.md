@@ -18,7 +18,7 @@ This is a starter template for building AI agents using [Mastra](https://mastra.
 1. Add your OpenAI API key
 ```bash
 # you can use whatever model Mastra supports
-echo "OPENAI_API_KEY=your-key-here" >> .env
+echo "GOOGLE_GENERATIVE_AI_API_KEY=your-key-here" >> .env
 ```
 
 2. Install dependencies using your preferred package manager:
