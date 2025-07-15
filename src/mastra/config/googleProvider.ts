@@ -636,10 +636,10 @@ export function extractGroundingMetadata(providerMetadata?: Record<string, unkno
       groundingSupports: grounding?.groundingSupports?.map((support: RawGroundingSupport): GroundingSupport => ({
         segment: {
           text: support.segment?.text || '',
-          startIndex: support.segment?.startIndex || 0,
-          endIndex: support.segment?.endIndex || 0
+          startIndex: support.segment?.startIndex ?? 0,
+          endIndex: support.segment?.endIndex ?? 0
         },
-        groundingChunkIndices: support.groundingChunkIndices || [],
+        groundingChunkIndices: support.groundingChunkIndices ?? [],
         confidenceScores: support.confidenceScores || []
       })) || [],
       safetyRatings: googleMetadata.safetyRatings || []
@@ -656,7 +656,7 @@ export function extractGroundingMetadata(providerMetadata?: Record<string, unkno
  * const result = await generateText({ model, prompt });
  * logCacheUsage(result.response, logger);
  * ```
- * 
+ *
  * [EDIT: 2025-06-22] [BY: GitHub Copilot]
  */
 export function logCacheUsage(response: Record<string, unknown>, logger: PinoLogger) {
@@ -664,7 +664,7 @@ export function logCacheUsage(response: Record<string, unknown>, logger: PinoLog
   const usageMetadata = responseBody?.usageMetadata as Record<string, unknown> | undefined;  if (usageMetadata?.cachedContentTokenCount && typeof usageMetadata.cachedContentTokenCount === 'number' && 
       usageMetadata.totalTokenCount && typeof usageMetadata.totalTokenCount === 'number') {
     const cacheHitRate = (usageMetadata.cachedContentTokenCount / usageMetadata.totalTokenCount * 100).toFixed(2);
-    
+
     logger.info('Cache hit detected', {
       cachedTokens: usageMetadata.cachedContentTokenCount,
       totalTokens: usageMetadata.totalTokenCount,
