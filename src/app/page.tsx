@@ -4,6 +4,8 @@ import { CatchAllActionRenderProps, useCopilotAction } from "@copilotkit/react-c
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
 import "./globals.css";
+import { HumanInTheLoop } from "./components/copilotkit/human-in-the-loop";
+
 
 export default function CopilotKitPage() {
   const [themeColor, setThemeColor] = useState("oklch(0.147 0.004 49.25)"); //globals.css --primary
@@ -76,7 +78,8 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
     >
       <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-2xl w-full">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">Mastra</h1>
-        <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it can be anything you want! 🪁</p>
+        <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it can be anything you want! 🪁 Just </p>
+        <HumanInTheLoop themeColor={themeColor} />
       </div>
     </div>
   );
