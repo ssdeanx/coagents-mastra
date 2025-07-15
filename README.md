@@ -123,12 +123,6 @@ graph TD
     13["Agent Memory<br>TypeScript"] -->|persists data to| 18["Upstash DB<br>Redis / Database"]
     13["Agent Memory<br>TypeScript"] -->|persists data to| 19["PostgreSQL DB<br>Relational Database"]
 
-    classDef external fill:#f96;
-    class 15,20,21,22 external;
-    classDef internal fill:#ddd;
-    class 1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19 internal;
-    classDef actor fill:#fff,stroke:#000,stroke-width:2px;
-    class 4 actor;
 ```
 
 ## Documentation
