@@ -4,7 +4,7 @@ This is a starter template for building AI agents using [Mastra](https://mastra.
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Any of the following package managers:
   - pnpm (recommended)
   - npm
@@ -16,45 +16,50 @@ This is a starter template for building AI agents using [Mastra](https://mastra.
 ## Getting Started
 
 1. Add your OpenAI API key
-```bash
-# you can use whatever model Mastra supports
-echo "GOOGLE_GENERATIVE_AI_API_KEY=your-key-here" >> .env
-```
+
+  ```bash
+  # you can use whatever model Mastra supports
+  echo "GOOGLE_GENERATIVE_AI_API_KEY=your-key-here" >> .env
+  ```
 
 2. Install dependencies using your preferred package manager:
-```bash
-# Using pnpm (recommended)
-pnpm install
 
-# Using npm
-npm install
+  ```bash
+  # Using pnpm (recommended)
+  pnpm install
 
-# Using yarn
-yarn install
+  # Using npm
+  npm install
 
-# Using bun
-bun install
-```
+  # Using yarn
+  yarn install
+
+  # Using bun
+  bun install
+  ```
 
 2. Start the development server:
-```bash
-# Using pnpm
-pnpm dev
 
-# Using npm
-npm run dev
+  ```bash
+  # Using pnpm
+  pnpm dev
 
-# Using yarn
-yarn dev
+  # Using npm
+  npm run dev
 
-# Using bun
-bun run dev
-```
+  # Using yarn
+  yarn dev
+
+  # Using bun
+  bun run dev
+  ```
 
 This will start both the UI and agent servers concurrently.
 
 ## Available Scripts
+
 The following scripts can also be run using your preferred package manager:
+
 - `dev` - Starts both UI and agent servers in development mode
 - `dev:debug` - Starts development servers with debug logging enabled
 - `dev:ui` - Starts only the UI server
