@@ -72,3 +72,7 @@ bun.lockb
 .kiro/specs/agent-performance-dashboard/requirements.md
 .kiro/specs/agent-performance-dashboard/design.md
 src/lib/__tests__/performance-data-service.test.ts
+
+
+#Ignore vscode AI rules
+.github/copilot-instructions.md

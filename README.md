@@ -1,5 +1,7 @@
 # CopilotKit <> Mastra Starter
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/71ee28678c984c4aa15b145bbe3e6f7b)](https://app.codacy.com/gh/ssdeanx/coagents-mastra/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 This is a starter template for building AI agents using [Mastra](https://mastra.ai) and [CopilotKit](https://copilotkit.ai). It provides a modern Next.js application with integrated AI capabilities and a beautiful UI.
 
 ## Prerequisites
