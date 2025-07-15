@@ -2,11 +2,11 @@ name: Smoke
 
 on:
   push:
-    branches: main
+    branches: [main, develop]
   pull_request:
-    branches: main
+    branches: [main, develop]
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight UTC
+    - cron: '0 0 * * *'  # Run daily at midnight UTC (UTC+0)
 
 jobs:
   smoke:
@@ -38,12 +38,12 @@ jobs:
           # Start the server in background
           npm start &
           SERVER_PID=$!
-          
+
           # Wait for server to start (max 30 seconds)
           timeout=30
           elapsed=0
           started=false
-          
+
           while [ $elapsed -lt $timeout ] && [ "$started" = false ]; do
             if curl -s http://localhost:3000 > /dev/null 2>&1; then
               started=true
@@ -53,10 +53,10 @@ jobs:
               elapsed=$((elapsed + 1))
             fi
           done
-          
+
           # Clean up background process
           kill $SERVER_PID 2>/dev/null || true
-          
+
           if [ "$started" = false ]; then
             echo "❌ Main app failed to start within 30 seconds"
             exit 1
@@ -68,12 +68,12 @@ jobs:
         run: |
           # Start the server in background
           npm start &
-          
+
           # Wait for server to start (max 30 seconds)
           $timeout = 30
           $elapsed = 0
           $started = $false
-          
+
           while ($elapsed -lt $timeout -and -not $started) {
             try {
               $response = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 1 -ErrorAction SilentlyContinue
@@ -86,7 +86,7 @@ jobs:
               $elapsed++
             }
           }
-          
+
           if (-not $started) {
             Write-Host "❌ Main app failed to start within 30 seconds"
             exit 1
@@ -98,16 +98,16 @@ jobs:
         run: |
           # Test that the agent can be started and responds
           echo "Testing agent functionality..."
-          
+
           # Start the agent in background
           npm run dev:agent &
           AGENT_PID=$!
-          
+
           # Wait for agent to start (max 30 seconds)
           timeout=30
           elapsed=0
           started=false
-          
+
           while [ $elapsed -lt $timeout ] && [ "$started" = false ]; do
             if curl -s http://localhost:4111 > /dev/null 2>&1; then
               started=true
@@ -117,10 +117,10 @@ jobs:
               elapsed=$((elapsed + 1))
             fi
           done
-          
+
           # Clean up background process
           kill $AGENT_PID 2>/dev/null || true
-          
+
           if [ "$started" = false ]; then
             echo "❌ Agent failed to start within 30 seconds"
             exit 1
@@ -132,15 +132,15 @@ jobs:
         run: |
           # Test that the agent can be started and responds
           Write-Host "Testing agent functionality..."
-          
+
           # Start the agent in background
           npm run dev:agent &
-          
+
           # Wait for agent to start (max 30 seconds)
           $timeout = 30
           $elapsed = 0
           $started = $false
-          
+
           while ($elapsed -lt $timeout -and -not $started) {
             try {
               $response = Invoke-WebRequest -Uri "http://localhost:4111" -TimeoutSec 1 -ErrorAction SilentlyContinue
@@ -153,37 +153,9 @@ jobs:
               $elapsed++
             }
           }
-          
+
           if (-not $started) {
             Write-Host "❌ Agent failed to start within 30 seconds"
             exit 1
           }
         shell: pwsh
-
-  notify-slack:
-    name: Notify Slack on Failure
-    runs-on: ubuntu-latest
-    needs: smoke
-    if: |
-      failure() && 
-      github.event_name == 'schedule'
-    steps:
-      - name: Notify Slack
-        uses: slackapi/slack-github-action@v2.1.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "text": ":warning: *Smoke test failed for `with-mastra` :warning:.*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":warning: *Smoke test failed for <https://github.com/copilotkit/with-mastra|with-mastra> :warning:*\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run details>"
-                  }
-                }
-              ]
-            } 
-      
