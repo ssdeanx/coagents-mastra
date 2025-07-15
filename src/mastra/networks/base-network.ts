@@ -1,7 +1,7 @@
 /**
  * Base Agent Network
  *
- * This AgentNetwork coordinates 17+ specialized agents for intelligent development tasks.
+ * This AgentNetwork coordinates 7+ specialized agents for intelligent development tasks.
  * Uses LLM-based dynamic routing to determine which agent(s) to call based on task requirements.
  *
  * @mastra AgentNetwork implementation for Dean Machines RSC
@@ -36,7 +36,7 @@ const logger = new PinoLogger({
   level: 'info'
 });
 
-logger.info('Initializing baseNetwork with 17+ agents');
+logger.info('Initializing baseNetwork with 7+ agents');
 
 /**
  * Runtime context type for Base Network
@@ -62,7 +62,7 @@ export type BaseNetworkRuntimeContext = {
 /**
  * Base Network
  * A comprehensive agent network for Dean Machines RSC
- * Coordinates 17+ specialized agents using LLM-based dynamic routing.
+ * Coordinates 7+ specialized agents using LLM-based dynamic routing.
  * The network intelligently determines which agent(s) to invoke based on task requirements.
  *
  * @mastra Main AgentNetwork instance for the Dean Machines platform
@@ -79,11 +79,11 @@ export type BaseNetworkRuntimeContext = {
 export const baseNetwork = new AgentNetwork({
   name: 'Base Network',
   instructions: `You are the coordinator for the Base Network, an advanced AI development platform.
-  You have access to 5+ specialized agents, each with unique capabilities:
+  You have access to 7+ specialized agents, each with unique capabilities:
 
 CORE AGENTS:
 - Master Agent: Central orchestrator and primary coordinator
-- LangGraph Agent: Language and knowledge graph management
+- Supervisor Agent: Quality assurance and oversight
 
 RESEARCH & INFORMATION AGENTS:
 - Research Agent: In-depth research and information gathering
@@ -94,8 +94,9 @@ DATA & ANALYSIS AGENTS:
 WEATHER & ENVIRONMENT AGENTS:
 - Weather Agent: Weather data analysis and forecasting
 
-CREATIVE & SPECIALIZED:
-- Supervisor Agent: Quality assurance and oversight
+CREATIVE & GENERATION:
+- Generation Agent: Content generation and creative writing
+- Chance Agent: Randomness and probability analysis
 
 Your role is to intelligently route user tasks to the most appropriate agent(s) based on task complexity, domain context, and execution requirements or {$user_input}.
 
@@ -121,11 +122,10 @@ EXECUTION MODES:
 DOMAIN-SPECIFIC ROUTING:
 - General: Use Master Agent for broad tasks
 - Technical: Route to Analyzer or Research Agent
-- Creative: Use Supervisor Agent for quality control
+- Creative: Use Generation Agent for content generation
 - Data: Route to Analyzer Agent for insights
 - Weather: Use Weather Agent for forecasts
 - Research: Use Research Agent for in-depth information
-- Graph: Use LangGraph Agent for knowledge management
 - Financial: Use Analyzer Agent for market analysis
 - Stock: Use Analyzer Agent for stock data
 - User: Use Master Agent for user-related tasks
@@ -158,7 +158,7 @@ ${UPSTASH_PROMPT}
     responseModalities: ["TEXT"],
     thinkingConfig: {
       thinkingBudget: 512, // -1 means dynamic thinking budget
-      includeThoughts: false, // Include thoughts for debugging and monitoring purposes
+      includeThoughts: true, // Include thoughts for debugging and monitoring purposes
     },
   }),
   agents: [
@@ -172,11 +172,11 @@ ${UPSTASH_PROMPT}
     weatherAgent,
     analyzerAgent,
   ],
-  
+
 });
 
 logger.info('Base Network initialized successfully', {
-  agentCount: 17,
+  agentCount: 7,
   networkName: 'Base Network',
   modelProvider: 'gemini-2.5-flash-lite-preview-06-17',
   event: 'network_initialized'
@@ -261,11 +261,12 @@ export async function executeDeanMachinesTask(
 export function getNetworkAgents() {
   return [
     { name: 'Master Agent', category: 'Core', description: 'Central orchestrator and primary coordinator' },
-    { name: 'LangGraph Agent', category: 'Core', description: 'Language and knowledge graph management' },
     { name: 'Supervisor Agent', category: 'Core', description: 'Quality assurance and oversight' },
     { name: 'Analyzer Agent', category: 'Analysis', description: 'Deep analysis and pattern recognition' },
     { name: 'Research Agent', category: 'Research', description: 'In-depth research and information gathering' },
-    { name: 'Weather Agent', category: 'Weather', description: 'Weather data analysis and forecasting' }
+    { name: 'Weather Agent', category: 'Weather', description: 'Weather data analysis and forecasting' },
+    { name: 'Generation Agent', category: 'Generation', description: 'Content generation and creative writing' },
+    { name: 'Chance Agent', category: 'Chance', description: 'Randomness and probability analysis' },
   ];
 }
 

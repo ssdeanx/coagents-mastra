@@ -2,6 +2,7 @@ import { createGemini25Provider } from '../config/googleProvider';
 import { Agent } from "@mastra/core/agent";
 import { weatherTool } from "@/mastra/tools";
 import { mastraMemory } from "../memory/upstashMemory";
+import { weatherWorkflow } from "../workflows/weather-workflow";
 
 export const weatherAgent = new Agent({
   name: "Weather Agent",
@@ -30,5 +31,6 @@ export const weatherAgent = new Agent({
     // cachedContent: 'your-cache-id', // Uncomment if using explicit caching
     // Langfuse tracing configuration
   }),
-  tools: { weatherTool }
+  tools: { weatherTool },
+  workflows: { weatherWorkflow }
 });

@@ -5,6 +5,8 @@ import { weatherWorkflow } from "./workflows/weather-workflow";
 import { baseNetwork } from "./networks/base-network";
 //import { registerCopilotKit } from "@ag-ui/mastra";
 //import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint, ExperimentalEmptyAdapter } from "@copilotkit/runtime";
+// Runtime context types for agents
+//import { AnalyzerAgentRuntimeContext, ChanceAgentRuntimeContext, GenerationAgentRuntimeContext, MasterAgentRuntimeContext, ResearchAgentRuntimeContext, SupervisorAgentRuntimeContext } from "./agents/index";
 
 const LOG_LEVEL = process.env.LOG_LEVEL as LogLevel || "info";
 const ENV = process.env.NODE_ENV || "development";

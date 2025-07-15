@@ -245,11 +245,11 @@ export const upstashVector = new UpstashVector({
 });
 
   /**
-   * Shared Mastra agent memory instance using Upstash for distributed storage and [Pinecone] for vector search.
+   * Shared Mastra agent memory instance using Upstash for distributed storage and [Upstash] for vector search.
    *
    * @remarks
    * - Uses UpstashStore for distributed Redis storage
- * - Uses PineconeVector for semantic search with cloud-based vectors (768-dim gemini embeddings)
+ * - Uses UpstashVector for semantic search with cloud-based vectors (768-dim gemini embeddings)
  * - Embeddings powered by Gemini text-embedding-004 model with cosine similarity
  * - Configured for working memory and semantic recall with enhanced processors
  * - Supports custom memory processors for filtering, summarization, etc.
@@ -268,7 +268,7 @@ export const upstashVector = new UpstashVector({
  * @instance upstashMemory
  * @module upstashMemory
  * @class Memory
- * @classdesc Shared memory instance for all agents using Upstash for storage and [Pinecone] for vector search
+ * @classdesc Shared memory instance for all agents using Upstash for storage and [Upstash] for vector search
  * @returns {Memory} Shared Upstash-backed memory instance for all agents
  *
  * @example
@@ -820,7 +820,7 @@ export async function upsertVectors(
  * @returns Promise resolving to query results with metadata
  *
  * @warning Current Type Limitation:
- * Filter parameter uses `any` casting due to local pinecone package constraints.
+ * Filter parameter uses `any` casting due to local Upstash package constraints.
  */
 export async function queryVectors(
   indexName: string,
@@ -837,8 +837,8 @@ export async function queryVectors(
     includeVector
   });
   try {
-    // Validate filter for pinecone compatibility if provided
-    let upstashFilter: any; // TODO: Replace with proper pineconeVectorFilter type when available.  Not now.. This is a workaround for local pinecone package constraints.
+    // Validate filter for Upstash compatibility if provided
+    let upstashFilter: any; // TODO: Replace with proper upstashFilter type when available.  Not now.. This is a workaround for local Upstash package constraints.
     if (params.filter) {
       const validatedFilter = validateMetadataFilter(params.filter);
       upstashFilter = transformToUpstashFilter(validatedFilter);
@@ -1070,7 +1070,7 @@ export async function batchUpsertVectors(
  * @returns Promise resolving to enhanced search results
  *
  * @warning Current Type Limitation:
- * Filter parameter uses `any` casting due to local pinecone package constraints.
+ * Filter parameter uses `any` casting due to local Upstash package constraints.
  */
 export async function enhancedVectorSearch(
   indexName: string,
@@ -1497,13 +1497,13 @@ export async function getWorkflowRuns(options: {
       namespace: options.namespace ?? 'default'
     });
     logger.info(`[memory] Found ${result.total} workflow runs.`);
-    
+
     // Transform the runs to match our WorkflowRun interface
     const transformedRuns: WorkflowRun[] = result.runs.map(run => ({
       ...run,
       namespace: options.namespace ?? 'default'
     }));
-    
+
     return {
       runs: transformedRuns,
       total: result.total
@@ -1566,9 +1566,9 @@ export async function getTraces(args: {
           )
         : undefined
     });
-    
+
     logger.info(`[memory] Found ${result.total} traces.`);
-    
+
     // Transform traces to match local Trace interface
     const transformedTraces: Trace[] = result.traces.map((trace: any) => ({
       ...trace,
@@ -1576,7 +1576,7 @@ export async function getTraces(args: {
       endTime: BigInt(trace.endTime),
       other: typeof trace.other === 'object' ? JSON.stringify(trace.other) : trace.other
     }));
-    
+
     return {
       traces: transformedTraces,
       total: result.total,
@@ -1623,7 +1623,7 @@ export async function getEvals(options?: {
   try {
     const page = options?.page ?? 0;
     const perPage = options?.perPage ?? 20;
-    
+
     const result = await (upstashStorage as UpstashStore).getEvals({
       agentName: options?.agentName,
       type: options?.type,
