@@ -92,7 +92,7 @@ const masterAgentConfigSchema = z.object({
 
 /**
  * Master Agent - Primary debugging and problem-solving assistant
- * 
+ *
  * @file master-agent.ts
  * @author Mastra Team
  * @license MIT
@@ -100,9 +100,9 @@ const masterAgentConfigSchema = z.object({
  * @since 2025-06-20
  * @module master-agent
  * @requires @mastra/core
- * 
+ *
  * @summary The Master Agent is a highly capable AI assistant designed to handle complex problem-solving tasks across various domains.
- * 
+ *
  * @description
  * The Master Agent is a highly capable AI assistant designed to handle complex problem-solving tasks across various domains. It integrates advanced capabilities such as:
  * - Graph-based knowledge retrieval
@@ -114,7 +114,7 @@ const masterAgentConfigSchema = z.object({
  * - Enhanced with comprehensive Zod validation to prevent ZodNull errors
  * This agent is built to be flexible, efficient, and user-friendly, providing accurate and actionable responses to user queries. It leverages the latest Gemini 2.5 model features, including dynamic retrieval and structured outputs, to enhance its problem-solving capabilities.
  * The agent is designed to work seamlessly with Mastra's telemetry and logging systems, allowing for detailed tracking of actions, tool usage, and decision-making processes. It also includes advanced evaluation metrics to assess performance, consistency, and content quality.
- * 
+ *
  * and ensure type safety across all operations.
  *
  * @mastra Enhanced master agent with input/output validation
