@@ -24,6 +24,7 @@ import { z } from 'zod';
 import { UPSTASH_PROMPT } from "@mastra/upstash";
 import { PinoLogger } from "@mastra/loggers";
 import { createBraveSearchTool, createTavilySearchTool, codeSearchTool, webScraperTool, gitOperationsTool } from "../tools";
+import { weatherWorkflow } from "../workflows/weather-workflow";
 /**
  * Runtime context type for the Master Agent
  * Production-focused runtime variables for agent behavior
@@ -272,6 +273,7 @@ ${UPSTASH_PROMPT}
     gitOperationsTool,
   },
   memory: mastraMemory,
+  workflows: { weatherWorkflow },
   evals: {
     toneConsistency: new ToneConsistencyMetric(),
     keywordCoverage: new KeywordCoverageMetric(),
