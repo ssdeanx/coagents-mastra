@@ -3,9 +3,10 @@
 import { CatchAllActionRenderProps, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
+import "./globals.css";
 
 export default function CopilotKitPage() {
-  const [themeColor, setThemeColor] = useState("#232324ff");
+  const [themeColor, setThemeColor] = useState("oklch(0.147 0.004 49.25)"); //globals.css --primary
 
   // 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
   useCopilotAction({
@@ -13,7 +14,7 @@ export default function CopilotKitPage() {
     parameters: [{
       name: "themeColor",
       description: "The theme color to set. Make sure to pick nice colors.",
-      required: true, 
+      required: true,
     }],
     handler({ themeColor }) {
       setThemeColor(themeColor);

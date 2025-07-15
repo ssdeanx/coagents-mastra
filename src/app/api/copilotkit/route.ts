@@ -3,13 +3,13 @@ import {
   ExperimentalEmptyAdapter,
   copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
-import { MastraAgent } from "@ag-ui/mastra"
+import { MastraAgent } from "@ag-ui/mastra";
 import { MastraClient } from "@mastra/client-js";
 import { NextRequest } from "next/server";
 
 // 1. Base address for the Mastra server
 const MASTRA_URL = process.env.MASTRA_URL || "http://localhost:4111";
- 
+
 // 2. You can use any service adapter here for multi-agent support.
 const serviceAdapter = new ExperimentalEmptyAdapter();
 
@@ -30,6 +30,6 @@ export const POST = async (req: NextRequest) => {
     serviceAdapter,
     endpoint: "/api/copilotkit",
   });
- 
+
   return handleRequest(req);
 };
