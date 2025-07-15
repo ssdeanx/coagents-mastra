@@ -63,6 +63,13 @@ import {
   listCryptoCoinsTool,
 } from "../tools";
 import { createFreestyleTool } from '../tools/freestyle-executor';
+import {
+  ToneConsistencyMetric,
+  KeywordCoverageMetric,
+  CompletenessMetric,
+  ContentSimilarityMetric,
+  TextualDifferenceMetric
+} from '@mastra/evals/nlp';
 
 
 const logger = new PinoLogger({ name: 'GenerationAgent', level: 'info' });
@@ -151,6 +158,7 @@ const generationAgentConfigSchema = z.object({
     'keywords': z.array(z.string()).optional().describe('Specific keywords or phrases to include')
   }).describe('Runtime context for the agent'),
   model: z.any().describe('Model configuration for the agent'),
+  evals: z.record(z.string(), z.any()).describe('Evaluation metrics for the agent'),
   tools: z.record(z.string(), z.any()).describe('Available tools for the agent'),
   memory: z.any().describe('Agent memory configuration'),
   workflows: z.record(z.string(), z.any()).describe('Available workflows for the agent')
@@ -315,7 +323,14 @@ ${UPSTASH_PROMPT}
       {} as Record<string, string> // Pass empty options for nodeModules and envVars
     ) as ToolAction
   },
-  memory: mastraMemory
+  memory: mastraMemory,
+  evals: {
+    toneConsistency: new ToneConsistencyMetric(),
+    keywordCoverage: new KeywordCoverageMetric(),
+    completeness: new CompletenessMetric(),
+    contentSimilarity: new ContentSimilarityMetric(),
+    textualDifference: new TextualDifferenceMetric(),
+  },
 });
 
 /**

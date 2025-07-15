@@ -3,6 +3,13 @@ import { Agent } from "@mastra/core/agent";
 import { weatherTool } from "@/mastra/tools";
 import { mastraMemory } from "../memory/upstashMemory";
 import { weatherWorkflow } from "../workflows/weather-workflow";
+import {
+  ToneConsistencyMetric,
+  KeywordCoverageMetric,
+  CompletenessMetric,
+  ContentSimilarityMetric,
+  TextualDifferenceMetric
+} from '@mastra/evals/nlp';
 
 export const weatherAgent = new Agent({
   name: "Weather Agent",
@@ -32,5 +39,12 @@ export const weatherAgent = new Agent({
     // Langfuse tracing configuration
   }),
   tools: { weatherTool },
-  workflows: { weatherWorkflow }
+  workflows: { weatherWorkflow },
+  evals: {
+    toneConsistency: new ToneConsistencyMetric(),
+    keywordCoverage: new KeywordCoverageMetric(),
+    completeness: new CompletenessMetric(),
+    contentSimilarity: new ContentSimilarityMetric(),
+    textualDifference: new TextualDifferenceMetric(),
+  },
 });

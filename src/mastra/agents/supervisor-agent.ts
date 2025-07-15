@@ -8,6 +8,13 @@ import { z } from 'zod';
 import { UPSTASH_PROMPT } from "@mastra/upstash";
 import { PinoLogger } from "@mastra/loggers";
 import { createBraveSearchTool, createTavilySearchTool, stockPriceTool, historicalStockPriceTool, stockNewsTool, earningsCalendarTool, sportsOddsTool, historicalOddsTool, listSportsTool, listBookmakersTool, cryptoPriceTool, historicalCryptoPriceTool, cryptoMarketDataTool, listCryptoCoinsTool } from "../tools";
+import {
+  ToneConsistencyMetric,
+  KeywordCoverageMetric,
+  CompletenessMetric,
+  ContentSimilarityMetric,
+  TextualDifferenceMetric
+} from '@mastra/evals/nlp';
 
 /**
  * Runtime context type for the Supervisor Agent
@@ -197,7 +204,14 @@ ${UPSTASH_PROMPT}
     cryptoMarketDataTool,
     listCryptoCoinsTool
   },
-  memory: mastraMemory
+  memory: mastraMemory,
+  evals: {
+    toneConsistency: new ToneConsistencyMetric(),
+    keywordCoverage: new KeywordCoverageMetric(),
+    completeness: new CompletenessMetric(),
+    contentSimilarity: new ContentSimilarityMetric(),
+    textualDifference: new TextualDifferenceMetric(),
+  },
 });
 
 /**
