@@ -1,0 +1,7 @@
+# Specs Directory
+
+This directory contains feature specifications for the project.
+Each spec should have its own subdirectory with:
+- requirements.md
+- design.md  
+- tasks.md
