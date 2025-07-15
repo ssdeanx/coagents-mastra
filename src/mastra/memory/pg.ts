@@ -17,15 +17,15 @@ logger.info('Initializing PostgreSQL memory store...');
 
 // Environment variables for PostgreSQL connection
 const storage = new PostgresStore({
-  connectionString: process.env.POSTGRES_CONNECTION_STRING || "",
+  connectionString: process.env.POSTGRES_CONNECTION_STRING || '',
 });
 
-const store = new PgVector({ connectionString: process.env.POSTGRES_CONNECTION_STRING || ""})
+const store = new PgVector({ connectionString: process.env.POSTGRES_CONNECTION_STRING || '' });
 
 await store.createIndex({
-  indexName: "myCollection",
+  indexName: 'myCollection',
   dimension: 768,
-  metric: "cosine",
+  metric: 'cosine',
 });
 
 // TODO: Replace with actual embeddings data

@@ -281,8 +281,8 @@ export function createArxivClient(options?: {
 
   return {
     arxivSearch: createTool({
-      id: "arxiv-search",
-      description: "Searches for research articles published on arXiv.",
+      id: 'arxiv-search',
+      description: 'Searches for research articles published on arXiv.',
       inputSchema: ArxivSearchParamsSchema,
       outputSchema: ArxivResponseSchema,
       execute: async ({ context, runtimeContext }) => {
@@ -293,7 +293,7 @@ export function createArxivClient(options?: {
         if (debug) {
           logger.info('Searching arXiv', { query: context.searchQuery || context.ids, maxResults: effectiveMaxResults });
         }
-        
+
         try {
           const response = await arxivClient.search({ ...context, maxResults: effectiveMaxResults });
           if (debug) {

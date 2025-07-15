@@ -1,7 +1,7 @@
 // Research Analysis Workflow - Powered by Mastra
 import { createWorkflow, createStep } from '@mastra/core/workflows';
 import { z } from 'zod';
-import { PinoLogger } from "@mastra/loggers";
+import { PinoLogger } from '@mastra/loggers';
 import {
   researchAgent,
   analyzerAgent,
@@ -19,13 +19,13 @@ const logger = new PinoLogger({
 logger.info('Initializing Research Analysis Workflow');
 
 // Type definitions for better type safety
-type DetailedFinding = {
+interface DetailedFinding {
   category: string;
   content: string;
   sources: string[];
   confidence: number;
   relevance: number;
-};
+}
 
 /**
  * Comprehensive Research Analysis Workflow
@@ -121,7 +121,7 @@ const actionItemSchema = z.object({
 
 // Input schema for research requests
 const researchInputSchema = z.object({
-  topic: z.string().min(1, "Research topic is required"),
+  topic: z.string().min(1, 'Research topic is required'),
   options: z.object({
     depth: z.enum(['surface', 'moderate', 'deep', 'comprehensive']).default('moderate'),
     sources: z.array(z.string()).optional(),

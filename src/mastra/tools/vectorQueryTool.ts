@@ -35,7 +35,7 @@ import { PinoLogger } from '@mastra/loggers';
 import { embedMany } from 'ai';
 
 // Define runtime context type for vector query tools
-export type VectorQueryRuntimeContext = {
+export interface VectorQueryRuntimeContext {
   'user-id': string;
   'session-id': string;
   'search-preference': 'semantic' | 'hybrid' | 'metadata';
@@ -246,13 +246,13 @@ export const enhancedVectorQueryTool = createTool({
 });
 
 // Type for hybrid result to ensure type safety
-type HybridVectorResult = {
+interface HybridVectorResult {
   id: string;
   content: string;
   score: number;
   metadata?: Record<string, unknown>;
   threadId?: string;
-};
+}
 
 // Hybrid scoring type
 const hybridScoreSchema = z.object({

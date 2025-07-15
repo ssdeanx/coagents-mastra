@@ -13,7 +13,7 @@ const documentAnalysisInputSchema = z.object({
   documentContent: z.string().optional().describe('The content of the document to analyze.'),
   documentPath: z.string().optional().describe('The path to the document file to analyze (e.g., "reports/my_report.txt").'),
 }).refine(data => data.documentContent || data.documentPath, {
-  message: "Either 'documentContent' or 'documentPath' must be provided.",
+  message: "'documentContent' or 'documentPath' must be provided.",
 });
 
 // Output schema for the document analysis workflow
@@ -41,7 +41,7 @@ const readDocumentStep = createStep({
     if (inputData.documentPath) {
       logger.info(`Reading document from path: ${inputData.documentPath}`);
       const dataRuntimeContext = new RuntimeContext();
-      dataRuntimeContext.set("mode", "read");
+      dataRuntimeContext.set('mode', 'read');
       const { object: resultObject } = await researchAgent.generate(
         `Read the file named "${inputData.documentPath}" from the "data/" directory.`,
         { runtimeContext: dataRuntimeContext, output: researchAgentOutputSchema } // Request structured output
@@ -74,8 +74,8 @@ const analyzeDocumentStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Analyzing document from source: ${inputData.source}`);
     const analyzerRuntimeContext = new RuntimeContext();
-    analyzerRuntimeContext.set("analysis-type", "detailed");
-    analyzerRuntimeContext.set("data-source", "internal"); // Assuming content is now internal
+    analyzerRuntimeContext.set('analysis-type', 'detailed');
+    analyzerRuntimeContext.set('data-source', 'internal'); // Assuming content is now internal
 
     const { object: analysisResultObject } = await analyzerAgent.generate(
       `Perform a detailed analysis of the following document content. Identify key themes, main arguments, and any significant data points. Provide a comprehensive analysis report under the key 'analysis' and extract key insights as a JSON array of strings under the key 'keyInsights'.\n\nDocument Content:\n${inputData.content}\n\nReturn a JSON object with 'analysis' and 'keyInsights'.`,

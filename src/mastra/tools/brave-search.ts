@@ -1,8 +1,8 @@
-import { createTool } from "@mastra/core/tools";
+import { createTool } from '@mastra/core/tools';
 import { RuntimeContext } from '@mastra/core/di';
-import { z } from "zod";
-import { BraveSearchClient } from "@agentic/brave-search";
-import { env } from "process";
+import { z } from 'zod';
+import { BraveSearchClient } from '@agentic/brave-search';
+import { env } from 'process';
 import { PinoLogger } from '@mastra/loggers';
 
 const logger = new PinoLogger({ name: 'brave-search', level: 'info' });
@@ -39,15 +39,15 @@ export function createBraveSearchTool(config: BraveSearchConfig = {}) {
   braveSearchRuntimeContext.set('debug', false);
 
   return createTool({
-    id: "brave-search",
-    description: "Performs web searches using Brave Search API",
+    id: 'brave-search',
+    description: 'Performs web searches using Brave Search API',
     inputSchema: z.object({
-      query: z.string().describe("Search query"),
+      query: z.string().describe('Search query'),
       maxResults: z
         .number()
         .optional()
         .default(10)
-        .describe("Maximum number of results"),
+        .describe('Maximum number of results'),
     }),
     outputSchema: z.object({
       results: z.array(
@@ -65,7 +65,7 @@ export function createBraveSearchTool(config: BraveSearchConfig = {}) {
       if (debug) {
         logger.info('Starting Brave search', {
           query: context.query,
-          maxResults: context.maxResults
+          maxResults: context.maxResults,
         });
       }
 
@@ -79,16 +79,16 @@ export function createBraveSearchTool(config: BraveSearchConfig = {}) {
         const results = (response.web?.results || [])
           .slice(0, context.maxResults)
           .map((result) => ({
-            title: result.title || "",
-            url: result.url || "",
-            description: result.description || "",
+            title: result.title || '',
+            url: result.url || '',
+            description: result.description || '',
             // score is optional and not directly provided by this API result structure
           }));
 
         logger.info('Brave search completed successfully', {
           query: context.query,
           resultCount: results.length,
-          maxResults: context.maxResults
+          maxResults: context.maxResults,
         });
 
         return { results };
@@ -96,12 +96,12 @@ export function createBraveSearchTool(config: BraveSearchConfig = {}) {
         logger.error('Brave search failed', {
           query: context.query,
           error: error instanceof Error ? error.message : 'Unknown error',
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         });
 
-        console.error("Brave search error:", error);
+        console.error('Brave search error:', error);
         throw new Error(
-          `Brave search failed: ${error instanceof Error ? error.message : "Unknown error"}`
+          `Brave search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
         );
       }
     },

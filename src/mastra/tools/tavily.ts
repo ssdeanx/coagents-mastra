@@ -1,9 +1,9 @@
-import { createTool } from "@mastra/core/tools";
+import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
-import { TavilyClient } from "@agentic/tavily";
-import { env } from "process";
+import { TavilyClient } from '@agentic/tavily';
+import { env } from 'process';
 import { PinoLogger } from '@mastra/loggers';
-//import { RuntimeContext } from '@mastra/core/di'; // FIXME: Uncomment if needed
+// import { RuntimeContext } from '@mastra/core/di'; // FIXME: Uncomment if needed
 
 const logger = new PinoLogger({ name: 'tavily', level: 'info' });
 
@@ -29,10 +29,10 @@ export function createTavilySearchTool(config: TavilyConfig = {}) {
   });
 
   return createTool({
-    id: "tavily-search",
-    description: "Performs web searches using Tavily API",
+    id: 'tavily-search',
+    description: 'Performs web searches using Tavily API',
     inputSchema: z.object({
-      query: z.string().describe("Search query"),
+      query: z.string().describe('Search query'),
     }),
     outputSchema: z.object({
       results: z.array(
@@ -44,30 +44,30 @@ export function createTavilySearchTool(config: TavilyConfig = {}) {
       ),
     }),
     execute: async ({ context }: { context: { query: string } }) => {
-      logger.info('Starting Tavily search', { 
-        query: context.query 
+      logger.info('Starting Tavily search', {
+        query: context.query,
       });
 
       try {
         logger.debug('Calling Tavily API', { query: context.query });
-        
+
         const response = await tavily.search(context.query);
-        
-        logger.info('Tavily search completed successfully', { 
+
+        logger.info('Tavily search completed successfully', {
           query: context.query,
-          resultCount: response.results.length 
+          resultCount: response.results.length,
         });
 
         return { results: response.results };
       } catch (error) {
-        logger.error('Tavily search failed', { 
+        logger.error('Tavily search failed', {
           query: context.query,
           error: error instanceof Error ? error.message : 'Unknown error',
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         });
 
         throw new Error(
-          `Tavily search failed: ${error instanceof Error ? error.message : "Unknown error"}`
+          `Tavily search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
         );
       }
     },

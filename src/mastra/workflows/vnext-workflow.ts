@@ -3,7 +3,7 @@ import { NewAgentNetwork } from '@mastra/core/network/vNext';
 import { Agent } from '@mastra/core/agent';
 import { createGemini25Provider } from '../config/googleProvider';
 import { RuntimeContext } from '@mastra/core/runtime-context';
-import { PinoLogger } from "@mastra/loggers";
+import { PinoLogger } from '@mastra/loggers';
 import { generateId } from 'ai';
 // Agent imports
 import { masterAgent } from '../agents/master-agent';
@@ -16,42 +16,42 @@ import { mastraMemory } from '../memory/upstashMemory';
 // Tool imports
 
 /**
-* This file defines the vNext Agent Network Workflow for Mastra, integrating various agents and workflows
-* to handle complex tasks with enhanced memory management using LibSQL.
-* It includes detailed logging for better traceability and debugging.
-* @module vNextWorkflow
-* @license MIT
-* @version 0.11.0
-* @author Dean Machines
-* @description This module sets up the vNext Agent Network with specialized agents and workflows,
-*              utilizing LibSQL for memory management and providing tools for various tasks.
-* @requires @mastra/core
-* @requires @mastra/memory
-* @requires @mastra/libsql
-* @requires @mastra/loggers
-* @requires @mastra/tools
-* @requires @mastra/core/runtime-context
-* @requires @mastra/core/network/vNext
-* @requires @mastra/core/agent
-* @example
-* import { vNextWorkflow } from './vnext-workflow';
-* const result = await vNextWorkflow('Your task here', {
-*  isComplex: true,
-* maxIterations: 5,
-* context: {
-*   resourceId: 'user-123',
-*  threadId: 'thread-456',
-*  additionalContext: { key: 'value' }
-* }
-* });
-* console.log(result);
-* @see {@link https://mastra.ai/docs/vnext-workflow} for more details
-* @see {@link https://mastra.ai/docs/agents} for agent documentation
-* @see {@link https://mastra.ai/docs/tools} for tool documentation
-* @see {@link https://mastra.ai/docs/memory} for memory management documentation
-* @see {@link https://mastra.ai/docs/libsql} for LibSQL integration documentation
-* @see {@link https://mastra.ai/docs/logging} for logging documentation
-*/
+ * This file defines the vNext Agent Network Workflow for Mastra, integrating various agents and workflows
+ * to handle complex tasks with enhanced memory management using LibSQL.
+ * It includes detailed logging for better traceability and debugging.
+ * @module vNextWorkflow
+ * @license MIT
+ * @version 0.11.0
+ * @author Dean Machines
+ * @description This module sets up the vNext Agent Network with specialized agents and workflows,
+ *              utilizing LibSQL for memory management and providing tools for various tasks.
+ * @requires @mastra/core
+ * @requires @mastra/memory
+ * @requires @mastra/libsql
+ * @requires @mastra/loggers
+ * @requires @mastra/tools
+ * @requires @mastra/core/runtime-context
+ * @requires @mastra/core/network/vNext
+ * @requires @mastra/core/agent
+ * @example
+ * import { vNextWorkflow } from './vnext-workflow';
+ * const result = await vNextWorkflow('Your task here', {
+ *  isComplex: true,
+ * maxIterations: 5,
+ * context: {
+ *   resourceId: 'user-123',
+ *  threadId: 'thread-456',
+ *  additionalContext: { key: 'value' }
+ * }
+ * });
+ * console.log(result);
+ * @see {@link https://mastra.ai/docs/vnext-workflow} for more details
+ * @see {@link https://mastra.ai/docs/agents} for agent documentation
+ * @see {@link https://mastra.ai/docs/tools} for tool documentation
+ * @see {@link https://mastra.ai/docs/memory} for memory management documentation
+ * @see {@link https://mastra.ai/docs/libsql} for LibSQL integration documentation
+ * @see {@link https://mastra.ai/docs/logging} for logging documentation
+ */
 
 
 
@@ -67,7 +67,7 @@ export const synthesisAgent = new Agent({
   instructions: 'Write detailed reports in full paragraphs without bullet points',
   model: createGemini25Provider('gemini-2.5-flash-lite-preview-06-17', {
     // Response modalities - what types of content the model can generate
-    responseModalities: ["TEXT"], // Can also include "IMAGE" for image generation
+    responseModalities: ['TEXT'], // Can also include "IMAGE" for image generation
     // Thinking configuration for enhanced reasoning
     thinkingConfig: {
       thinkingBudget: 1024, // -1 = dynamic budget, 0 = disabled, 1-24576 = fixed budget
@@ -108,7 +108,7 @@ try {
     instructions: 'Orchestrate tasks across specialized agents and workflows',
     model: createGemini25Provider('gemini-2.5-flash-lite-preview-06-17', {
       // Response modalities - what types of content the model can generate
-      responseModalities: ["TEXT"], // Can also include "IMAGE" for image generation
+      responseModalities: ['TEXT'], // Can also include "IMAGE" for image generation
       // Thinking configuration for enhanced reasoning
       thinkingConfig: {
         thinkingBudget: -1, // -1 = dynamic budget, 0 = disabled, 1-24576 = fixed budget

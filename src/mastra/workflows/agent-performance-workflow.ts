@@ -29,7 +29,7 @@ const agentPerformanceInputSchema = z.object({
     // Add other relevant metrics here
   }).optional().describe('Actual structured performance data for the agent.'),
 }).refine(data => data.performanceData, {
-  message: "Actual 'performanceData' must be provided for this workflow to execute. This workflow does not simulate data.",
+  message: 'Actual \'performanceData\' must be provided for this workflow to execute. This workflow does not simulate data.',
 });
 
 // Output schema for the agent performance monitoring workflow
@@ -68,7 +68,7 @@ const gatherPerformanceDataStep = createStep({
       logger.error(errorMessage);
       throw new Error(errorMessage);
     }
-    
+
     // In a real scenario, this would involve calling an external monitoring API
     // or querying a database to fetch the actual performance data.
     // For now, we simply pass through the provided structured data.
@@ -100,8 +100,8 @@ const analyzePerformanceDataStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Analyzing performance data for agent: ${inputData.agentName}`);
     const analyzerRuntimeContext = new RuntimeContext();
-    analyzerRuntimeContext.set("analysis-type", "diagnostic");
-    analyzerRuntimeContext.set("data-source", "internal"); // Data is now internal to the workflow
+    analyzerRuntimeContext.set('analysis-type', 'diagnostic');
+    analyzerRuntimeContext.set('data-source', 'internal'); // Data is now internal to the workflow
 
     const { object: analysisResultObject } = await analyzerAgent.generate(
       `Analyze the following raw performance data for agent "${inputData.agentName}" for the period "${inputData.monitoringPeriod || 'N/A'}". Provide a diagnostic analysis under the key 'analysis', identify any anomalies or trends, and extract key performance insights as a JSON array of strings under the key 'keyInsights'.\n\nPerformance Data:\n${JSON.stringify(inputData.performanceData, null, 2)}\n\nReturn a JSON object with 'analysis' and 'keyInsights'.`,
@@ -133,8 +133,8 @@ const generateRecommendationsStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Generating optimization recommendations for agent: ${inputData.agentName}`);
     const masterRuntimeContext = new RuntimeContext();
-    masterRuntimeContext.set("project-context", "agent-optimization");
-    masterRuntimeContext.set("plan-mode", true); // Master agent can plan its optimization strategies
+    masterRuntimeContext.set('project-context', 'agent-optimization');
+    masterRuntimeContext.set('plan-mode', true); // Master agent can plan its optimization strategies
 
     const { object: recommendationsResultObject } = await masterAgent.generate(
       `Based on the following performance analysis and insights for agent "${inputData.agentName}", provide actionable recommendations for optimization. Focus on improving efficiency, accuracy, and resource utilization. List recommendations as a JSON array of strings under the key 'recommendations'.\n\nAnalysis Report:\n${inputData.analysisReport}\n\nPerformance Insights:\n${inputData.performanceInsights.join('\n')}\n\nReturn a JSON object with 'recommendations'.`,
@@ -164,8 +164,8 @@ const reviewRecommendationsStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Reviewing recommendations for agent: ${inputData.agentName}`);
     const supervisorRuntimeContext = new RuntimeContext();
-    supervisorRuntimeContext.set("qa-level", "rigorous");
-    supervisorRuntimeContext.set("coordination-strategy", "collaborative");
+    supervisorRuntimeContext.set('qa-level', 'rigorous');
+    supervisorRuntimeContext.set('coordination-strategy', 'collaborative');
 
     const { object: reviewResultObject } = await supervisorAgent.generate(
       `Review the following optimization recommendations for agent "${inputData.agentName}". Provide constructive feedback under the key 'feedback', suggest improvements, and refine the recommendations for clarity and actionability. List the refined recommendations as a JSON array of strings under the key 'refinedRecommendations'.\n\nRecommendations:\n${inputData.optimizationRecommendations.join('\n')}\n\nReturn a JSON object with 'refinedRecommendations' and 'feedback'.`,
@@ -198,8 +198,8 @@ const generateAndStoreReportStep = createStep({
   execute: async ({ inputData }) => {
     const fileName = `agent_performance_report_${inputData.agentName.replace(/\s/g, '_')}_${Date.now()}.md`;
     const masterAgentRuntimeContext = new RuntimeContext();
-    masterAgentRuntimeContext.set("mode", "write");
-    masterAgentRuntimeContext.set("data-dir", "agent_performance_reports");
+    masterAgentRuntimeContext.set('mode', 'write');
+    masterAgentRuntimeContext.set('data-dir', 'agent_performance_reports');
 
     const reportContent = `## Agent Performance Report: ${inputData.agentName}
 Monitoring Period: ${inputData.monitoringPeriod || 'N/A'}

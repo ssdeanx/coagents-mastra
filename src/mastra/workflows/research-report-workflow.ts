@@ -48,7 +48,7 @@ const conductResearchStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Conducting ${inputData.researchDepth} research on: ${inputData.topic}`);
     const researchRuntimeContext = new RuntimeContext();
-    researchRuntimeContext.set("research-depth", inputData.researchDepth);
+    researchRuntimeContext.set('research-depth', inputData.researchDepth);
 
     // Request structured output from researchAgent with emphasis on high quality and detail
     const { object: researchResultObject } = await researchAgent.generate(
@@ -61,11 +61,11 @@ const conductResearchStep = createStep({
       - Potential future implications
       - Diverse perspectives and arguments
       - Any identified gaps in information
-      
+
       List all sources as a JSON array of strings under the key 'sources'.
       The detailed findings should be a comprehensive string under the key 'findings'.
       Also include 'confidence' (number 0-1, reflecting certainty of findings) and 'methodology' (string, describing research approach).
-      
+
       Return a JSON object with 'findings', 'sources', 'confidence', and 'methodology'.`,
       { runtimeContext: researchRuntimeContext, output: researchAgentOutputSchema }
     );
@@ -94,17 +94,17 @@ const storeResearchDataStep = createStep({
   execute: async ({ inputData }) => {
     const fileName = `raw_research_${inputData.topic.replace(/\s/g, '_').substring(0, 50)}_${Date.now()}.md`;
     const masterAgentRuntimeContext = new RuntimeContext();
-    masterAgentRuntimeContext.set("mode", "write");
-    masterAgentRuntimeContext.set("data-dir", "research_data");
+    masterAgentRuntimeContext.set('mode', 'write');
+    masterAgentRuntimeContext.set('data-dir', 'research_data');
 
     const contentToSave = `Topic: ${inputData.topic}\nConfidence: ${inputData.confidence}\n\nFindings:\n${inputData.researchFindings}\n\nSources:\n${inputData.sources.join('\n')}`;
-    
+
     // Request structured output from masterAgent
     const { object: resultObject } = await masterAgent.generate(
       `Write the following content to a file named "${fileName}" in the "research_data" directory:\n\n${contentToSave}\n\nReturn a JSON object with 'success', and 'message'.`, // Removed 'fileName' from prompt
       { runtimeContext: masterAgentRuntimeContext, output: fileOperationOutputSchema }
     );
-    
+
     return {
       fileName: fileName,
       success: resultObject.success,
@@ -131,8 +131,8 @@ const analyzeResearchStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Analyzing research data for topic: ${inputData.topic}`);
     const analyzerRuntimeContext = new RuntimeContext();
-    analyzerRuntimeContext.set("analysis-type", "detailed");
-    analyzerRuntimeContext.set("data-source", "external"); // Research findings are external data
+    analyzerRuntimeContext.set('analysis-type', 'detailed');
+    analyzerRuntimeContext.set('data-source', 'external'); // Research findings are external data
 
     // Request structured output from analyzerAgent
     const { object: analysisResultObject } = await analyzerAgent.generate(
@@ -148,7 +148,7 @@ const analyzeResearchStep = createStep({
       - 'confidence': A numerical confidence score (0-1) for this specific insight, derived from the overall research confidence and the strength of supporting evidence.
       - 'relevance': A numerical relevance score (0-1) to the main topic.
       - 'relatedInsights': An array of 'id's of other structured insights that are related.
-      
+
       Ensure that the 'structuredInsights' are cross-referenced where appropriate to form a 'map of information'.
       \n\nResearch Findings:\n${inputData.researchFindings}\n\nSources: ${inputData.sources.join(', ')}\n\nReturn a JSON object with 'analysis', 'keyInsights', and 'structuredInsights'.`,
       { runtimeContext: analyzerRuntimeContext, output: analyzerAgentOutputSchema }
@@ -189,8 +189,8 @@ const generateFinalReportStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Generating final report in ${inputData.outputFormat} format for topic: ${inputData.topic}`);
     const masterRuntimeContext = new RuntimeContext();
-    masterRuntimeContext.set("project-context", "research-report-generation");
-    masterRuntimeContext.set("plan-mode", true); // Master agent can plan its report generation
+    masterRuntimeContext.set('project-context', 'research-report-generation');
+    masterRuntimeContext.set('plan-mode', true); // Master agent can plan its report generation
 
     // Request structured output from masterAgent
     const { object: reportResultObject } = await masterAgent.generate(
@@ -206,9 +206,9 @@ const generateFinalReportStep = createStep({
       5.  **Analysis and Discussion**: Interpretation of findings, patterns, and implications.
       6.  **Conclusion**: Summary of main points and their significance.
       7.  **Recommendations**: Actionable suggestions based on the research.
-      
+
       If available, use the provided 'structuredInsights' to create a 'map of information' or a network of interconnected insights within the report. This map should visually or textually represent the relationships between different insights, their confidence levels, and relevance.
-      
+
       The final report content should be a comprehensive string under the key 'response'.
       \n\nAnalysis Report:\n${inputData.analysisReport}\n\nKey Insights:\n${inputData.insights.join('\n')}\n\nStructured Insights:\n${inputData.structuredInsights ? JSON.stringify(inputData.structuredInsights, null, 2) : 'N/A'}\n\nReturn a JSON object with 'response'.`,
       { runtimeContext: masterRuntimeContext, output: masterAgentOutputSchema }
@@ -238,7 +238,7 @@ const qualityCheckReportStep = createStep({
   execute: async ({ inputData }) => {
     logger.info(`Performing quality check on final report for topic: ${inputData.topic}`);
     const supervisorRuntimeContext = new RuntimeContext();
-    supervisorRuntimeContext.set("qa-level", "rigorous");
+    supervisorRuntimeContext.set('qa-level', 'rigorous');
 
     // Request structured output from supervisorAgent
     const { object: qualityResultObject } = await supervisorAgent.generate(
@@ -273,17 +273,17 @@ const storeFinalReportStep = createStep({
   execute: async ({ inputData }) => {
     const fileName = `final_report_${inputData.topic.replace(/\s/g, '_').substring(0, 50)}_${Date.now()}.md`;
     const masterAgentRuntimeContext = new RuntimeContext();
-    masterAgentRuntimeContext.set("mode", "write");
-    masterAgentRuntimeContext.set("data-dir", "final_reports");
+    masterAgentRuntimeContext.set('mode', 'write');
+    masterAgentRuntimeContext.set('data-dir', 'final_reports');
 
     const contentToSave = `Topic: ${inputData.topic}\nQuality Score: ${inputData.reportQualityScore || 'N/A'}\n\nReport:\n${inputData.finalReport}`;
-    
+
     // Request structured output from masterAgent
     const { object: resultObject } = await masterAgent.generate(
       `Write the following content to a file named "${fileName}" in the "final_reports" directory:\n\n${contentToSave}\n\nReturn a JSON object with 'success', and 'message'.`, // Removed 'fileName' from prompt
       { runtimeContext: masterAgentRuntimeContext, output: fileOperationOutputSchema }
     );
-    
+
     // Use the locally constructed fileName, success, and message from resultObject
     return {
       fileName: fileName,
