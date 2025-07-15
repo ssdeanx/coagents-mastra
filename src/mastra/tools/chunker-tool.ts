@@ -205,7 +205,7 @@ export const chunkerTool = createTool({
       const preserveStructure = (runtimeContext?.get('preserve-structure') as boolean | undefined) ?? validatedInput.chunkParams?.preserveStructure ?? true;
       const includeMetadata = (runtimeContext?.get('include-metadata') as boolean | undefined) ?? true;
       // Get the embedder - always use gemini profile as it's the only one
-      const embedder = createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'CLUSTERING' });
+      const embedder = createGeminiEmbeddingModel();
       // Create MDocument based on document type
       let doc: MDocument;
       const { content, type, title, source, metadata } = validatedInput.document;

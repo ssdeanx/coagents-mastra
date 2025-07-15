@@ -139,7 +139,7 @@ export const graphRAGUpsertTool = createTool({
       const vectorProfileName = validatedInput.vectorProfile || 'gemini';
 
       // Get the embedder
-      const embedder = createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768 });
+      const embedder = createGeminiEmbeddingModel();
 
       if (debug) {
         logger.info('Starting document upsert', {
@@ -295,7 +295,7 @@ export const graphRAGUpsertTool = createTool({
 export const graphRAGTool = createGraphRAGTool({
   vectorStoreName: 'upstashVector',
   indexName: 'training',
-  model: createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'CLUSTERING' }),
+  model: createGeminiEmbeddingModel(),
   graphOptions: {
     dimension: 768,
     threshold: 0.7
@@ -329,7 +329,7 @@ export const graphRAGQueryTool = createTool({
       const vectorProfileName = validatedInput.vectorProfile || 'gemini';
 
       // Get the embedder
-      const embedder = createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'CLUSTERING' });
+      const embedder = createGeminiEmbeddingModel();
       const upstashVectorClient = upstashVector;
 
       if (debug) {

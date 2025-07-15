@@ -1,6 +1,7 @@
 import { Mastra } from "@mastra/core/mastra";
 import { weatherAgent } from "./agents";
 import { createLogger, LogLevel } from "@mastra/core/logger";
+//import {  } from '@mastra/agui';
 
 const LOG_LEVEL = process.env.LOG_LEVEL as LogLevel || "info";
 const ENV = process.env.NODE_ENV || "development";

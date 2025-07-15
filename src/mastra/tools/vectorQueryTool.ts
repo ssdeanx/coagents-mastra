@@ -28,7 +28,7 @@ import {
   queryVectors,
   type VectorQueryResult,
   type MetadataFilter,
-} from '../upstashMemory';
+} from '../memory/upstashMemory';
 import { createGeminiEmbeddingModel } from '../config/googleProvider';
 import type { UIMessage, CoreMessage } from 'ai';
 import { PinoLogger } from '@mastra/loggers';
@@ -78,7 +78,7 @@ const vectorQueryOutputSchema = z.object({
 export const vectorQueryTool = createVectorQueryTool({
   vectorStoreName: "upstashVector", // Use literal vector store name
   indexName: 'training', // Use literal index name
-  model: createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'RETRIEVAL_QUERY' }), // Use literal dimension
+  model: createGeminiEmbeddingModel(), // Use literal dimension
   databaseConfig: {
     upstashVector: {
       namespace: "production"  // Isolate data by environment
@@ -179,7 +179,7 @@ export const enhancedVectorQueryTool = createTool({
 
                 // Create query embedding using Google's embedding model
                 const { embeddings } = await embedMany({
-                  model: createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'RETRIEVAL_QUERY' }), // Use literal dimension
+                  model: createGeminiEmbeddingModel(),
                   values: [validatedInput.query]
                 });
         const queryEmbedding = embeddings[0];

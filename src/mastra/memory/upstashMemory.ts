@@ -8,7 +8,7 @@ import type { CoreMessage as OriginalCoreMessage } from '@mastra/core';
 import { maskStreamTags } from '@mastra/core';
 import { UIMessage } from 'ai';
 import { TokenLimiter, ToolCallFilter } from '@mastra/memory/processors';
-import { createGeminiEmbeddingModel } from './config/googleProvider';
+import { createGeminiEmbeddingModel } from '../config/googleProvider';
 import { AttentionGuidedMemoryProcessor, ContextualRelevanceProcessor, WorkflowAwareMemoryProcessor, BiasMitigationProcessor, ToolUsageTrackerProcessor, AgentInteractionPatternProcessor, MentalModelProcessor } from './processor-extra';
 
 
@@ -282,7 +282,7 @@ export const upstashVector = new UpstashVector({
 export const mastraMemory = new Memory({
   storage: upstashStorage,
   vector: upstashVector,
-  embedder: createGeminiEmbeddingModel('text-embedding-004', { outputDimensionality: 768, taskType: 'SEMANTIC_SIMILARITY'}),
+  embedder: createGeminiEmbeddingModel(),
   options: {
     lastMessages: 500, // Enhanced for better context retention
     semanticRecall: {
