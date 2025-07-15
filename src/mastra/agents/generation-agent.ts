@@ -1,6 +1,6 @@
 import { Agent } from "@mastra/core/agent";
 import type { ToolAction } from "@mastra/core/tools";
-import { mastraMemory } from '../upstashMemory';
+import { mastraMemory } from '../memory/upstashMemory';
 import { createGemini25Provider } from '../config/googleProvider';
 import { chunkerTool } from "../tools/chunker-tool";
 import { z } from "zod";
