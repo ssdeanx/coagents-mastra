@@ -54,3 +54,4 @@ bun.lockb
 .augment/
 .augment/rules
 .augment/rules/*.md
+.specstory/.what-is-this.md
