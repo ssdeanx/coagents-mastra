@@ -81,7 +81,9 @@ const masterAgentConfigSchema = z.object({
     'tasks': z.string().optional().describe('Tasks for the agent'),
     'actions': z.string().optional().describe('Actions for the agent'),
     'tool-selection': z.string().optional().describe('Tool selection'),
-    'debug-mode': z.boolean().optional().describe('Debug mode flag')
+    'debug-mode': z.boolean().optional().describe('Debug mode flag'),
+    'model-version': z.string().optional().describe('Model version'),
+    'model-provider': z.string().optional().describe('Model provider'),
   }).describe('Runtime context for the agent'),
   model: z.any().describe('Model configuration for the agent'),
   evals: z.record(z.string(), z.any()).describe('Evaluation metrics for the agent'),
