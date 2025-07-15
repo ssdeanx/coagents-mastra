@@ -70,6 +70,67 @@ The following scripts can also be run using your preferred package manager:
 - `start` - Starts the production server
 - `lint` - Runs ESLint for code linting
 
+## Project Structure Diagram
+
+```mermaid
+graph TD
+
+    15["Google Generative AI<br>External Service"]
+    16["Langchain<br>Framework"]
+    17["Pinecone DB<br>Vector Database"]
+    18["Upstash DB<br>Redis / Database"]
+    19["PostgreSQL DB<br>Relational Database"]
+    20["Brave Search<br>External Service"]
+    21["Arxiv Client<br>External Service"]
+    22["Tavily Search<br>External Service"]
+    4["User<br>External Actor"]
+    subgraph 1["Mastra AI Core<br>TypeScript / Langchain"]
+        10["AI Agents<br>TypeScript"]
+        11["Agent Tools<br>TypeScript"]
+        12["Agent Workflows<br>TypeScript"]
+        13["Agent Memory<br>TypeScript"]
+        14["Agent Configuration<br>TypeScript"]
+        %% Edges at this level (grouped by source)
+        12["Agent Workflows<br>TypeScript"] -->|orchestrates| 10["AI Agents<br>TypeScript"]
+        14["Agent Configuration<br>TypeScript"] -->|provides config to| 10["AI Agents<br>TypeScript"]
+        14["Agent Configuration<br>TypeScript"] -->|provides config to| 11["Agent Tools<br>TypeScript"]
+        10["AI Agents<br>TypeScript"] -->|utilizes| 11["Agent Tools<br>TypeScript"]
+        10["AI Agents<br>TypeScript"] -->|manages state with| 13["Agent Memory<br>TypeScript"]
+    end
+    subgraph 2["Backend API<br>Next.js API Routes"]
+        9["CopilotKit API Route<br>TypeScript"]
+    end
+    subgraph 3["Web Application<br>Next.js / React"]
+        5["Application Entry<br>TypeScript / React"]
+        6["CopilotKit UI Components<br>TypeScript / React"]
+        7["Research Canvas UI<br>TypeScript / React"]
+        8["Model Selector Provider<br>TypeScript / React"]
+        %% Edges at this level (grouped by source)
+        5["Application Entry<br>TypeScript / React"] -->|renders| 6["CopilotKit UI Components<br>TypeScript / React"]
+        5["Application Entry<br>TypeScript / React"] -->|renders| 7["Research Canvas UI<br>TypeScript / React"]
+        7["Research Canvas UI<br>TypeScript / React"] -->|configures| 8["Model Selector Provider<br>TypeScript / React"]
+    end
+    %% Edges at this level (grouped by source)
+    2["Backend API<br>Next.js API Routes"] -->|orchestrates AI tasks| 1["Mastra AI Core<br>TypeScript / Langchain"]
+    3["Web Application<br>Next.js / React"] -->|makes requests to| 2["Backend API<br>Next.js API Routes"]
+    4["User<br>External Actor"] -->|interacts with| 3["Web Application<br>Next.js / React"]
+    11["Agent Tools<br>TypeScript"] -->|calls| 15["Google Generative AI<br>External Service"]
+    11["Agent Tools<br>TypeScript"] -->|queries| 20["Brave Search<br>External Service"]
+    11["Agent Tools<br>TypeScript"] -->|fetches data from| 21["Arxiv Client<br>External Service"]
+    11["Agent Tools<br>TypeScript"] -->|queries| 22["Tavily Search<br>External Service"]
+    1["Mastra AI Core<br>TypeScript / Langchain"] -->|integrates with| 16["Langchain<br>Framework"]
+    13["Agent Memory<br>TypeScript"] -->|persists data to| 17["Pinecone DB<br>Vector Database"]
+    13["Agent Memory<br>TypeScript"] -->|persists data to| 18["Upstash DB<br>Redis / Database"]
+    13["Agent Memory<br>TypeScript"] -->|persists data to| 19["PostgreSQL DB<br>Relational Database"]
+
+    classDef external fill:#f96;
+    class 15,20,21,22 external;
+    classDef internal fill:#ddd;
+    class 1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19 internal;
+    classDef actor fill:#fff,stroke:#000,stroke-width:2px;
+    class 4 actor;
+```
+
 ## Documentation
 
 - [Mastra Documentation](https://mastra.ai/en/docs) - Learn more about Mastra and its features
