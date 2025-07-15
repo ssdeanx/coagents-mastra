@@ -24,15 +24,23 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         name: "color",
         type: "string",
         description: "The new theme color (hex, rgb, or named color)",
-        required: true,
       },
     ],
-    handler: ({ color }) => {
+    handler: async ({ color }: { color: string }) => {
       onThemeChange?.(color);
       onNotification?.(`Theme color changed to ${color}`, "success");
       toast.success(`Theme updated to ${color}`);
       return { success: true, color };
     },
+    render: ({ args, result, status }) => (
+      <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-900/20">
+        <h4 className="font-semibold text-blue-800 dark:text-blue-200">🎨 Theme Color Change</h4>
+        {status === "executing" && <p className="text-sm text-blue-600">Changing theme color to {args?.color}...</p>}
+        {status === "complete" && result?.success && (
+          <p className="text-sm text-green-600">✅ Theme color successfully changed to {result.color}</p>
+        )}
+      </div>
+    ),
   });
 
   // Notification action
@@ -44,18 +52,16 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         name: "message",
         type: "string",
         description: "The notification message",
-        required: true,
       },
       {
         name: "type",
         type: "string",
         description: "The notification type (success, error, info, warning)",
-        required: false,
       },
     ],
-    handler: ({ message, type = "info" }) => {
-      onNotification?.(message, type as any);
-      
+    handler: async ({ message, type = "info" }: { message: string; type?: string }) => {
+      onNotification?.(message, type as "success" | "error" | "info");
+
       switch (type) {
         case "success":
           toast.success(message);
@@ -69,9 +75,21 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         default:
           toast.info(message);
       }
-      
+
       return { success: true, message, type };
     },
+    render: ({ result, status }) => (
+      <div className="p-4 border rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
+        <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">🔔 Notification</h4>
+        {status === "executing" && <p className="text-sm text-yellow-600">Showing notification...</p>}
+        {status === "complete" && result?.success && (
+          <div className="text-sm">
+            <p className="text-green-600">✅ Notification displayed</p>
+            <p className="text-gray-600 mt-1">Message: &quot;{result.message}&quot; (Type: {result.type})</p>
+          </div>
+        )}
+      </div>
+    ),
   });
 
   // Page navigation action
@@ -83,31 +101,29 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         name: "path",
         type: "string",
         description: "The path to navigate to",
-        required: true,
       },
       {
         name: "newTab",
         type: "boolean",
         description: "Whether to open in a new tab",
-        required: false,
       },
     ],
-    handler: ({ path, newTab = false }) => {
+    handler: async ({ path, newTab = false }: { path: string; newTab?: boolean }) => {
       if (newTab) {
         window.open(path, "_blank");
       } else {
         window.location.href = path;
       }
-      
+
       onNotification?.(`Navigating to ${path}`, "info");
       return { success: true, path, newTab };
     },
   });
 
-  // Toggle sidebar action
+  // Toggle sidebar action - routes through CopilotKit API to Mastra agents
   useCopilotAction({
     name: "toggleSidebar",
-    description: "Toggle the sidebar open or closed",
+    description: "Toggle the sidebar open or closed using the supervisor agent",
     parameters: [
       {
         name: "open",
@@ -116,16 +132,7 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         required: false,
       },
     ],
-    handler: ({ open }) => {
-      // This would need to be connected to your sidebar state management
-      const event = new CustomEvent("toggleSidebar", { detail: { open } });
-      window.dispatchEvent(event);
-      
-      const action = open === undefined ? "toggled" : (open ? "opened" : "closed");
-      onNotification?.(`Sidebar ${action}`, "info");
-      
-      return { success: true, action, open };
-    },
+    // No handler - this will route through your CopilotKit API to Mastra agents
   });
 
   // Scroll to section action
@@ -177,7 +184,7 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
         onNotification?.("Copied to clipboard", "success");
         toast.success("Copied to clipboard");
         return { success: true, text };
-      } catch (error) {
+      } catch {
         onNotification?.("Failed to copy to clipboard", "error");
         toast.error("Failed to copy to clipboard");
         return { success: false, error: "Clipboard access denied" };
@@ -185,32 +192,93 @@ export function FrontendActions({ onThemeChange, onNotification }: FrontendActio
     },
   });
 
-  return null; // This component only registers actions, doesn't render anything
+  return null; // This component only registers actions for AI agents to call
 }
 
 /**
- * Hook for creating custom frontend actions
- * 
- * @param name - Name of the action
- * @param description - Description of what the action does
- * @param parameters - Parameters the action accepts
- * @param handler - Function to handle the action
+ * Hook for creating custom frontend actions with full CopilotKit support
+ * Based on the exact documentation structure from docs/copilotkit/
+ *
+ * Example usage:
+ * useFrontendAction({
+ *   name: "generateTaskSteps",
+ *   description: "Make up 10 steps that are required for a task",
+ *   parameters: [
+ *     {
+ *       name: "steps",
+ *       description: "An array of 10 step objects",
+ *       type: "object[]",
+ *       attributes: [
+ *         {
+ *           name: "description",
+ *           type: "string",
+ *           description: "The text of the step"
+ *         },
+ *         {
+ *           name: "status",
+ *           type: "string",
+ *           enum: ["enabled", "disabled", "executing"],
+ *           description: "The status of the step"
+ *         }
+ *       ]
+ *     }
+ *   ],
+ *   handler: async ({ steps }) => {
+ *     // Your handler logic
+ *     return { success: true, steps };
+ *   },
+ *   render: ({ args, result, status }) => (
+ *     <div>Your render component</div>
+ *   ),
+ *   renderAndWaitForResponse: ({ args, respond, status }) => (
+ *     <div>Your interactive component</div>
+ *   )
+ * });
  */
 export function useFrontendAction(
   name: string,
   description: string,
   parameters: Array<{
     name: string;
-    type: string;
+    type: "string" | "number" | "boolean" | "object" | "object[]" | "string[]" | "number[]" | "boolean[]";
     description: string;
-    required?: boolean;
+    enum?: string[];
+    attributes?: Array<{
+      name: string;
+      type: "string" | "number" | "boolean" | "object" | "object[]" | "string[]" | "number[]" | "boolean[]";
+      description: string;
+      enum?: string[];
+    }>;
   }>,
-  handler: (args: any) => any
+  handler: (args: Record<string, unknown>) => Promise<unknown> | unknown,
+  renderComponent?: (props: { args: Record<string, unknown>; result: unknown; status: string }) => React.ReactElement
 ) {
   useCopilotAction({
     name,
     description,
     parameters,
     handler,
+    render: renderComponent || (({ args, result, status }: { args: Record<string, unknown>; result: unknown; status: "inProgress" | "executing" | "complete" }) => (
+      <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900/20">
+        <h4 className="font-semibold text-gray-800 dark:text-gray-200">⚡ {name}</h4>
+        {status === "executing" && <p className="text-sm text-gray-600">Executing action...</p>}
+        {status === "complete" && (
+          <div className="text-sm">
+            <p className="text-green-600">✅ Action completed</p>
+            {result ? (
+              <pre className="text-xs mt-1 bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-auto">
+                {JSON.stringify(result, null, 2)}
+              </pre>
+            ) : null}
+          </div>
+        )}
+        {args && Object.keys(args).length > 0 && (
+          <details className="mt-2">
+            <summary className="text-xs text-gray-500 cursor-pointer">View Arguments</summary>
+            <pre className="text-xs mt-1 bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-auto">{JSON.stringify(args, null, 2)}</pre>
+          </details>
+        )}
+      </div>
+    )),
   });
 }

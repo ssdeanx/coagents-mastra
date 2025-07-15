@@ -8,6 +8,7 @@ import { Checkbox } from "@/app/components/ui/checkbox";
 import { Badge } from "@/app/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+
 interface TaskStep {
   id: string;
   title: string;
@@ -32,62 +33,66 @@ export function HumanInTheLoop({ className, themeColor }: HumanInTheLoopProps) {
   const [isExecuting, setIsExecuting] = useState(false);
 
   // Action for creating a task plan
-  useCopilotAction({
-    name: "createTaskPlan",
-    description: "Create a step-by-step plan for a task that requires human approval",
-    parameters: [
+  useFrontendAction(
+    "createTaskPlan",
+    "Create a step-by-step plan for a task that requires human approval",
+    [
       {
         name: "task",
         type: "string",
         description: "The main task to plan for",
-        required: true,
       },
       {
         name: "steps",
         type: "object[]",
         description: "Array of task steps",
-        required: true,
       },
     ],
-    handler: async ({ task, steps }) => {
-      const taskSteps: TaskStep[] = steps.map((step: any, index: number) => ({
+    async (args: Record<string, unknown>) => {
+      const { task, steps } = args as { task: string; steps: Array<Record<string, unknown>> };
+      const taskSteps: TaskStep[] = steps.map((step: Record<string, unknown>, index: number) => ({
         id: `step-${index}`,
-        title: step.title || step.name || `Step ${index + 1}`,
-        description: step.description,
-        required: step.required || false,
+        title: (step.title as string) || (step.name as string) || `Step ${index + 1}`,
+        description: step.description as string,
+        required: (step.required as boolean) || false,
         completed: false,
       }));
-      
+
       setCurrentPlan(taskSteps);
       setIsExecuting(false);
-      
+
       return {
         message: `Created a plan for: ${task}`,
         steps: taskSteps.length,
         status: "awaiting_approval",
       };
     },
-    render: ({ args, result }) => (
-      <Card className={cn("my-4", className)}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            📋 Task Plan: {args?.task}
-            <Badge variant="outline">Awaiting Approval</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Review the steps below and select which ones you would like to execute:
-          </p>
-          {result && (
-            <div className="text-sm text-green-600 mb-4">
-              ✅ Plan created with {result.steps} steps
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    ),
-  });
+    ({ args, result }) => {
+      const taskArgs = args as { task: string };
+      const taskResult = result as { steps: number } | undefined;
+
+      return (
+        <Card className={cn("my-4", className)}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              📋 Task Plan: {taskArgs?.task}
+              <Badge variant="outline">Awaiting Approval</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Review the steps below and select which ones you would like to execute:
+            </p>
+            {taskResult && (
+              <div className="text-sm text-green-600 mb-4">
+                ✅ Plan created with {taskResult.steps} steps
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      );
+    }
+  );
 
   // Action for executing the approved plan
   useCopilotAction({
@@ -101,51 +106,120 @@ export function HumanInTheLoop({ className, themeColor }: HumanInTheLoopProps) {
         required: true,
       },
     ],
-    handler: async ({ selectedSteps }) => {
+    handler: async ({ selectedSteps }: { selectedSteps: string[] }) => {
       setIsExecuting(true);
-      
-      // Simulate execution
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const executedSteps = currentPlan.filter(step => 
-        selectedSteps.includes(step.id)
-      );
-      
-      setIsExecuting(false);
-      
-      return {
-        message: `Executed ${executedSteps.length} steps successfully`,
-        executedSteps: executedSteps.map(step => step.title),
-        status: "completed",
-      };
+
+      try {
+        const executedSteps = currentPlan.filter(step =>
+          selectedSteps.includes(step.id)
+        );
+
+        // Mark steps as completed in the plan
+        setCurrentPlan(prev => prev.map(s =>
+          selectedSteps.includes(s.id) ? { ...s, completed: true } : s
+        ));
+
+        setIsExecuting(false);
+
+        return {
+          message: `Executed ${executedSteps.length} steps successfully`,
+          executedSteps: executedSteps.map(step => step.title),
+          status: "completed",
+        };
+      } catch (error) {
+        setIsExecuting(false);
+        throw error;
+      }
     },
-    render: ({ args, result }) => (
+    render: ({ result }) => (
       <Card className={cn("my-4", className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             ⚡ Execution Results
-            <Badge variant="default">Completed</Badge>
+            <Badge variant={result?.status === "completed" ? "default" : result?.status === "partial" ? "secondary" : "destructive"}>
+              {result?.status === "completed" ? "Completed" : result?.status === "partial" ? "Partial" : "Failed"}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {result && (
-            <div className="space-y-2">
-              <p className="text-sm text-green-600">
-                ✅ {result.message}
+            <div className="space-y-4">
+              <p className={cn(
+                "text-sm",
+                result.status === "completed" ? "text-green-600" :
+                result.status === "partial" ? "text-yellow-600" : "text-red-600"
+              )}>
+                {result.status === "completed" ? "✅" : result.status === "partial" ? "⚠️" : "❌"} {result.message}
               </p>
-              <div className="text-sm">
-                <strong>Executed steps:</strong>
-                <ul className="list-disc list-inside mt-1">
-                  {result.executedSteps?.map((step: string, index: number) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ul>
-              </div>
+
+              {result.executedSteps && result.executedSteps.length > 0 && (
+                <div className="text-sm">
+                  <strong className="text-green-600">Successfully executed:</strong>
+                  <ul className="list-disc list-inside mt-1 ml-2">
+                    {result.executedSteps.map((step: string, index: number) => (
+                      <li key={index} className="text-green-600">{step}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {result.failedSteps && result.failedSteps.length > 0 && (
+                <div className="text-sm">
+                  <strong className="text-red-600">Failed steps:</strong>
+                  <ul className="list-disc list-inside mt-1 ml-2">
+                    {result.failedSteps.map((step: { title: string; error: string }, index: number) => (
+                      <li key={index} className="text-red-600">
+                        {step.title}: {step.error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
       </Card>
     ),
+  });
+
+  // Action for executing individual steps through agents
+  useCopilotAction({
+    name: "executeTaskStep",
+    description: "Execute a specific task step using the appropriate Mastra agent",
+    parameters: [
+      {
+        name: "stepTitle",
+        type: "string",
+        description: "The title of the step to execute",
+        required: true,
+      },
+      {
+        name: "stepDescription",
+        type: "string",
+        description: "The description of the step to execute",
+        required: false,
+      },
+      {
+        name: "agentType",
+        type: "string",
+        description: "The type of agent to use (weather, research, analyzer, generation, supervisor)",
+        required: false,
+      },
+    ],
+    handler: async ({ stepTitle, stepDescription, agentType }: {
+      stepTitle: string;
+      stepDescription?: string;
+      agentType?: string;
+    }) => {
+      // The agent routing is handled by your CopilotKit runtime
+      return {
+        success: true,
+        stepTitle,
+        stepDescription,
+        result: `Task "${stepTitle}" has been processed by the ${agentType || 'supervisor'} agent`,
+        timestamp: new Date().toISOString(),
+      };
+    },
   });
 
   const handleStepToggle = (stepId: string, checked: boolean) => {

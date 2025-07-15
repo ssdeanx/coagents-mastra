@@ -106,7 +106,7 @@ export function Testimonials({ className }: TestimonialsProps) {
 
                   {/* Content */}
                   <blockquote className="text-sm leading-relaxed text-muted-foreground">
-                    "{testimonial.content}"
+                    &quot;{testimonial.content}&quot;
                   </blockquote>
 
                   {/* Author */}
