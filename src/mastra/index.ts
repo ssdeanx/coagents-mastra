@@ -1,13 +1,14 @@
 import { Mastra } from "@mastra/core/mastra";
 import { weatherAgent } from "./agents";
 import { createLogger, LogLevel } from "@mastra/core/logger";
-//import {  } from '@mastra/agui';
+//import { registerCopilotKit } from "@ag-ui/mastra";
+//import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint, ExperimentalEmptyAdapter } from "@copilotkit/runtime";
 
 const LOG_LEVEL = process.env.LOG_LEVEL as LogLevel || "info";
 const ENV = process.env.NODE_ENV || "development";
 
 export const mastra = new Mastra({
-  agents: { 
+  agents: {
     weatherAgent
   },
   logger: createLogger({

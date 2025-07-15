@@ -49,3 +49,8 @@ pnpm-lock.yaml
 bun.lockb
 
 .roo/rules/*.md
+
+.augment
+.augment/
+.augment/rules
+.augment/rules/*.md
