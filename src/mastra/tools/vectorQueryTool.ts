@@ -135,7 +135,7 @@ export const enhancedVectorQueryTool = createTool({
         );
 
         // Transform memory results to match our schema - use both CoreMessage and UIMessage data
-        memoryResults.messages.forEach((message: CoreMessage, index: number) => {
+        memoryResults.messages.forEach((message, index: number) => {
           results.push({
             id: `msg-${index}`,
             content: typeof message.content === 'string' ? message.content : JSON.stringify(message.content),
@@ -317,7 +317,7 @@ export const hybridVectorSearchTool = createTool({
           after: 1,
           includeMetadata: true,
           enableFilter: validatedInput.enableFilter || false,
-          filter: validatedInput.filter
+          filter: validatedInput.filter,
         },
         context: {
           query: validatedInput.query,
@@ -327,9 +327,9 @@ export const hybridVectorSearchTool = createTool({
           after: 1,
           includeMetadata: true,
           enableFilter: validatedInput.enableFilter || false,
-          filter: validatedInput.filter
+          filter: validatedInput.filter,
         },
-        runtimeContext: runtimeContext || new RuntimeContext<VectorQueryRuntimeContext>()
+        runtimeContext,
       });
       // Transform basic results to match our hybrid scoring format
       const semanticResults = {

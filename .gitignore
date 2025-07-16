@@ -62,6 +62,14 @@ bun.lockb
 .augment/specs/*.md
 .augment/specs/**/*.md
 
+.clinerules
+.clinerules/
+.clinerules/*.md
+.clinerules/**/*.md
+.clinerules/workflows
+.clinerules/workflows/**/*.md
+.clinerules/workflows/copilotkit-integration-system
+.clinerules/workflows/copilotkit-integration-system/**/*.md
 
 .specstory/.what-is-this.md
 

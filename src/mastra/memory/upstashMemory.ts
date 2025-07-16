@@ -17,7 +17,7 @@ import { AttentionGuidedMemoryProcessor, ContextualRelevanceProcessor, WorkflowA
  * Redefine CoreMessage to include a metadata property for custom data.
  * This is necessary because CoreMessage is a union type and cannot be directly extended.
  */
-type CoreMessage = OriginalCoreMessage & {
+type CoreMessage = Omit<OriginalCoreMessage, 'metadata'> & {
   metadata?: Record<string, unknown>;
 };
 
@@ -235,13 +235,13 @@ export interface MetadataFilter {
  * Create shared Upstash storage instance
  */
 export const upstashStorage = new UpstashStore({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || ''
+  url: process.env.UPSTASH_REDIS_REST_URL ?? '',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN ?? ''
 });
 
 export const upstashVector = new UpstashVector({
-  url: process.env.UPSTASH_VECTOR_REST_URL || 'https://innocent-leech-63648-us1-vector.upstash.io',
-  token: process.env.UPSTASH_VECTOR_REST_TOKEN || 'ABgFMGlubm9jZW50LWxlZWNoLTYzNjQ4LXVzMWFkbWluWm1FME5ERmtPRFl0TWpoa01TMDBabUV3TFRsbE5qTXRPVFV4TXpVek9ETTNPR1Jr'
+  url: process.env.UPSTASH_VECTOR_REST_URL ?? '',
+  token: process.env.UPSTASH_VECTOR_REST_TOKEN ?? ''
 });
 
   /**
@@ -598,7 +598,7 @@ export function maskMemoryWorkingMemoryStream(
   textStream: AsyncIterable<string>,
   onStart?: () => void,
   onEnd?: () => void,
-  onMask?: (chunk: string) => void
+  onMask?: (_chunk: string) => void
 ): AsyncIterable<string> {
   return maskStreamTags(textStream, 'working_memory', { onStart, onEnd, onMask });
 }
@@ -890,28 +890,33 @@ export async function queryVectors(
  * with the current system while maintaining functionality.
  */
 
-export function transformToUpstashFilter(filter: MetadataFilter): any {
-  const transformed: Record<string, unknown> = {};
-
-  Object.entries(filter).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      // Handle nested MetadataFilter objects
-      if (typeof value === 'object' && !Array.isArray(value) && key.startsWith('$')) {
-        transformed[key] = transformToUpstashFilter(value as MetadataFilter);
-      } else if (Array.isArray(value) && key.startsWith('$')) {
-        // Handle arrays in logical operators
-        transformed[key] = value.map(item => 
-          typeof item === 'object' && item !== null 
-            ? transformToUpstashFilter(item as MetadataFilter)
-            : item
-        );
-      } else {
-        transformed[key] = value;
-      }
-    }
-  });
-  
-  return transformed;
+export function transformToUpstashFilter(filter: MetadataFilter): string {
+  const parse = (f: any): string => {
+      const conditions = Object.entries(f).map(([key, value]) => {
+          if (key === '$and' || key === '$or') {
+              if (!Array.isArray(value)) return '';
+              const operator = key === '$and' ? ' AND ' : ' OR ';
+              return `(${value.map(parse).join(operator)})`;
+          }
+          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+              const op = Object.keys(value)[0];
+              const val = (value as any)[op];
+              switch (op) {
+                  case '$eq': return `${key} = ${JSON.stringify(val)}`;
+                  case '$ne': return `${key} != ${JSON.stringify(val)}`;
+                  case '$gt': return `${key} > ${val}`;
+                  case '$gte': return `${key} >= ${val}`;
+                  case '$lt': return `${key} < ${val}`;
+                  case '$lte': return `${key} <= ${val}`;
+                  case '$in': return `${key} IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
+                  case '$nin': return `${key} NOT IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
+              }
+          }
+          return `${key} = ${JSON.stringify(value)}`;
+      });
+      return conditions.filter(c => c).join(' AND ');
+  };
+  return parse(filter);
 }
 
 /**
