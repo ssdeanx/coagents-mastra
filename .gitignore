@@ -48,12 +48,21 @@ yarn.lock
 pnpm-lock.yaml
 bun.lockb
 
+.roo/
 .roo/rules/*.md
+.roo/specs/**/*.md
+
+.roo/specs/
 
 .augment
 .augment/
 .augment/rules
 .augment/rules/*.md
+.augment/specs
+.augment/specs/*.md
+.augment/specs/**/*.md
+
+
 .specstory/.what-is-this.md
 
 .kiko

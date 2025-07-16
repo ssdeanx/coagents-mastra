@@ -23,13 +23,13 @@ import { z } from 'zod';
 //import { WordInclusionMetric } from "../evals/wordInclusion";
 import { UPSTASH_PROMPT } from "@mastra/upstash";
 import { PinoLogger } from "@mastra/loggers";
-import { createBraveSearchTool, createTavilySearchTool, codeSearchTool, webScraperTool, gitOperationsTool } from "../tools";
+import { createBraveSearchTool, createTavilySearchTool, webScraperTool, gitOperationsTool } from "../tools";
 import { weatherWorkflow } from "../workflows/weather-workflow";
 /**
  * Runtime context type for the Master Agent
  * Production-focused runtime variables for agent behavior
  */
-export type MasterAgentRuntimeContext = {
+export interface MasterAgentRuntimeContext {
   "user-id": string;
   "session-id": string;
   "project-context": string;
@@ -174,7 +174,6 @@ AVAILABLE TOOLS & THEIR OPTIMAL USE:
 - 'hackerNewsGetNewStories': To fetch IDs of new stories from Hacker News.
 - 'hackerNewsGetBestStories': To fetch IDs of best stories from Hacker News.
 - 'arxivSearch': To search for research articles on arXiv.
-- 'codeSearchTool': For searching codebases.
 - 'webScraperTool': For extracting content directly from specified web pages.
 - 'gitOperationsTool': For interacting with Git repositories.
 - 'diffbotAnalyzeUrlTool': For analyzing and extracting structured data from web pages.
@@ -268,7 +267,6 @@ ${UPSTASH_PROMPT}
     listCryptoCoinsTool,
     braveSearchTool: createBraveSearchTool(),
     tavilySearchTool: createTavilySearchTool(),
-    codeSearchTool,
     webScraperTool,
     gitOperationsTool,
   },

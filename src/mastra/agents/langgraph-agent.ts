@@ -48,7 +48,7 @@ const logger = new PinoLogger({ name: 'LangGraphAgent', level: 'info' });
  *
  * @interface LangGraphAgentRuntimeContext
  */
-export type LangGraphAgentRuntimeContext = {
+export interface LangGraphAgentRuntimeContext {
   "user-id": string;
   "session-id": string;
   "workflow-mode": "sequential" | "parallel" | "conditional" | "iterative";
@@ -151,7 +151,7 @@ AVAILABLE TOOLS & THEIR OPTIMAL USE:
 - 'hackerNewsGetNewStories': To fetch IDs of new stories from Hacker News.
 - 'hackerNewsGetBestStories': To fetch IDs of best stories from Hacker News.
 - 'arxivSearch': To search for research articles on arXiv.
-- 'codeSearchTool': For searching codebases.
+
 - 'webScraperTool': For general web scraping.
 - 'gitOperationsTool': For interacting with Git repositories.
 - 'mem0RememberTool': For storing information in memory.
@@ -406,12 +406,12 @@ function generateWorkflowSteps(
 
 /**
  * Enhance workflow steps for higher complexity levels
- * 
+ *
  * @param baseSteps - Base workflow steps
  * @param complexity - Complexity level
  * @param domain - Domain focus
  * @returns Enhanced workflow steps
- * 
+ *
  * [EDIT: 2025-06-23] [BY: Claude]
  */
 function enhanceStepsForComplexity(baseSteps: string[], complexity: string, domain: string): string[] {

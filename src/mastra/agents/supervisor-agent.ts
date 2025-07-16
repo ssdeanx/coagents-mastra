@@ -20,7 +20,7 @@ import {
  * Runtime context type for the Supervisor Agent
  * Stores agent coordination preferences, delegation rules, and oversight configurations
  */
-export type SupervisorAgentRuntimeContext = {
+export interface SupervisorAgentRuntimeContext {
   "user-id": string;
   "session-id": string;
   "agent-count": number;
@@ -141,7 +141,7 @@ AVAILABLE TOOLS & THEIR OPTIMAL USE:
 - 'redditGetSubredditPosts': To monitor discussions or trends relevant to agent tasks or performance.
 - 'hackerNewsGetSearchItem', 'hackerNewsGetSearchUser', 'hackerNewsSearchItems', 'hackerNewsGetSearchTopStories', 'hackerNewsGetItem', 'hackerNewsGetTopStories', 'hackerNewsGetNewStories', 'hackerNewsGetBestStories': For monitoring tech news or community discussions relevant to agent development or operational issues.
 - 'arxivSearch': To find academic papers on multi-agent systems or AI performance optimization.
-- 'codeSearchTool': To analyze agent codebases for capabilities or issues.
+
 - 'webScraperTool': To extract information from agent documentation or external resources.
 - 'gitOperationsTool': To manage agent code repositories.
 - 'diffbotAnalyzeUrlTool', 'diffbotExtractArticleFromUrlTool', 'diffbotEnhanceEntityTool', 'diffbotSearchKnowledgeGraphTool', 'diffbotEnhanceKnowledgeGraphTool': For analyzing external data sources that agents might interact with.

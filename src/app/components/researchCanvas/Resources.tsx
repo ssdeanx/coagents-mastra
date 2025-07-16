@@ -1,3 +1,4 @@
+// research example, NOT USING THIS
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import { Trash2 } from "lucide-react";

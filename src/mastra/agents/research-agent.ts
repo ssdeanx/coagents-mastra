@@ -7,7 +7,7 @@ import { createGemini25Provider } from '../config/googleProvider';
 import { PinoLogger } from "@mastra/loggers";
 import { z } from 'zod';
 import { UPSTASH_PROMPT } from "@mastra/upstash";
-import { createBraveSearchTool, createTavilySearchTool, codeSearchTool, webScraperTool, gitOperationsTool, diffbotAnalyzeUrlTool, diffbotExtractArticleFromUrlTool, diffbotEnhanceKnowledgeGraphTool, diffbotSearchKnowledgeGraphTool, diffbotEnhanceEntityTool, stockPriceTool, historicalStockPriceTool, stockNewsTool, earningsCalendarTool, sportsOddsTool, historicalOddsTool, listSportsTool, listBookmakersTool, cryptoPriceTool, historicalCryptoPriceTool, cryptoMarketDataTool, listCryptoCoinsTool } from "../tools";
+import { createBraveSearchTool, createTavilySearchTool, webScraperTool, gitOperationsTool, diffbotAnalyzeUrlTool, diffbotExtractArticleFromUrlTool, diffbotEnhanceKnowledgeGraphTool, diffbotSearchKnowledgeGraphTool, diffbotEnhanceEntityTool, stockPriceTool, historicalStockPriceTool, stockNewsTool, earningsCalendarTool, sportsOddsTool, historicalOddsTool, listSportsTool, listBookmakersTool, cryptoPriceTool, historicalCryptoPriceTool, cryptoMarketDataTool, listCryptoCoinsTool } from "../tools";
 import {
   ToneConsistencyMetric,
   KeywordCoverageMetric,
@@ -171,7 +171,6 @@ AVAILABLE TOOLS & THEIR OPTIMAL USE:
 - 'diffbotEnhanceEntityTool': For enriching information about entities (persons, organizations) using Diffbot Knowledge Graph.
 - 'diffbotSearchKnowledgeGraphTool': For searching the Diffbot Knowledge Graph.
 - 'diffbotEnhanceKnowledgeGraphTool': For enhancing entities within the Diffbot Knowledge Graph.
-- 'codeSearchTool': For searching codebases and understanding software implementations.
 - 'webScraperTool': For extracting content directly from specified web pages when a URL is provided.
 - 'gitOperationsTool': For interacting with Git repositories, such as cloning, pulling, or analyzing codebases.
 - 'readDataFileTool': To read the content of a specified file.
@@ -235,7 +234,6 @@ ${UPSTASH_PROMPT}
     diffbotSearchKnowledgeGraphTool,
     diffbotEnhanceEntityTool,
     // Spread Diffbot tools here so each is a top-level tool
-    codeSearchTool,
     webScraperTool,
     gitOperationsTool,
     stockPriceTool,

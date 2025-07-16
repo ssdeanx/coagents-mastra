@@ -1,5 +1,5 @@
 "use client";
-
+// research example, NOT USING THIS
 import { useState } from "react";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";

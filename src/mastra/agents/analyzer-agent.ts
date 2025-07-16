@@ -22,7 +22,7 @@ logger.info('Initializing AnalyzerAgent');
  * Runtime context type for the Analyzer Agent
  * Stores analysis preferences, data processing configurations, and insight generation settings
  */
-export type AnalyzerAgentRuntimeContext = {
+export interface AnalyzerAgentRuntimeContext {
   /** Unique identifier for the user */
   "user-id": string;
   /** Unique identifier for the session */

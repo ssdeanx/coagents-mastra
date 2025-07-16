@@ -70,7 +70,6 @@ export { createArxivClient, arxivSearch } from './arxiv-client';
  * @category Code Analysis & Scraping
  * @description Utilities for code search, web scraping and Git operations.
  */
-export { codeSearchTool } from './code-search-tool';
 export { webScraperTool } from './web-scraper-tool';
 export { gitOperationsTool } from './git-operations-tool';
 
@@ -184,7 +183,6 @@ import * as Wikidata from './wikidata-client';
 import * as Reddit from './reddit';
 import * as HackerNews from './hacker-news-client';
 import * as Arxiv from './arxiv-client';
-import * as CodeAnalysis from './code-search-tool';
 import * as WebScraper from './web-scraper-tool';
 import * as GitOps from './git-operations-tool';
 import * as Diffbot from './diffbot-client';
@@ -264,7 +262,6 @@ const toolsRegistry: Record<string, unknown> = {
   createArxivClient: Arxiv.createArxivClient,
   arxivSearch: Arxiv.arxivSearch,
   // Code Analysis & Scraping
-  codeSearchTool: CodeAnalysis.codeSearchTool,
   webScraperTool: WebScraper.webScraperTool,
   gitOperationsTool: GitOps.gitOperationsTool,
   // Diffbot Integration

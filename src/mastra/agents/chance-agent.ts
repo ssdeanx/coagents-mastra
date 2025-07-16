@@ -76,7 +76,7 @@ logger.info('Initializing ChanceAgent');
  * Runtime context type for the Chance Agent
  * Stores preferences for decision-making under uncertainty, balancing exploration and exploitation.
  */
-export type ChanceAgentRuntimeContext = {
+export interface ChanceAgentRuntimeContext {
   /** Unique identifier for the user */
   "user-id": string;
   /** Unique identifier for the session */
