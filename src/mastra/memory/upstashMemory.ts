@@ -903,20 +903,37 @@ export function transformToUpstashFilter(filter: MetadataFilter): string {
           if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
               // Only allow specific, expected operators to prevent object injection
               const allowedOps = ['$eq', '$ne', '$gt', '$gte', '$lt', '$lte', '$in', '$nin'];
-              const op = Object.keys(value)[0];
+              const op = Object.keys(value)[0] as '$eq' | '$ne' | '$gt' | '$gte' | '$lt' | '$lte' | '$in' | '$nin';
               if (!allowedOps.includes(op)) {
                 throw new Error(`Unsupported or potentially unsafe operator: ${op}`);
               }
-              const val = (value as any)[op];
+              // Defensive: Only allow specific, expected operators to prevent object injection
+              let val: unknown;
               switch (op) {
-                  case '$eq': return `${key} = ${JSON.stringify(val)}`;
-                  case '$ne': return `${key} != ${JSON.stringify(val)}`;
-                  case '$gt': return `${key} > ${val}`;
-                  case '$gte': return `${key} >= ${val}`;
-                  case '$lt': return `${key} < ${val}`;
-                  case '$lte': return `${key} <= ${val}`;
-                  case '$in': return `${key} IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
-                  case '$nin': return `${key} NOT IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
+                  case '$eq':
+                    val = (value as any).$eq;
+                    return `${key} = ${JSON.stringify(val)}`;
+                  case '$ne':
+                    val = (value as any).$ne;
+                    return `${key} != ${JSON.stringify(val)}`;
+                  case '$gt':
+                    val = (value as any).$gt;
+                    return `${key} > ${val}`;
+                  case '$gte':
+                    val = (value as any).$gte;
+                    return `${key} >= ${val}`;
+                  case '$lt':
+                    val = (value as any).$lt;
+                    return `${key} < ${val}`;
+                  case '$lte':
+                    val = (value as any).$lte;
+                    return `${key} <= ${val}`;
+                  case '$in':
+                    val = (value as any).$in;
+                    return `${key} IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
+                  case '$nin':
+                    val = (value as any).$nin;
+                    return `${key} NOT IN [${(val as any[]).map(v => JSON.stringify(v)).join(', ')}]`;
               }
           }
           return `${key} = ${JSON.stringify(value)}`;
@@ -1306,13 +1323,11 @@ export function validateMetadataFilter(filter: MetadataFilter): MetadataFilter {
   // Check for large IN clauses (Pinecone has query size limits)
   const checkArraySizes = (obj: Record<string, unknown>): void => {
     Object.entries(obj).forEach(([key, value]) => {
-      if (key === '$in' || key === '$nin') {
-        if (Array.isArray(value) && value.length > 100) {
-          logger.warn('Large IN/NIN clause detected - may hit Pinecone query size limits', {
-            operator: key,
-            arraySize: value.length
-          });
-        }
+      if ((key === '$in' || key === '$nin') && (Array.isArray(value) && value.length > 100)) {
+        logger.warn(
+          'Large IN/NIN clause detected - may hit Pinecone query size limits',
+          { operator: key, arraySize: value.length }
+        );
       }
 
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
@@ -1372,7 +1387,7 @@ export function extractChunkMetadata(
       // Group chunks by docId for shared title extraction
       const docGroups = new Map<string, typeof enhancedChunks>();
       enhancedChunks.forEach(chunk => {
-        const docId = (chunk.metadata.docId as string) || chunk.id;
+        const docId = (chunk.metadata.docId as string) ?? chunk.id;
         if (!docGroups.has(docId)) {
           docGroups.set(docId, []);
         }
