@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CopilotKit } from "@copilotkit/react-core";
+import { TopNavbar } from "@/app/components/layout/top-navbar";
+import { ThemeProvider } from "@/app/components/layout/theme-provider";
 import "./globals.css";
 import "@copilotkit/react-ui/styles.css";
 
@@ -27,9 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CopilotKit runtimeUrl="/api/copilotkit" agent="masterAgent">
-          {children}
-        </CopilotKit>
+        <ThemeProvider>
+          <CopilotKit runtimeUrl="/api/copilotkit" agent="masterAgent">
+            <TopNavbar />
+            {children}
+          </CopilotKit>
+        </ThemeProvider>
       </body>
     </html>
   );

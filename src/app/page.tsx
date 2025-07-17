@@ -1,86 +1,66 @@
 "use client";
 
-import { CatchAllActionRenderProps, useCopilotAction } from "@copilotkit/react-core";
-import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Hero, Features, Testimonials, CTA } from "@/app/components/landing";
 import "./globals.css";
-import { HumanInTheLoop } from "./components/copilotkit/human-in-the-loop";
 
+/**
+ * Landing Page - Professional entry point for the CopilotKit Integration System
+ *
+ * Features:
+ * - Hero section with clear value proposition
+ * - Features showcase highlighting AI agent capabilities
+ * - Social proof through testimonials
+ * - Strong call-to-action driving users to dashboard
+ *
+ * Uses existing Tailwind v4.1 utilities and oklch color system
+ */
+export default function LandingPage() {
+  const router = useRouter();
 
-export default function CopilotKitPage() {
-  const [themeColor, setThemeColor] = useState("oklch(0.147 0.004 49.25)"); //globals.css --primary
+  // Navigation handlers using Next.js router
+  const handleGetStarted = () => {
+    router.push("/dashboard");
+  };
 
-  // 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
-  useCopilotAction({
-    name: "setThemeColor",
-    parameters: [{
-      name: "themeColor",
-      description: "The theme color to set. Make sure to pick nice colors.",
-      required: true,
-    }],
-    handler({ themeColor }) {
-      setThemeColor(themeColor);
-    },
-  });
+  const handleLearnMore = () => {
+    // Smooth scroll to features section
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleViewDocs = () => {
+    // Navigate to documentation (can be updated to actual docs URL)
+    window.open("/docs", "_blank");
+  };
+
+  const handleViewGithub = () => {
+    // Navigate to GitHub repository (can be updated to actual repo URL)
+    window.open("https://github.com/mastra-ai/mastra", "_blank");
+  };
 
   return (
-    <main style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
-      <YourMainContent themeColor={themeColor} />
-      <CopilotSidebar
-        clickOutsideToClose={false}
-        defaultOpen={true}
-        labels={{
-          title: "Popup Assistant",
-          initial: "👋 Hi, there! You're chatting with an agent. This agent comes with a few tools to get you started.\n\nFor example you can try:\n- **Frontend Tools**: \"Set the theme to green\"\n- **Generative UI**: \"Get the weather in SF\"\n\nAs you interact with the agent, you'll see the UI update in real-time to reflect the agent's **state**, **tool calls**, and **progress**."
-        }}
+    <main className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <Hero
+        onGetStarted={handleGetStarted}
+        onLearnMore={handleLearnMore}
+      />
+
+      {/* Features Section */}
+      <Features />
+
+      {/* Testimonials Section */}
+      <Testimonials />
+
+      {/* Call-to-Action Section */}
+      <CTA
+        onGetStarted={handleGetStarted}
+        onViewDocs={handleViewDocs}
+        onViewGithub={handleViewGithub}
       />
     </main>
-  );
-}
-
-function YourMainContent({ themeColor }: { themeColor: string }) {
-  //🪁 Generative UI: https://docs.copilotkit.ai/coagents/generative-ui
-  useCopilotAction({
-    name: "*",
-    render: (props: CatchAllActionRenderProps) => {
-      const InfoBox = ({ title, content }: { title: string; content: unknown }) => (
-        <div className="bg-black/30 p-3 rounded-xl">
-          <h2 className="text-white text-sm mb-1">{title}</h2>
-          <pre className="text-white text-sm overflow-auto max-h-32 font-mono">
-            {JSON.stringify(content, null, 2)}
-          </pre>
-        </div>
-      );
-
-      return (
-        <details style={{ backgroundColor: themeColor }} className="p-4 my-2 rounded-xl">
-          <summary className="text-white cursor-pointer">
-            {props.name} {props.status === "complete" ? "called!" : "executing..."}
-          </summary>
-          <div className="space-y-2 py-4">
-            <div className="grid grid-cols-2 gap-2">
-              <InfoBox title="Name" content={props.name} />
-              <InfoBox title="Status" content={props.status} />
-            </div>
-            <InfoBox title="Input" content={props.args} />
-            <InfoBox title="Output" content={props.result} />
-            <InfoBox title="Full Details" content={props} />
-          </div>
-        </details>
-      );
-    },
-  });
-
-  return (
-    <div
-      style={{ backgroundColor: themeColor }}
-      className="h-screen w-screen flex justify-center items-center flex-col transition-colors duration-300"
-    >
-      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-2xl w-full">
-        <h1 className="text-4xl font-bold text-white mb-2 text-center">Mastra</h1>
-        <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it can be anything you want! 🪁 Just </p>
-        <HumanInTheLoop themeColor={themeColor} />
-      </div>
-    </div>
   );
 }

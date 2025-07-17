@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import {
@@ -22,7 +23,13 @@ import {
   BookOpen,
   Github,
   MessageSquare,
-  User
+  User,
+  LayoutDashboard,
+  Search,
+  Workflow,
+  BarChart3,
+  Code,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,25 +40,40 @@ interface TopNavbarProps {
 
 const navigationItems = [
   {
-    title: "Features",
-    href: "#features",
-    description: "Explore all the powerful features",
+    title: "Dashboard",
+    href: "/dashboard",
+    description: "AI-powered workspace and chat interface",
+    icon: LayoutDashboard,
   },
   {
-    title: "Documentation",
-    href: "/docs",
-    description: "Learn how to build with our framework",
-    icon: BookOpen,
+    title: "Research",
+    href: "/research",
+    description: "Document analysis and research tools",
+    icon: Search,
   },
   {
-    title: "Examples",
-    href: "/examples",
-    description: "See real-world implementations",
+    title: "Workflows",
+    href: "/workflows",
+    description: "Multi-agent automation and orchestration",
+    icon: Workflow,
   },
   {
-    title: "Community",
-    href: "/community",
-    description: "Join our developer community",
+    title: "Analytics",
+    href: "/analytics",
+    description: "Performance metrics and monitoring",
+    icon: BarChart3,
+  },
+  {
+    title: "Dev",
+    href: "/dev",
+    description: "AI-powered development workspace",
+    icon: Code,
+  },
+  {
+    title: "Agents",
+    href: "/agents",
+    description: "Agent management and configuration",
+    icon: Settings,
   },
 ];
 

@@ -3,7 +3,7 @@
 import { CatchAllActionRenderProps, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
-import "./globals.css";
+import "../globals.css";
 import { HumanInTheLoop } from "../components/copilotkit/human-in-the-loop";
 
 
