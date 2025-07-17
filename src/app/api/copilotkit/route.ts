@@ -1,3 +1,25 @@
+/**
+ * @namespace CopilotKitRoute
+ * @module src/app/api/copilotkit/route.ts
+ * @author ssdeanx
+ * @version 1.0.0
+ * @license MIT
+ * @see {@link https://docs.copilotkit.ai/guides/self-hosting|CopilotKit Self-Hosting Guide}
+ * @see {@link https://docs.mastra.ai/|Mastra Documentation}
+ * @see {@link https://github.com/ssdeanx/coagents-mastra|GitHub Repository}
+ * @file This file sets up the CopilotKit runtime for Next.js, allowing it to handle requests
+ * and interact with the Mastra backend. It initializes the runtime with agents,
+ * sets up the service adapter, and provides endpoints for handling POST and GET requests.
+ * The runtime is configured to use the Mastra client for agent management and telemetry/logging.
+ * The `initRuntime` function is called to set up the runtime environment, ensuring that
+ * the CopilotKit runtime is properly configured and ready to handle requests.
+ *
+ * @implements The CopilotKit Self-Hosting Guide
+ * @implements The Mastra Documentation
+ * @implements The GitHub Repository
+ * @since 2025-07-17 11:34AM eST
+ */
+
 import { NextRequest } from "next/server";
 import {
   CopilotRuntime,
@@ -46,3 +68,15 @@ export async function GET(req: NextRequest) {
 export const config = {
   runtime: "edge",
 };
+
+/* This file sets up the CopilotKit runtime for Next.js, allowing it to handle requests
+ * and interact with the Mastra backend. It initializes the runtime with agents,
+ * sets up the service adapter, and provides endpoints for handling POST and GET requests.
+ * The runtime is configured to use the Mastra client for agent management and telemetry/logging.
+ * The `initRuntime` function is called to set up the runtime environment, ensuring that
+ * the CopilotKit runtime is properly configured and ready to handle requests.
+ *
+ * @see {@link https://docs.copilotkit.ai/guides/self-hosting|CopilotKit Self-Hosting Guide}
+ * @see {@link https://docs.mastra.ai/|Mastra Documentation}
+ * @see {@link https://github.com/ssdeanx/coagents-mastra|GitHub Repository}
+ */
