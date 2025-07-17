@@ -61,26 +61,36 @@ export const gitOperationsTool = createTool({
 
       switch (context.operation) {
         case 'status': { // Wrapped in curly braces
-          if (!git) throw new Error("Git repository not found or not initialized.");
+          if (!git) {
+            throw new Error("Git repository not found or not initialized.");
+          }
           data = await git.status();
           message = "Git status retrieved successfully.";
           break;
         }
         case 'pull': { // Wrapped in curly braces
-          if (!git) throw new Error("Git repository not found or not initialized.");
+          if (!git) {
+            throw new Error("Git repository not found or not initialized.");
+          }
           data = await git.pull(context.remoteUrl || '', context.branchName || '');
           message = `Pulled from ${context.remoteUrl || 'origin'}/${context.branchName || 'current'}.`;
           break;
         }
         case 'push': { // Wrapped in curly braces
-          if (!git) throw new Error("Git repository not found or not initialized.");
+          if (!git) {
+            throw new Error("Git repository not found or not initialized.");
+          }
           data = await git.push(context.remoteUrl || '', context.branchName || '');
           message = `Pushed to ${context.remoteUrl || 'origin'}/${context.branchName || 'current'}.`;
           break;
         }
         case 'commit': { // Wrapped in curly braces
-          if (!git) throw new Error("Git repository not found or not initialized.");
-          if (!context.commitMessage) throw new Error("Commit message is required for commit operation.");
+          if (!git) {
+            throw new Error("Git repository not found or not initialized.");
+          }
+          if (!context.commitMessage) {
+            throw new Error("Commit message is required for commit operation.");
+          }
           await git.add('.'); // Add all changes
           data = await git.commit(context.commitMessage);
           message = `Committed with message: "${context.commitMessage}".`;
@@ -88,14 +98,18 @@ export const gitOperationsTool = createTool({
         }
         case 'clone': { // Wrapped in curly braces
           const cloneContext = context as GitCloneContext; // Type assertion
-          if (!cloneContext.remoteUrl) throw new Error("Remote URL is required for clone operation.");
+          if (!cloneContext.remoteUrl) {
+            throw new Error("Remote URL is required for clone operation.");
+          }
           git = simpleGit(); // Initialize outside specific repo for clone
           data = await git.clone(cloneContext.remoteUrl, repoPath);
           message = `Cloned ${cloneContext.remoteUrl} to ${repoPath}.`;
           break;
         }
         case 'createPR': { // Wrapped in curly braces
-          if (!octokit) throw new Error("Octokit not initialized.");
+          if (!octokit) {
+            throw new Error("Octokit not initialized.");
+          }
           if (!context.owner || !context.repo || !context.prTitle || !context.branchName) {
             throw new Error("Owner, repo, PR title, and branch name are required for createPR operation.");
           }
@@ -108,11 +122,14 @@ export const gitOperationsTool = createTool({
             body: context.prBody,
           });
           data = { html_url: pr.data.html_url, number: pr.data.number };
-          message = `Pull Request created: ${pr.data.html_url}`;
+          // Mark message as plain text, not HTML, to avoid XSS risk
+          message = `Pull Request created: ${String(pr.data.html_url)}`;
           break;
         }
         case 'getIssues': { // Wrapped in curly braces
-          if (!octokit) throw new Error("Octokit not initialized.");
+          if (!octokit) {
+            throw new Error("Octokit not initialized.");
+          }
           if (!context.owner || !context.repo) {
             throw new Error("Owner and repo are required for getIssues operation.");
           }

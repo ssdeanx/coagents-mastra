@@ -304,9 +304,9 @@ export class HackerNewsClient {
   }
 }
 
-export type HackerNewsRuntimeContext = {
+export interface HackerNewsRuntimeContext {
   'debug'?: boolean;
-};
+}
 
 /**
  * Configuration options for creating a HackerNews client

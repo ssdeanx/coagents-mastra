@@ -59,7 +59,7 @@ export const mem0RememberTool = createTool({
     const sessionId = (runtimeContext?.get('session-id') as string | undefined) ?? 'default';
     const namespace = (runtimeContext?.get('memory-namespace') as string | undefined) ?? 'default';
     const debug = (runtimeContext?.get('debug') as boolean | undefined) ?? false;
-    
+
     if (debug) {
       logger.info('Mem0 remember tool executed', {
         question: input.question,
@@ -73,7 +73,7 @@ export const mem0RememberTool = createTool({
       // Update Mem0 config with runtime user ID
       const userMem0 = new Mem0Integration({
         config: {
-          apiKey: process.env.MEM0_API_KEY || "",
+          apiKey: process.env.MEM0_API_KEY ?? '',
           user_id: userId,
         },
       });
@@ -128,7 +128,7 @@ export const mem0MemorizeTool = createTool({
     const namespace = (runtimeContext?.get('memory-namespace') as string | undefined) ?? 'default';
     const debug = (runtimeContext?.get('debug') as boolean | undefined) ?? false;
     const asyncSave = (runtimeContext?.get('async-save') as boolean | undefined) ?? true;
-    
+
     if (debug) {
       logger.info('Mem0 memorize tool executed', {
         statement: input.statement,
@@ -143,7 +143,7 @@ export const mem0MemorizeTool = createTool({
       // Update Mem0 config with runtime user ID
       const userMem0 = new Mem0Integration({
         config: {
-          apiKey: process.env.MEM0_API_KEY || "",
+          apiKey: process.env.MEM0_API_KEY ?? '',
           user_id: userId,
         },
       });
@@ -151,7 +151,7 @@ export const mem0MemorizeTool = createTool({
       if (debug) {
         console.log(`Creating memory "${input.statement}" for user ${userId}`);
       }
-      
+
       if (asyncSave) {
         // To reduce latency, memories can be saved async without blocking tool execution
         void userMem0.createMemory(input.statement).then(() => {
@@ -186,7 +186,7 @@ export const mem0MemorizeTool = createTool({
         sessionId,
         error: error instanceof Error ? error.message : String(error)
       });
-      
+
       return memorizeOutputSchema.parse({
         success: false,
         userId,

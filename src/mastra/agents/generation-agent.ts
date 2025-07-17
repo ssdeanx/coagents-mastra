@@ -100,7 +100,7 @@ export type GenerationAgentRuntimeContext = {
   "target-audience"?: string;
   /** Specific keywords or phrases to include */
   "keywords"?: string[];
-};
+}
 
 /**
  * Zod schema for validating Generation Agent input

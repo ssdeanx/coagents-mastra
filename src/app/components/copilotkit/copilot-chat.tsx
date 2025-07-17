@@ -119,14 +119,39 @@ export function CopilotChatComponent({
         <CopilotChat
           labels={labels}
           instructions={instructions}
-          onInProgress={onInProgress}
-          onSubmitMessage={onSubmitMessage}
+          onInProgress={(inProgress: boolean) => {
+            if (onInProgress) {
+              onInProgress(inProgress);
+            }
+          }}
+          onSubmitMessage={(message: string) => {
+            if (onSubmitMessage) {
+              onSubmitMessage(message);
+            }
+          }}
           onStopGeneration={onStopGeneration}
           onReloadMessages={onReloadMessages}
-          onRegenerate={onRegenerate}
-          onCopy={onCopy}
-          onThumbsUp={onThumbsUp}
-          onThumbsDown={onThumbsDown}
+          onRegenerate={(messageId: string) => {
+            // Use messageId to resolve unused variable warning
+            if (onRegenerate) {
+              onRegenerate(messageId);
+            }
+          }}
+          onCopy={(message: string) => {
+            if (onCopy) {
+              onCopy(message);
+            }
+          }}
+          onThumbsUp={(message: TextMessage) => {
+            if (onThumbsUp) {
+              onThumbsUp(message);
+            }
+          }}
+          onThumbsDown={(message: TextMessage) => {
+            if (onThumbsDown) {
+              onThumbsDown(message);
+            }
+          }}
           imageUploadsEnabled={imageUploadsEnabled}
           hideStopButton={hideStopButton}
           className="h-full [&_.copilot-kit-chat]:bg-transparent [&_.copilot-kit-chat]:border-0"

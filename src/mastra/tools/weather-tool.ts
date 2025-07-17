@@ -155,25 +155,23 @@ const getWeather = async (location: string, forecast?: boolean) => {
   const response = await fetch(weatherUrl);
   const data = (await response.json()) as WeatherResponse;
 
-  const result = {
-    temperature: data.current.temperature_2m,
-    feelsLike: data.current.apparent_temperature,
-    humidity: data.current.relative_humidity_2m,
-    precipitation: data.current.precipitation,
-    windSpeed: data.current.wind_speed_10m,
-    windGust: data.current.wind_gusts_10m,
-    conditions: getWeatherCondition(data.current.weather_code),
-    location: name,
-    forecast: data.daily ? data.daily.time.map((t, i) => ({
-      date: t,
-      maxTemp: data.daily!.temperature_2m_max[i],
-      minTemp: data.daily!.temperature_2m_min[i],
-      precipitation: data.daily!.precipitation_sum[i],
-      conditions: getWeatherCondition(data.daily!.weather_code[i]),
-    })) : undefined,
-  };
-
-  return result;
+  return {
+      temperature: data.current.temperature_2m,
+      feelsLike: data.current.apparent_temperature,
+      humidity: data.current.relative_humidity_2m,
+      precipitation: data.current.precipitation,
+      windSpeed: data.current.wind_speed_10m,
+      windGust: data.current.wind_gusts_10m,
+      conditions: getWeatherCondition(data.current.weather_code),
+      location: name,
+      forecast: data.daily ? data.daily.time.map((t, i) => ({
+        date: t,
+        maxTemp: data.daily!.temperature_2m_max[i],
+        minTemp: data.daily!.temperature_2m_min[i],
+        precipitation: data.daily!.precipitation_sum[i],
+        conditions: getWeatherCondition(data.daily!.weather_code[i]),
+      })) : undefined,
+    };
 };
 
 const weatherAlertsInputSchema = z.object({
@@ -291,6 +289,10 @@ export const hourlyWeatherForecastTool = createTool({
     const data = (await response.json()) as HourlyWeatherResponse;
 
     const hourlyForecast = data.hourly.time.slice(0, input.hours).map((time, i) => {
+      // Defensive: Only use index if it's a valid array index and not a prototype property
+      if (!Object.prototype.hasOwnProperty.call(data.hourly.time, i)) {
+        return undefined;
+      }
       const temperature = temperatureScale === 'fahrenheit' ? (data.hourly.temperature_2m[i] * 9 / 5) + 32 : data.hourly.temperature_2m[i];
       const feelsLike = temperatureScale === 'fahrenheit' ? (data.hourly.apparent_temperature[i] * 9 / 5) + 32 : data.hourly.apparent_temperature[i];
 
@@ -298,12 +300,20 @@ export const hourlyWeatherForecastTool = createTool({
         time: time,
         temperature: temperature,
         feelsLike: feelsLike,
-        humidity: data.hourly.relative_humidity_2m[i],
-        precipitation: data.hourly.precipitation[i],
+        // Defensive: Only use index if it's a valid array index and not a prototype property
+        humidity: Object.prototype.hasOwnProperty.call(data.hourly.relative_humidity_2m, i)
+          ? data.hourly.relative_humidity_2m[i]
+          : undefined,
+        precipitation: Object.prototype.hasOwnProperty.call(data.hourly.precipitation, i)
+          ? data.hourly.precipitation[i]
+          : undefined,
         windSpeed: data.hourly.wind_speed_10m[i],
-        conditions: getWeatherCondition(data.hourly.weather_code[i]),
+        // Defensive: Only call getWeatherCondition with a safe numeric code
+        conditions: Number.isFinite(data.hourly.weather_code[i])
+          ? getWeatherCondition(data.hourly.weather_code[i])
+          : 'Unknown',
       };
-    });
+    }).filter(Boolean);
 
     return hourlyWeatherOutputSchema.parse(hourlyForecast);
   },
@@ -362,17 +372,27 @@ export const weatherHistoryTool = createTool({
     const response = await fetch(historicalWeatherUrl);
     const data = (await response.json()) as HistoricalWeatherResponse;
 
-    if (!data.daily) {
+    if (!Array.isArray(data.daily?.time)) {
       return [];
     }
 
     const historicalData = data.daily.time.map((time, i) => ({
       date: time,
-      maxTemp: data.daily.temperature_2m_max[i],
-      minTemp: data.daily.temperature_2m_min[i],
-      precipitation: data.daily.precipitation_sum[i],
+      // Defensive: Only use index if it's a valid array index and not a prototype property
+      maxTemp: Object.prototype.hasOwnProperty.call(data.daily.temperature_2m_max, i)
+        ? data.daily.temperature_2m_max[i]
+        : undefined,
+      minTemp: Object.prototype.hasOwnProperty.call(data.daily.temperature_2m_min, i)
+        ? data.daily.temperature_2m_min[i]
+        : undefined,
+      precipitation: Object.prototype.hasOwnProperty.call(data.daily.precipitation_sum, i)
+        ? data.daily.precipitation_sum[i]
+        : undefined,
       windSpeed: data.daily.wind_speed_10m_max[i],
-      conditions: getWeatherCondition(data.daily.weather_code[i]),
+      // Defensive: Only call getWeatherCondition with a safe numeric code
+      conditions: Number.isFinite(data.daily.weather_code[i])
+        ? getWeatherCondition(data.daily.weather_code[i])
+        : 'Unknown',
     }));
 
     return weatherHistoryOutputSchema.parse(historicalData);

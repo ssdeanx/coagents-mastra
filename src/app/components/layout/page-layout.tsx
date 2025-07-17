@@ -157,7 +157,11 @@ export function PageLayout({
   copilotCssProperties,
   copilotLabels
 }: PageLayoutProps) {
-  const currentAgent = agentConfig[agent];
+  // Defensive access to prevent prototype pollution or object injection
+  const safeAgent = (typeof agent === "string" && Object.prototype.hasOwnProperty.call(agentConfig, agent))
+    ? agent
+    : "masterAgent";
+  const currentAgent = agentConfig[safeAgent];
 
   const defaultCopilotConfig = {
     title: `${currentAgent.name} - Deanmachines`,
@@ -266,7 +270,7 @@ export function PageLayout({
       {showCopilot && (
         <CopilotKit
           runtimeUrl="/api/copilotkit"
-          agent={agent}
+          agent={safeAgent}
           {...(copilotCssProperties && { properties: copilotCssProperties })}
         >
           <CopilotSidebar

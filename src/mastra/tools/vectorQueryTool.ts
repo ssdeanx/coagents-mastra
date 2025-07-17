@@ -195,7 +195,7 @@ export const enhancedVectorQueryTool = createTool({
 
         // Transform vector results to match our schema with runtime context
         vectorResults.forEach((result: VectorQueryResult, index: number) => {
-          const content = String(result.metadata?.text || result.metadata?.content || '');
+          const content = String(result.metadata.text || result.metadata?.content || '');
           const score = result.score || 0;
 
           if (score >= qualityThreshold) {
@@ -203,12 +203,12 @@ export const enhancedVectorQueryTool = createTool({
               id: result.id || `vec-${index}`,
               content,
               score,
-              metadata: validatedInput.includeMetadata ? {
-                ...(result.metadata || {}),
+              metadata: {
+                ...result.metadata,
                 userId,
                 sessionId,
                 searchPreference
-              } : {},
+              },
             });
           }
         });
@@ -353,7 +353,7 @@ export const hybridVectorSearchTool = createTool({
           let metadataScore = 0;
           if (result.metadata && validatedInput.metadataQuery) {
             const matchingKeys = Object.keys(validatedInput.metadataQuery).filter(key =>
-              result.metadata?.[key] === validatedInput.metadataQuery![key]
+              result.metadata?.[key] === validatedInput.metadataQuery?.[key]
             );
             metadataScore = matchingKeys.length / Object.keys(validatedInput.metadataQuery).length;
           }
@@ -369,16 +369,30 @@ export const hybridVectorSearchTool = createTool({
         });
 
         // Re-sort results by combined score
-        const resultsWithScores = semanticResults.results.map((result: HybridVectorResult, index: number) => ({
-          ...result,
-          score: hybridScores[index].combinedScore,
-          metadata: {
-            ...result.metadata,
-            userId,
-            sessionId,
-            searchPreference
+        const resultsWithScores = semanticResults.results.map((result: HybridVectorResult, index: number) => {
+          // Defensive: Only copy safe keys from result.metadata to prevent prototype pollution
+          const safeMetadata: Record<string, unknown> = {};
+          if (result.metadata && typeof result.metadata === "object") {
+            for (const key of Object.keys(result.metadata)) {
+              if (
+                typeof key === "string" &&
+                !Object.prototype.hasOwnProperty.call(Object.prototype, key)
+              ) {
+                safeMetadata[key] = result.metadata[key];
+              }
+            }
           }
-        }));
+          return {
+            ...result,
+            score: hybridScores[index].combinedScore,
+            metadata: {
+              ...safeMetadata,
+              userId,
+              sessionId,
+              searchPreference
+            }
+          };
+        });
 
         resultsWithScores.sort((a: HybridVectorResult, b: HybridVectorResult) => b.score - a.score);
         semanticResults.results = resultsWithScores;

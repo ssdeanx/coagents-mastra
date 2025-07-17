@@ -22,7 +22,16 @@ function getProp<T>(obj: Record<string, unknown>, path: string[], defaultValue: 
     if (current === null || typeof current !== 'object' || !(key in (current as Record<string, unknown>))) {
       return defaultValue;
     }
-    current = (current as Record<string, unknown>)[key];
+    // Defensive: Only use key if it's a valid own property of current
+    if (
+      typeof current === "object" &&
+      current !== null &&
+      Object.prototype.hasOwnProperty.call(current, key)
+    ) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return defaultValue;
+    }
   }
   return current as T;
 }
@@ -142,12 +151,12 @@ export type ArxivSearchParams = z.infer<typeof ArxivSearchParamsSchema>;
 /**
  * Runtime context type for Arxiv tools configuration
  */
-export type ArxivRuntimeContext = {
+export interface ArxivRuntimeContext {
   'user-id'?: string;
   'session-id'?: string;
   'max-results'?: number;
   'debug'?: boolean;
-};
+}
 
 /**
  * Lightweight wrapper around ArXiv for academic / scholarly research articles.

@@ -102,7 +102,8 @@ export const FullPostSchema = z.object({
   author_flair_type: z.string(),
   domain: z.string(),
   allow_live_comments: z.boolean(),
-  selftext_html: z.string(),
+  // Mark selftext_html as HTML to ensure downstream consumers encode it before rendering
+  selftext_html: z.string().describe('HTML content, must be properly encoded before rendering'),
   likes: z.any(),
   suggested_sort: z.any(),
   banned_at_utc: z.any(),

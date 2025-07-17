@@ -32,6 +32,10 @@ export const readDataFileTool = createTool({
     execute: async ({ context }) => {
         const { fileName } = context;
         const fullPath = validateDataPath(fileName);
+        // Defensive: Ensure fullPath is within DATA_DIR before reading
+        if (!fullPath.startsWith(DATA_DIR)) {
+            throw new Error(`Access denied: File path "${fileName}" is outside the allowed data directory.`);
+        }
         const content = await fs.readFile(fullPath, 'utf-8');
         logger.info(`Read file: ${fileName}`);
         return content;
@@ -49,7 +53,12 @@ export const writeDataFileTool = createTool({
     execute: async ({ context }) => {
         const { fileName, content } = context;
         const fullPath = validateDataPath(fileName);
-        await fs.mkdir(path.dirname(fullPath), { recursive: true });
+        const dirPath = path.dirname(fullPath);
+        // Defensive: Ensure dirPath is within DATA_DIR before creating directory
+        if (!dirPath.startsWith(DATA_DIR)) {
+            throw new Error(`Access denied: Directory path "${dirPath}" is outside the allowed data directory.`);
+        }
+        await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(fullPath, content, 'utf-8');
         logger.info(`Written to file: ${fileName}`);
         return `File ${fileName} written successfully.`;
@@ -66,6 +75,10 @@ export const deleteDataFileTool = createTool({
     execute: async ({ context }) => {
         const { fileName } = context;
         const fullPath = validateDataPath(fileName);
+        // Defensive: Ensure fullPath is within DATA_DIR before deleting
+        if (!fullPath.startsWith(DATA_DIR)) {
+            throw new Error(`Access denied: File path "${fileName}" is outside the allowed data directory.`);
+        }
         await fs.unlink(fullPath);
         logger.info(`Deleted file: ${fileName}`);
         return `File ${fileName} deleted successfully.`
@@ -82,6 +95,10 @@ export const listDataDirTool = createTool({
     execute: async ({ context }) => {
         const { dirPath = '' } = context;
         const fullPath = validateDataPath(dirPath);
+        // Defensive: Ensure fullPath is within DATA_DIR before reading directory
+        if (!fullPath.startsWith(DATA_DIR)) {
+            throw new Error(`Access denied: Directory path "${dirPath}" is outside the allowed data directory.`);
+        }
         const contents = await fs.readdir(fullPath);
         logger.info(`Listed directory: ${dirPath}`);
         return contents;

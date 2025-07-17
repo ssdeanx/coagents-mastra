@@ -42,11 +42,11 @@ import {
 const logger = new PinoLogger({ name: 'LangGraphAgent', level: 'info' });
 
 /**
- * Runtime context type for the LangGraph Agent
+ * Runtime context interface for the LangGraph Agent
  *
  * Provides configuration for LangGraph workflows and multi-step reasoning processes.
  *
- * @interface LangGraphAgentRuntimeContext
+ * @mastra Runtime context for LangGraph Agent
  */
 export interface LangGraphAgentRuntimeContext {
   "user-id": string;
@@ -93,7 +93,8 @@ export interface LangGraphAgentRuntimeContext {
  */
 export const langGraphAgent = new Agent({
   name: "LangGraph Agent",
-  instructions: async ({ runtimeContext }) => {    const {
+  instructions: async ({ runtimeContext }) => {
+    const {
       "user-id": userId,
       "session-id": sessionId,
       "workflow-mode": workflowMode = "sequential",
@@ -102,7 +103,7 @@ export const langGraphAgent = new Agent({
       "max-iterations": maxIterations = 10,
       "domain-focus": domainFocus = "general",
       "output-format": outputFormat = "structured"
-    } = (runtimeContext as unknown) as LangGraphAgentRuntimeContext;
+    } = runtimeContext as unknown as LangGraphAgentRuntimeContext;
 
     return `You are the LangGraph Agent, a sophisticated AI system designed for advanced multi-step reasoning and complex workflow orchestration. You leverage LangGraph's state management capabilities to break down intricate problems into manageable steps, execute them systematically, and adapt dynamically.
 

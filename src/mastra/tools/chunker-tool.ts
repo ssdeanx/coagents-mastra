@@ -114,7 +114,7 @@ const chunkerOutputSchema = z.object({
 /**
  * Runtime context type for the chunker tool
  */
-export type ChunkerToolRuntimeContext = {
+export interface ChunkerToolRuntimeContext {
   'user-id': string;
   'session-id': string;
   'chunk-strategy': 'recursive' | 'sentence' | 'paragraph' | 'fixed' | 'semantic';
@@ -125,7 +125,7 @@ export type ChunkerToolRuntimeContext = {
   'processing-priority': 'speed' | 'quality' | 'balanced';
   'cache-chunks': boolean;
   'max-processing-time': number;
-};
+}
 
 /**
  * Comprehensive document chunker tool supporting multiple formats and strategies
@@ -252,7 +252,7 @@ export const chunkerTool = createTool({
         maxChunkSize: validatedInput.chunkParams?.maxChunkSize || 2048,
         separator: validatedInput.chunkParams?.separator || getDefaultSeparator(type)
       };// Perform chunking based on strategy
-      let rawChunks: Array<{ content?: string; text?: string; pageContent?: string; metadata?: Record<string, unknown> }>;
+      let rawChunks: { content?: string; text?: string; pageContent?: string; metadata?: Record<string, unknown> }[];
       switch (chunkConfig.strategy) {
         case 'recursive':
           rawChunks = await doc.chunk({
@@ -280,7 +280,7 @@ export const chunkerTool = createTool({
       }
 
       // Transform chunks to match our schema
-      const chunks: Array<{
+      const chunks: {
         id: string;
         content: string;
         index: number;
@@ -290,8 +290,8 @@ export const chunkerTool = createTool({
         tokens: number;
         embedding?: number[];
         vectorId?: string;
-      }> = rawChunks.map((chunk: { content?: string; text?: string; pageContent?: string; metadata?: Record<string, unknown> }, index: number) => {
-        const chunkContent = chunk.content || chunk.text || chunk.pageContent || '';
+      }[] = rawChunks.map((chunk: { content?: string; text?: string; pageContent?: string; metadata?: Record<string, unknown> }, index: number) => {
+        const chunkContent = (chunk.content ?? chunk.text) ?? chunk.pageContent ?? '';
         const chunkId = generateId();
 
         return {
@@ -320,7 +320,7 @@ export const chunkerTool = createTool({
           extractParams: Object.keys(validatedInput.extractParams)
         });
 
-        const enhancedChunks = await extractChunkMetadata(
+        const enhancedChunks = extractChunkMetadata(
           chunks.map(chunk => ({
             id: chunk.id,
             content: chunk.content,
@@ -332,7 +332,19 @@ export const chunkerTool = createTool({
         // Update chunks with extracted metadata
         enhancedChunks.forEach((enhanced, index) => {
           if (chunks[index]) {
-            chunks[index].metadata = { ...chunks[index].metadata, ...enhanced.metadata };
+            // Defensive: Only merge plain object keys to prevent prototype pollution
+            const safeEnhancedMetadata: Record<string, unknown> = {};
+            if (enhanced && typeof enhanced.metadata === "object" && enhanced.metadata !== null) {
+              for (const key of Object.keys(enhanced.metadata)) {
+                if (
+                  typeof key === "string" &&
+                  !Object.prototype.hasOwnProperty.call(Object.prototype, key)
+                ) {
+                  safeEnhancedMetadata[key] = enhanced.metadata[key];
+                }
+              }
+            }
+            chunks[index].metadata = { ...chunks[index].metadata, ...safeEnhancedMetadata };
           }
         });
 
@@ -394,7 +406,7 @@ export const chunkerTool = createTool({
           );
 
           if (upsertResult.success) {
-            vectorsUpserted = upsertResult.count || 0;
+            vectorsUpserted = upsertResult.count ?? 0;
             // Add vector IDs to chunks
             chunks.forEach((chunk) => {
               chunk.vectorId = chunk.id; // Vector ID is same as chunk ID
@@ -501,7 +513,9 @@ function preprocessLatex(content: string): string {
 function preprocessCSV(content: string): string {
   try {
     const lines = content.split('\n');
-    if (lines.length === 0) return content;
+    if (lines.length === 0) {
+      return content;
+    }
 
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     const result = [`Headers: ${headers.join(', ')}\n`];
@@ -509,7 +523,17 @@ function preprocessCSV(content: string): string {
     for (let i = 1; i < Math.min(lines.length, 100); i++) { // Limit to first 100 rows
       const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
       if (values.length === headers.length) {
-        const row = headers.map((header, idx) => `${header}: ${values[idx]}`).join(', ');
+        // Defensive: Only use header if it's a string and not a prototype property
+        const row = headers.map((header, idx) => {
+          if (
+            typeof header === "string" &&
+            Object.prototype.hasOwnProperty.call(headers, idx) &&
+            !Object.prototype.hasOwnProperty.call(Object.prototype, header)
+          ) {
+            return `${header}: ${values[idx]}`;
+          }
+          return "";
+        }).filter(Boolean).join(', ');
         result.push(`Row ${i}: ${row}`);
       }
     }
@@ -553,7 +577,7 @@ function getDefaultSeparator(type: string): string {
 /**
  * Alternative chunking strategies
  */
-async function chunkBySentence(content: string, config: ChunkConfig): Promise<RawChunk[]> {
+function chunkBySentence(content: string, config: ChunkConfig): Promise<RawChunk[]> {
   const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
   const chunks: RawChunk[] = [];
   let currentChunk = '';
@@ -561,7 +585,9 @@ async function chunkBySentence(content: string, config: ChunkConfig): Promise<Ra
 
   for (const sentence of sentences) {
     const trimmedSentence = sentence.trim();
-    if (!trimmedSentence) continue;
+    if (!trimmedSentence) {
+      continue;
+    }
 
     if (currentChunk.length + trimmedSentence.length > config.size && currentChunk.length > 0) {
       chunks.push({
@@ -584,7 +610,7 @@ async function chunkBySentence(content: string, config: ChunkConfig): Promise<Ra
     });
   }
 
-  return chunks;
+  return Promise.resolve(chunks);
 }
 
 async function chunkByParagraph(content: string, config: ChunkConfig): Promise<RawChunk[]> {
@@ -595,7 +621,9 @@ async function chunkByParagraph(content: string, config: ChunkConfig): Promise<R
 
   for (const paragraph of paragraphs) {
     const trimmedParagraph = paragraph.trim();
-    if (!trimmedParagraph) continue;
+    if (!trimmedParagraph) {
+      continue;
+    }
 
     if (currentChunk.length + trimmedParagraph.length > config.size && currentChunk.length > 0) {
       chunks.push({
@@ -651,8 +679,14 @@ async function chunkSemantic(content: string, config: ChunkConfig): Promise<RawC
   let chunkIndex = 0;
 
   for (let i = 0; i < sentences.length; i++) {
+    // Defensive: Only use index if it's a valid array index and not a prototype property
+    if (!Object.prototype.hasOwnProperty.call(sentences, i)) {
+      continue;
+    }
     const sentence = sentences[i].trim();
-    if (!sentence) continue;
+    if (!sentence) {
+      continue;
+    }
 
     // Simple heuristic: start new chunk if sentence begins with certain patterns
     const isNewTopic = /^(However|Moreover|Furthermore|In addition|On the other hand|Meanwhile|Therefore|Thus|Consequently|In conclusion)/i.test(sentence);

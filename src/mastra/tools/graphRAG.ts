@@ -193,7 +193,12 @@ export const graphRAGUpsertTool = createTool({
       // Create embeddings (if not already created by chunker)
       let embeddings: number[][] = [];
       if (chunks[0]?.embedding) {
-        embeddings = chunks.map(chunk => chunk.embedding!);
+        embeddings = chunks.map(chunk => {
+          if (chunk.embedding) {
+            return chunk.embedding;
+          }
+          throw new Error("Expected embedding to be present on all chunks if present on the first.");
+        });
       } else {
         const chunkTexts = chunks.map((chunk: { text: string }) => chunk.text);
         const embedResult = await embedMany({
@@ -380,9 +385,9 @@ export const graphRAGQueryTool = createTool({
         vector?: number[];
       }) => ({
         id: source.id || generateId(),
-        score: source.score || 0,
+        score: source.score ?? 0,
         content: source.text || source.content || '',
-        metadata: source.metadata || {},
+        metadata: source.metadata ?? {},
         vector: validatedInput.includeVector ? source.vector : undefined
       }));
 

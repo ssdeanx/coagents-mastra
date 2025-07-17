@@ -4,17 +4,18 @@ import { createTool } from '@mastra/core';
 
 const firecrawl = new FirecrawlIntegration({
   config: {
-    API_KEY: process.env.FIRECRAWL_API_KEY as string,
+    API_KEY: process.env.FIRECRAWL_API_KEY ?? '',
   },
 });
 
 const firecrawlCrawlInputSchema = z.object({
   url: z.string().url().describe('The URL to crawl.'),
   pageOptions: z.object({
-    onlyMainContent: z.boolean().optional().describe('Whether to extract only the main content of the page.'),
-    includeHtml: z.boolean().optional().describe('Whether to include the raw HTML content.'),
-    includeMarkdown: z.boolean().optional().describe('Whether to include the markdown content.'),
-    includeText: z.boolean().optional().describe('Whether to include the plain text content.'),
+    // Mark these as booleans for downstream consumers to avoid XSS risk in HTML contexts
+    onlyMainContent: z.boolean().optional().describe('Boolean: Whether to extract only the main content of the page.'),
+    includeHtml: z.boolean().optional().describe('Boolean: Whether to include the raw HTML content.'),
+    includeMarkdown: z.boolean().optional().describe('Boolean: Whether to include the markdown content.'),
+    includeText: z.boolean().optional().describe('Boolean: Whether to include the plain text content.'),
   }).optional().describe('Options for page extraction.'),
   crawlOptions: z.object({
     maxPagesToCrawl: z.number().int().positive().optional().describe('Maximum number of pages to crawl.'),
@@ -53,7 +54,7 @@ const firecrawlExtractInputSchema = z.object({
   url: z.string().url().describe('The URL to extract content from.'),
   pageOptions: z.object({
     onlyMainContent: z.boolean().optional().describe('Whether to extract only the main content of the page.'),
-    includeHtml: z.boolean().optional().describe('Whether to include the raw HTML content.'),
+    includeHtml: z.boolean().optional().describe('Boolean: Whether to include the raw HTML content.'),
     includeMarkdown: z.boolean().optional().describe('Whether to include the markdown content.'),
     includeText: z.boolean().optional().describe('Whether to include the plain text content.'),
   }).optional().describe('Options for page extraction.'),

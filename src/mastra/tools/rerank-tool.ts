@@ -13,7 +13,7 @@ const logger = new PinoLogger({ name: 'RerankTool', level: 'info' });
 /**
  * Runtime context type for rerank tool configuration
  */
-export type RerankRuntimeContext = {
+export interface RerankRuntimeContext {
   'user-id'?: string;
   'session-id'?: string;
   'model-preference'?: 'gemini-2.5-flash-lite-preview-06-17' | 'gemini-2.5-preview-05-20' | 'gemini-2.0-flash' | 'gemini-2.0-flash-lite';
@@ -22,7 +22,7 @@ export type RerankRuntimeContext = {
   'position-weight'?: number;
   'debug'?: boolean;
   'quality-threshold'?: number;
-};
+}
 
 // Input and output schemas
 const rerankInputSchema = z.object({

@@ -97,7 +97,7 @@ export class WikidataClient {
     this.apiUserAgent = apiUserAgent
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const throttledKy = throttle ? (throttleKy(ky, wikidataThrottle as any) as typeof ky) : ky
+    const throttledKy = throttle ? (throttleKy(ky, wikidataThrottle as any)) : ky
 
     this.ky = throttledKy.extend({
       headers: {
@@ -124,7 +124,11 @@ export class WikidataClient {
       keepReferences: true
     })
 
-    const entity = entities[id]
+    // Defensive: Only access own properties to prevent prototype pollution
+    let entity: SimplifiedEntity | undefined;
+    if (Object.prototype.hasOwnProperty.call(entities, id)) {
+      entity = entities[id] as SimplifiedEntity;
+    }
     return entity as SimplifiedEntity
   }
 

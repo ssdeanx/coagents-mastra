@@ -31,7 +31,7 @@ export const webScraperTool = createTool({
     logger.info('Starting web scraping', { url: context.url, selector: context.selector });
 
     let rawContent: string | undefined;
-    const extractedData: Array<Record<string, string>> = [];
+    const extractedData: Record<string, string>[] = [];
     let status = 'failed';
     let errorMessage: string | undefined;
     let scrapedUrl: string = context.url; // Initialize with context.url, will be updated in handler
@@ -45,12 +45,13 @@ export const webScraperTool = createTool({
             const $ = cheerio.load(rawContent);
             $(context.selector).each((_i, element) => {
               const data: Record<string, string> = {};
-              data['text'] = $(element).text().trim();
+              data.text = $(element).text().trim();
               if (context.extractAttributes) {
                 context.extractAttributes.forEach(attr => {
                   const attrValue = $(element).attr(attr);
-                  if (attrValue) {
-                    data[attr] = attrValue;
+                  if (attrValue && (typeof attr === "string" &&
+                                        !Object.prototype.hasOwnProperty.call(Object.prototype, attr))) {
+                        data[attr] = attrValue;
                   }
                 });
               }

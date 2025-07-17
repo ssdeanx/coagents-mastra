@@ -26,7 +26,7 @@ import { PinoLogger } from "@mastra/loggers";
 import { createBraveSearchTool, createTavilySearchTool, webScraperTool, gitOperationsTool } from "../tools";
 import { weatherWorkflow } from "../workflows/weather-workflow";
 /**
- * Runtime context type for the Master Agent
+ * Runtime context interface for the Master Agent
  * Production-focused runtime variables for agent behavior
  */
 export interface MasterAgentRuntimeContext {

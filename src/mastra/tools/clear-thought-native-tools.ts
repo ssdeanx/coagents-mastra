@@ -570,10 +570,15 @@ export const decisionFrameworkTool = createTool({
           throw new Error("No valid option found for recommendation.");
         }
         if (bestOption) {
-          recommendation = bestOption.name;
-          rationale = `Based on weighted criteria evaluation, "${bestOption.name}" scored ${scores[bestOptionId].toFixed(2)} points.`;
-          analysisSummary += ` Recommended "${bestOption.name}" with score ${scores[bestOptionId].toFixed(2)}.`;
-          nextStage = "recommendation";
+          // Defensive: Only use bestOptionId if it's a valid own property of scores
+          if (Object.prototype.hasOwnProperty.call(scores, bestOptionId)) {
+            recommendation = bestOption.name;
+            rationale = `Based on weighted criteria evaluation, "${bestOption.name}" scored ${scores[bestOptionId].toFixed(2)} points.`;
+            analysisSummary += ` Recommended "${bestOption.name}" with score ${scores[bestOptionId].toFixed(2)}.`;
+            nextStage = "recommendation";
+          } else {
+            throw new Error("Invalid option ID for recommendation.");
+          }
         }
       }
 

@@ -94,9 +94,7 @@ export const sportsOddsTool = createTool({
       }
 
       const data = await response.json();
-      const validatedData = oddsApiResponseSchema.parse(data);
-
-      return validatedData;
+      return oddsApiResponseSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Zod validation error:', error.issues);
@@ -149,9 +147,7 @@ export const historicalOddsTool = createTool({
 
       const data = await response.json();
       // The historical odds endpoint returns a single event object, not an array.
-      const validatedData = historicalOddsOutputSchema.parse(data);
-
-      return validatedData;
+      return historicalOddsOutputSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Zod validation error:', error.issues);
@@ -199,9 +195,7 @@ export const listSportsTool = createTool({
       }
 
       const data = await response.json();
-      const validatedData = listSportsOutputSchema.parse(data);
-
-      return validatedData;
+      return listSportsOutputSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Zod validation error:', error.issues);
@@ -248,9 +242,7 @@ export const listBookmakersTool = createTool({
       }
 
       const data = await response.json();
-      const validatedData = listBookmakersOutputSchema.parse(data);
-
-      return validatedData;
+      return listBookmakersOutputSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Zod validation error:', error.issues);

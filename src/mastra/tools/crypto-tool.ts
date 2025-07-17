@@ -94,12 +94,10 @@ export const historicalCryptoPriceTool = createTool({
         prices: z.array(z.array(z.number())),
       }).parse(data).prices;
 
-      const output = pricesData.map(([timestamp, price]) => ({
-        timestamp,
-        price,
-      }));
-
-      return output;
+      return pricesData.map(([timestamp, price]) => ({
+              timestamp,
+              price,
+            }));
     } catch (error) {
       console.error('Error fetching historical cryptocurrency prices:', error);
       throw new Error(`Failed to fetch historical cryptocurrency prices: ${error instanceof Error ? error.message : String(error)}`);
@@ -166,9 +164,7 @@ export const cryptoMarketDataTool = createTool({
       const data = await response.json();
 
       // Validate the API response using the Zod schema
-      const validatedData = CryptoMarketDataToolOutputSchema.parse(data);
-
-      return validatedData;
+      return CryptoMarketDataToolOutputSchema.parse(data);
     } catch (error) {
       console.error('Error fetching cryptocurrency market data:', error);
       throw new Error(`Failed to fetch cryptocurrency market data: ${error instanceof Error ? error.message : String(error)}`);
@@ -202,9 +198,7 @@ export const listCryptoCoinsTool = createTool({
       const data = await response.json();
 
       // Validate the API response using the Zod schema
-      const validatedData = ListCryptoCoinsToolOutputSchema.parse(data);
-
-      return validatedData;
+      return ListCryptoCoinsToolOutputSchema.parse(data);
     } catch (error) {
       console.error('Error fetching cryptocurrency list:', error);
       throw new Error(`Failed to fetch cryptocurrency list: ${error instanceof Error ? error.message : String(error)}`);

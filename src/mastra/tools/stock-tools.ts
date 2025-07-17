@@ -398,6 +398,10 @@ export const historicalStockPriceTool = createTool({
       const endDate = input.endDate ? new Date(input.endDate) : new Date();
 
       for (const dateStr in timeSeries) {
+        // Defensive: Only use own properties to prevent prototype pollution
+        if (!Object.prototype.hasOwnProperty.call(timeSeries, dateStr)) {
+          continue;
+        }
         const dataPoint = timeSeries[dateStr];
         const currentDate = new Date(dateStr);
 

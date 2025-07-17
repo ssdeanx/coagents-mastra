@@ -163,9 +163,7 @@ export interface DiffbotError {
   type?: string
 }
 
-export interface DiffbotObjectMeta {
-  [key: string]: string | number | boolean | null
-}
+export type DiffbotObjectMeta = Record<string, string | number | boolean | null>;
 
 export interface ExtractOptions {
   url: string
@@ -206,23 +204,23 @@ export interface ExtractResponse {
       pageUrl: string
     }
     sentiment?: number
-    tags?: Array<{
+    tags?: {
       id: number
       count: number
       prevalence: number
       label: string
       uri: string
       type: string
-    }>
+    }[]
     images?: DiffbotImage[]
-    videos?: Array<{
+    videos?: {
       primary: boolean
       url: string
-    }>
-    breadcrumb?: Array<{
+    }[]
+    breadcrumb?: {
       link: string
       name: string
-    }>
+    }[]
     links?: string[]
     meta?: DiffbotObjectMeta
   }>
@@ -1125,9 +1123,9 @@ export function createDiffbotClient(options?: {
   };
 }
 
-export type DiffbotRuntimeContext = {
+export interface DiffbotRuntimeContext {
   'debug'?: boolean;
-};
+}
 
 export const diffbotRuntimeContext = new RuntimeContext<DiffbotRuntimeContext>();
 diffbotRuntimeContext.set('debug', false);
