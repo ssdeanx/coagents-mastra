@@ -2,8 +2,9 @@
 
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
-import { ArrowRight, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Brain, Cpu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ParticleBackground } from "./particle-background";
 
 interface HeroProps {
   className?: string;
@@ -12,104 +13,122 @@ interface HeroProps {
 }
 
 /**
- * Hero section component for the landing page
- * 
+ * Hero section component - 2025 Professional Design
+ *
+ * Features refined 2025 design with consistent branding:
+ * - Subtle particle effects using your color scheme
+ * - Professional glassmorphism
+ * - Consistent oklch color palette
+ * - Gentle, non-distracting animations
+ * - Clean typography hierarchy
+ *
  * @param className - Additional CSS classes
  * @param onGetStarted - Callback when "Get Started" button is clicked
  * @param onLearnMore - Callback when "Learn More" button is clicked
  */
 export function Hero({ className, onGetStarted, onLearnMore }: HeroProps) {
   return (
-    <section className={cn("relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/20", className)}>
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-black/[0.02] bg-[size:60px_60px]" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-      
-      <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          {/* Badge */}
-          <Badge variant="outline" className="mb-8 px-4 py-2 text-sm">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Powered by Mastra & CopilotKit
+    <section className={cn("relative min-h-screen flex items-center justify-center overflow-hidden bg-background", className)}>
+      {/* Subtle Particle Background */}
+      <ParticleBackground />
+
+      {/* Professional Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-muted/20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.216_0.006_56.043/0.05),transparent_70%)]" />
+
+      {/* Subtle Floating Elements */}
+      <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-float" />
+      <div className="absolute bottom-20 right-20 w-40 h-40 bg-primary/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/2 left-10 w-24 h-24 bg-accent/20 rounded-full blur-lg animate-float" style={{ animationDelay: '4s' }} />
+
+      {/* Minimal Geometric Accents */}
+      <div className="absolute top-1/4 right-1/4 w-12 h-12 border border-primary/20 rotate-45" />
+      <div className="absolute bottom-1/4 left-1/4 w-8 h-8 bg-primary/10 rounded-full" />
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 text-center">
+        {/* Professional Badge */}
+        <div className="mb-8 flex justify-center">
+          <Badge
+            variant="secondary"
+            className="px-6 py-3 text-sm font-medium"
+          >
+            <Cpu className="mr-2 h-4 w-4" />
+            Powered by AI Agents
+            <Sparkles className="ml-2 h-4 w-4" />
           </Badge>
+        </div>
 
-          {/* Main heading */}
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            Build Intelligent{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              AI Agents
-            </span>{" "}
-            with Ease
-          </h1>
+        {/* Professional Main Heading */}
+        <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+          <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Deanmachines
+          </span>
+          <br />
+          <span className="text-foreground">AI Workspace</span>
+        </h1>
 
-          {/* Subheading */}
-          <p className="mt-6 text-lg leading-8 text-muted-foreground sm:text-xl">
-            Create powerful AI-driven applications with human-in-the-loop workflows,
-            generative UI, and seamless frontend integration. Built on top of Mastra
-            robust agent framework and CopilotKit interactive components.
-          </p>
+        {/* Professional Subheading */}
+        <p className="mb-8 mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
+          Experience the future of productivity with our intelligent agent system.
+          Automate workflows, analyze data, and generate insights with cutting-edge AI technology.
+        </p>
 
-          {/* Feature highlights */}
-          <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
-              Multi-Agent Workflows
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+          <Button
+            size="lg"
+            onClick={onGetStarted}
+            className="group px-8 py-4 text-lg font-semibold"
+          >
+            Get Started
+            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onLearnMore}
+            className="px-8 py-4 text-lg font-semibold"
+          >
+            <Brain className="mr-2 h-5 w-5" />
+            Learn More
+          </Button>
+        </div>
+
+        {/* Feature Highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 p-3 rounded-full bg-primary/10">
+              <Zap className="h-8 w-8 text-primary" />
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
-              Generative UI
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
-              Human-in-the-Loop
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
-              Real-time Chat
-            </div>
+            <h3 className="text-lg font-semibold mb-2">Lightning Fast</h3>
+            <p className="text-sm text-muted-foreground">
+              Process complex tasks in seconds with our optimized AI agents
+            </p>
           </div>
 
-          {/* CTA buttons */}
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button 
-              size="lg" 
-              className="group px-8 py-3 text-lg"
-              onClick={onGetStarted}
-            >
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-3 text-lg"
-              onClick={onLearnMore}
-            >
-              Learn More
-            </Button>
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 p-3 rounded-full bg-primary/10">
+              <Brain className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Intelligent</h3>
+            <p className="text-sm text-muted-foreground">
+              Advanced reasoning capabilities that adapt to your workflow
+            </p>
           </div>
 
-          {/* Stats or social proof */}
-          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-foreground">7+</div>
-              <div className="text-sm text-muted-foreground">Pre-built Agents</div>
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 p-3 rounded-full bg-primary/10">
+              <Sparkles className="h-8 w-8 text-primary" />
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-foreground">∞</div>
-              <div className="text-sm text-muted-foreground">Customizable Workflows</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-foreground">100%</div>
-              <div className="text-sm text-muted-foreground">TypeScript Support</div>
-            </div>
+            <h3 className="text-lg font-semibold mb-2">Seamless</h3>
+            <p className="text-sm text-muted-foreground">
+              Intuitive integration that enhances your daily workflow
+            </p>
           </div>
         </div>
       </div>
-
-      {/* Gradient overlay at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }

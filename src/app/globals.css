@@ -129,15 +129,15 @@ html {
 @layer utilities {
   /* Glassmorphism utilities */
   .glass {
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .glass-strong {
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.3);
   }
@@ -177,23 +177,20 @@ html {
     box-shadow: inset 20px 20px 60px #1a1a1a, inset -20px -20px 60px #2a2a2a;
   }
 
-  /* Gradient utilities with oklch */
+  /* Gradient utilities using your project colors */
   .gradient-primary {
-    background: linear-gradient(135deg, oklch(0.488 0.243 264.376), oklch(0.627 0.265 303.9));
+    background: linear-gradient(135deg, var(--primary), var(--primary-foreground));
   }
 
   .gradient-accent {
-    background: linear-gradient(135deg, oklch(0.696 0.17 162.48), oklch(0.769 0.188 70.08));
+    background: linear-gradient(135deg, var(--accent), var(--muted));
   }
 
   .gradient-mesh {
-    background: radial-gradient(at 40% 20%, oklch(0.488 0.243 264.376) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, oklch(0.627 0.265 303.9) 0px, transparent 50%),
-                radial-gradient(at 0% 50%, oklch(0.696 0.17 162.48) 0px, transparent 50%),
-                radial-gradient(at 80% 50%, oklch(0.769 0.188 70.08) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, oklch(0.645 0.246 16.439) 0px, transparent 50%),
-                radial-gradient(at 80% 100%, oklch(0.488 0.243 264.376) 0px, transparent 50%),
-                radial-gradient(at 0% 0%, oklch(0.627 0.265 303.9) 0px, transparent 50%);
+    background: radial-gradient(at 40% 20%, var(--primary) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, var(--muted) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, var(--accent) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, var(--secondary) 0px, transparent 50%);
   }
 
   /* Text shadow utilities */
@@ -210,7 +207,7 @@ html {
   }
 
   .text-shadow-colored {
-    text-shadow: 0 0 10px oklch(0.488 0.243 264.376), 0 0 20px oklch(0.488 0.243 264.376), 0 0 30px oklch(0.488 0.243 264.376);
+    text-shadow: 0 0 10px oklch(58.61% 0.23296 28.532), 0 0 20px oklch(58.61% 0.23296 28.532), 0 0 30px oklch(58.61% 0.23296 28.532);
   }
 
   /* Mask utilities */
@@ -226,11 +223,11 @@ html {
 
   /* Colored drop shadows */
   .drop-shadow-colored {
-    filter: drop-shadow(0 4px 6px oklch(0.488 0.243 264.376 / 0.3));
+    filter: drop-shadow(0 4px 6px var(--primary));
   }
 
   .drop-shadow-accent {
-    filter: drop-shadow(0 4px 6px oklch(0.627 0.265 303.9 / 0.3));
+    filter: drop-shadow(0 4px 6px var(--accent));
   }
 
   /* Animation utilities */
@@ -244,6 +241,19 @@ html {
 
   .animate-shimmer {
     animation: shimmer 2s linear infinite;
+  }
+
+  /* Professional animations using your color scheme */
+  .animate-subtle-pulse {
+    animation: subtle-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-gentle-float {
+    animation: gentle-float 6s ease-in-out infinite;
+  }
+
+  .animate-soft-glow {
+    animation: soft-glow 4s ease-in-out infinite alternate;
   }
 
   /* Bento grid utilities */
@@ -293,10 +303,10 @@ html {
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 20px oklch(0.488 0.243 264.376 / 0.5);
+    box-shadow: 0 0 20px var(--primary);
   }
   to {
-    box-shadow: 0 0 30px oklch(0.488 0.243 264.376 / 0.8), 0 0 40px oklch(0.488 0.243 264.376 / 0.6);
+    box-shadow: 0 0 30px var(--primary), 0 0 40px var(--primary);
   }
 }
 
@@ -306,6 +316,200 @@ html {
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+/* 2025 Cutting-edge keyframes */
+@keyframes subtle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.8;
+  }
+}
+
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes soft-glow {
+  from {
+    box-shadow: 0 0 10px var(--primary);
+  }
+  to {
+    box-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary);
+  }
+}
+
+@keyframes quantum-shift {
+  0%, 100% {
+    transform: translateX(0) translateY(0) rotateZ(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(10px) translateY(-5px) rotateZ(5deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(-5px) translateY(10px) rotateZ(-3deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translateX(-10px) translateY(-10px) rotateZ(7deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes morphic-glow {
+  from {
+    box-shadow:
+      0 0 20px var(--primary),
+      inset 0 0 20px var(--primary);
+    border-radius: 20px;
+  }
+  to {
+    box-shadow:
+      0 0 30px var(--primary),
+      inset 0 0 25px var(--primary);
+    border-radius: 30px;
+  }
+}
+
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 100% 50%;
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    background-position: 100% 100%;
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    background-position: 0% 100%;
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes cyber-glitch {
+  0%, 100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+  60% {
+    transform: translate(2px, 2px);
+    filter: hue-rotate(270deg);
+  }
+  80% {
+    transform: translate(2px, -2px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100vh) rotateX(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotateX(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dna-helix {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg) translateZ(0px);
+  }
+  25% {
+    transform: rotateY(90deg) rotateX(90deg) translateZ(20px);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(180deg) translateZ(0px);
+  }
+  75% {
+    transform: rotateY(270deg) rotateX(270deg) translateZ(-20px);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(360deg) translateZ(0px);
+  }
+}
+
+@keyframes particle-burst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes energy-wave {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 20px oklch(0.7 0.3 200 / 0.3);
+  }
+  33% {
+    transform: scale(1.1) rotate(120deg);
+    box-shadow: 0 0 40px oklch(59.219% 0.24302 29.223 / 0.5);
+  }
+  66% {
+    transform: scale(0.9) rotate(240deg);
+    box-shadow: 0 0 60px oklch(0.7 0.3 240 / 0.7);
+  }
+}
+
+@keyframes crystalline {
+  0%, 100% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    filter: brightness(1) contrast(1);
+  }
+  25% {
+    transform: rotateX(90deg) rotateY(45deg) rotateZ(30deg);
+    filter: brightness(1.2) contrast(1.1);
+  }
+  50% {
+    transform: rotateX(180deg) rotateY(90deg) rotateZ(60deg);
+    filter: brightness(1.4) contrast(1.2);
+  }
+  75% {
+    transform: rotateX(270deg) rotateY(135deg) rotateZ(90deg);
+    filter: brightness(1.2) contrast(1.1);
   }
 }
 

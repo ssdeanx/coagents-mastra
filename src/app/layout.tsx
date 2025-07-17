@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Coagents Starter - Mastra",
-  description: "A starter template for building AI agents with Mastra and Coagents.",
+  title: "Deanmachines - AI-Powered Workspace",
+  description: "Professional AI agent platform with multi-agent orchestration, research tools, and intelligent automation.",
 };
 
 export default function RootLayout({
@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <CopilotKit runtimeUrl="/api/copilotkit" agent="masterAgent">
             <TopNavbar />

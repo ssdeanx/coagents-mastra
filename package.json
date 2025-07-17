@@ -75,6 +75,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@tsparticles/engine": "^3.8.1",
+    "@tsparticles/react": "^3.0.0",
     "@xyflow/react": "^12.8.2",
     "@xyflow/system": "^0.0.66",
     "cheerio": "^1.1.0",

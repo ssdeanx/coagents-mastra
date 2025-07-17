@@ -9,6 +9,7 @@ interface ThemeProviderProps {
 
 /**
  * Theme provider component that wraps the application with theme context
+ * Prevents hydration errors by suppressing hydration warnings for theme-related attributes
  *
  * @param children - Child components
  */

@@ -91,6 +91,7 @@ export interface PageConfig {
     instructions?: string;
     labels?: CopilotLabels;
     features?: string[];
+    cssProperties?: CopilotKitCSSProperties;
   };
 }
 
@@ -101,6 +102,7 @@ export interface PageConfig {
  * @property {string} [themeColor] - Optional theme color to apply to the component.
  * @property {string} [className] - Optional CSS class name for styling.
  * @property {React.ReactNode} [children] - The child components to be rendered within the wrapper.
+ * @property {CopilotKitCSSProperties} [cssProperties] - CopilotKit CSS properties for styling.
  * @example
  * ```typescript
  * <CopilotWrapper config={pageConfig.copilotConfig} themeColor="blue">
@@ -113,6 +115,7 @@ export interface CopilotWrapperProps {
   themeColor?: string;
   className?: string;
   children?: React.ReactNode;
+  cssProperties?: CopilotKitCSSProperties;
 }
 
 /**

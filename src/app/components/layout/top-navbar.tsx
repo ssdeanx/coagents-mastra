@@ -88,6 +88,7 @@ export function TopNavbar({
   showAuthButtons = true
 }: TopNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className={cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
@@ -97,7 +98,7 @@ export function TopNavbar({
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <Bot className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold">Mastra</span>
+          <span className="text-xl font-bold">Deanmachines</span>
           <Badge variant="secondary" className="ml-2 text-xs">
             <Sparkles className="mr-1 h-3 w-3" />
             AI
@@ -109,51 +110,83 @@ export function TopNavbar({
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Features</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Workspace</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-6 w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <div className="row-span-3">
                       <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        <Link
                           href="/dashboard"
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                         >
-                          <MessageSquare className="h-6 w-6" />
+                          <LayoutDashboard className="h-6 w-6" />
                           <div className="mb-2 mt-4 text-lg font-medium">
                             AI Dashboard
                           </div>
                           <p className="text-sm leading-tight text-muted-foreground">
                             Experience the full power of our AI agent system.
                           </p>
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </div>
-                    {navigationItems.slice(0, 3).map((item) => (
-                      <NavigationMenuLink key={item.title} asChild>
-                        <a
-                          href={item.href}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium leading-none">{item.title}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {item.description}
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    ))}
+                    {navigationItems.slice(1, 4).map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <NavigationMenuLink key={item.title} asChild>
+                          <Link
+                            href={item.href}
+                            className={cn(
+                              "group block select-none space-y-1 rounded-lg p-4 leading-none no-underline outline-none transition-all duration-200 hover:scale-[1.02] hover:shadow-sm",
+                              pathname === item.href
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "hover:bg-accent/50 hover:text-accent-foreground focus:bg-accent/50 focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="flex items-center text-sm font-medium leading-none">
+                              {Icon && <Icon className="mr-2 h-4 w-4" />}
+                              {item.title}
+                            </div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {item.description}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      );
+                    })}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link
-                    href="/docs"
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
-                  >
-                    Documentation
-                  </Link>
-                </NavigationMenuLink>
+                <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid gap-3 p-6 w-[300px]">
+                    {navigationItems.slice(4).map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <NavigationMenuLink key={item.title} asChild>
+                          <Link
+                            href={item.href}
+                            className={cn(
+                              "group block select-none space-y-1 rounded-lg p-4 leading-none no-underline outline-none transition-all duration-200 hover:scale-[1.02] hover:shadow-sm",
+                              pathname === item.href
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "hover:bg-accent/50 hover:text-accent-foreground focus:bg-accent/50 focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="flex items-center text-sm font-medium leading-none">
+                              {Icon && <Icon className="mr-2 h-4 w-4" />}
+                              {item.title}
+                            </div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {item.description}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      );
+                    })}
+                  </div>
+                </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -205,17 +238,26 @@ export function TopNavbar({
                 </div>
 
                 <nav className="flex flex-col space-y-2">
-                  {navigationItems.map((item) => (
-                    <Link
-                      key={item.title}
-                      href={item.href}
-                      className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      <span>{item.title}</span>
-                    </Link>
-                  ))}
+                  {navigationItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.title}
+                        href={item.href}
+                        className={cn(
+                          "group flex items-center space-x-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 hover:scale-[1.02] hover:shadow-sm",
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "hover:bg-accent/50 hover:text-accent-foreground"
+                        )}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {Icon && <Icon className="h-4 w-4" />}
+                        <span>{item.title}</span>
+                      </Link>
+                    );
+                  })}
                 </nav>
 
                 {showAuthButtons && (
