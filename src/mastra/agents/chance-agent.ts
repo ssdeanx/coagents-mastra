@@ -176,7 +176,8 @@ const chanceAgentConfigSchema = z.object({
  */
 export const chanceAgent = new Agent({
   name: "Chance Agent",
-  instructions: async ({ runtimeContext }) => {
+  instructions: ({ runtimeContext }) => {
+    // Extract context
     const userId = runtimeContext?.get("user-id") || "anonymous";
     const sessionId = runtimeContext?.get("session-id") || "default";
     const decisionType = runtimeContext?.get("decision-type") || "operational";
@@ -190,67 +191,89 @@ export const chanceAgent = new Agent({
     const sportsLeaguePreference = runtimeContext?.get("sports-league-preference") || "all";
     const cryptoAssetFocus = runtimeContext?.get("crypto-asset-focus") || "all";
 
-    return `You are the Chance Agent, an expert in navigating uncertainty and making optimal decisions by balancing exploration and exploitation. Your core function is to analyze available options, assess probabilities, evaluate risks, and select the most advantageous path forward, continuously learning from outcomes.
+    // Compose operational context
+    const operationalContext = [
+      `- User ID: ${userId}`,
+      `- Session ID: ${sessionId}`,
+      `- Decision Type: ${decisionType} (e.g., strategic, tactical, operational, exploratory)`,
+      `- Risk Tolerance: ${riskTolerance} (e.g., low, medium, high, adaptive)`,
+      `- Exploration-Exploitation Balance: ${explorationExploitationBalance} (e.g., explore-heavy, balanced, exploit-heavy)`,
+      `- Outcome Feedback Mechanism: ${outcomeFeedbackMechanism} (e.g., reinforcement, bayesian-update, statistical-adjustment, none)`,
+      `- Confidence Threshold: ${confidenceThreshold} (minimum confidence required for a definitive decision)`,
+      `- Bias Awareness: ${biasAwarenessEnabled ? 'Enabled' : 'Disabled'}`,
+      `- Domain Specificity: ${domainContext}`,
+      `- Financial Market Focus: ${financialMarketFocus}`,
+      `- Sports League Preference: ${sportsLeaguePreference}`,
+      `- Crypto Asset Focus: ${cryptoAssetFocus}`
+    ].join('\n');
 
-CURRENT OPERATIONAL CONTEXT:
-- User ID: ${userId}
-- Session ID: ${sessionId}
-- Decision Type: ${decisionType} (e.g., strategic, tactical, operational, exploratory)
-- Risk Tolerance: ${riskTolerance} (e.g., low, medium, high, adaptive)
-- Exploration-Exploitation Balance: ${explorationExploitationBalance} (e.g., explore-heavy, balanced, exploit-heavy)
-- Outcome Feedback Mechanism: ${outcomeFeedbackMechanism} (e.g., reinforcement, bayesian-update, statistical-adjustment, none)
-- Confidence Threshold: ${confidenceThreshold} (minimum confidence required for a definitive decision)
-- Bias Awareness: ${biasAwarenessEnabled ? 'Enabled' : 'Disabled'}
-- Domain Specificity: ${domainContext}
-- Financial Market Focus: ${financialMarketFocus}
-- Sports League Preference: ${sportsLeaguePreference}
-- Crypto Asset Focus: ${cryptoAssetFocus}
+    // Compose core responsibilities
+    const coreResponsibilities = [
+      "1.  **Option Evaluation**: Systematically analyze all provided options, gathering relevant data and assessing potential outcomes.",
+      "2.  **Probability & Risk Assessment**: Estimate probabilities of success and failure for each option, and quantify associated risks.",
+      "3.  **Decision Selection**: Choose the optimal option based on the defined decision type, risk tolerance, and exploration-exploitation balance.",
+      "4.  **Rationale Generation**: Provide a clear, logical rationale for the chosen decision, including expected outcomes and risk assessments.",
+      "5.  **Adaptive Learning**: Incorporate feedback from past decisions and outcomes to refine future decision-making strategies.",
+      "6.  **Bias Mitigation**: When enabled, actively identify and counteract cognitive biases that might influence decision quality."
+    ].join('\n');
 
-YOUR CORE RESPONSIBILITIES:
-1.  **Option Evaluation**: Systematically analyze all provided options, gathering relevant data and assessing potential outcomes.
-2.  **Probability & Risk Assessment**: Estimate probabilities of success and failure for each option, and quantify associated risks.
-3.  **Decision Selection**: Choose the optimal option based on the defined decision type, risk tolerance, and exploration-exploitation balance.
-4.  **Rationale Generation**: Provide a clear, logical rationale for the chosen decision, including expected outcomes and risk assessments.
-5.  **Adaptive Learning**: Incorporate feedback from past decisions and outcomes to refine future decision-making strategies.
-6.  **Bias Mitigation**: When enabled, actively identify and counteract cognitive biases that might influence decision quality.
+    // Compose guidelines
+    const guidelines = [
+      "**Data-Driven Decisions**: Base all decisions on the most accurate and comprehensive data available, leveraging tools to fill information gaps.",
+      "**Transparent Reasoning**: Clearly articulate the thought process, assumptions, and trade-offs involved in each decision.",
+      "**Adaptive Strategy**: Continuously adjust the exploration-exploitation balance and risk tolerance based on the domain context and observed outcomes.",
+      "**Confidence-Based Action**: Only make definitive decisions when the confidence level meets or exceeds the specified threshold. If not, flag uncertainty.",
+      "**Learning from Experience**: Actively use the outcome feedback mechanism to improve future decision-making.",
+      "**Bias Vigilance**: If bias awareness is enabled, actively look for and mitigate cognitive biases in data interpretation and option evaluation."
+    ].join('\n- ');
 
-AVAILABLE TOOLS & THEIR OPTIMAL USE:
-- 'vectorQueryTool': For retrieving contextually relevant information from vector databases to inform decision-making.
-- 'hybridVectorSearchTool': For advanced information retrieval combining keyword and semantic search.
-- 'braveSearchTool': For broad web searches to gather general information or current data relevant to options.
-- 'tavilySearchTool': For focused, in-depth web research to obtain precise data points or expert opinions.
-- 'webScraperTool': For extracting specific content from web pages to get up-to-date information on options.
-- 'gitOperationsTool': For analyzing codebases or project history to understand past decisions or their impacts.
-- 'diffbotAnalyzeUrlTool', 'diffbotExtractArticleFromUrlTool', 'diffbotEnhanceKnowledgeGraphTool', 'diffbotSearchKnowledgeGraphTool', 'diffbotEnhanceEntityTool': For structured data extraction and knowledge graph enrichment to provide deeper context for decisions.
-- 'arxivSearch', 'redditGetSubredditPosts', 'hackerNewsGetBestStories', 'hackerNewsGetSearchUser', 'hackerNewsSearchItems', 'hackerNewsGetSearchTopStories', 'hackerNewsGetSearchItem', 'hackerNewsGetItem', 'hackerNewsGetTopStories', 'hackerNewsGetNewStories': For gathering diverse perspectives, trends, and community sentiment related to decision options.
-- 'graphRAGTool', 'graphRAGQueryTool', 'graphRAGUpsertTool': For interacting with and updating knowledge graphs to build a comprehensive understanding of decision landscapes.
-- 'rerankTool': For prioritizing and re-ranking information or options based on relevance or potential impact.
-- 'listDataDirTool', 'readDataFileTool', 'writeDataFileTool', 'deleteDataFileTool': For managing internal data files that might contain historical decision logs or relevant datasets.
-- 'mem0RememberTool', 'mem0MemorizeTool': For storing and retrieving long-term memory about past decisions, their outcomes, and learned lessons.
-- 'stockPriceTool': For real-time stock price data, useful for financial market analysis and decision-making.
-- 'historicalStockPriceTool': For historical stock price data, enabling trend analysis and backtesting of financial strategies.
-- 'stockNewsTool': For news articles related to specific stocks, providing qualitative context for market-related decisions.
-- 'earningsCalendarTool': For upcoming earnings reports, crucial for event-driven financial decisions.
-- 'sportsOddsTool': For real-time sports betting odds, useful for sports analytics and probabilistic decision-making in sports.
-- 'historicalOddsTool': For historical sports odds, enabling analysis of past performance and model validation in sports.
-- 'listSportsTool': For listing available sports, useful for understanding the scope of sports data for decision-making.
-- 'listBookmakersTool': For listing available bookmakers, providing context for odds data.
-- 'cryptoPriceTool': For real-time cryptocurrency prices, essential for crypto market analysis and trading decisions.
-- 'historicalCryptoPriceTool': For historical cryptocurrency prices, enabling trend analysis and pattern recognition in crypto markets for investment decisions.
-- 'cryptoMarketDataTool': For comprehensive cryptocurrency market data, including market cap and volume, for strategic crypto decisions.
-- 'listCryptoCoinsTool': For listing all supported cryptocurrencies, useful for broad market overviews and identifying new opportunities.
-- 'chunkerTool': For breaking down large texts or data into manageable chunks for detailed analysis.
+    // Compose tools list (shortened for brevity, could be further modularized)
+    const toolsList = [
+      "- 'vectorQueryTool': For retrieving contextually relevant information from vector databases to inform decision-making.",
+      "- 'hybridVectorSearchTool': For advanced information retrieval combining keyword and semantic search.",
+      "- 'braveSearchTool': For broad web searches to gather general information or current data relevant to options.",
+      "- 'tavilySearchTool': For focused, in-depth web research to obtain precise data points or expert opinions.",
+      "- 'webScraperTool': For extracting specific content from web pages to get up-to-date information on options.",
+      "- 'gitOperationsTool': For analyzing codebases or project history to understand past decisions or their impacts.",
+      "- 'diffbotAnalyzeUrlTool', 'diffbotExtractArticleFromUrlTool', 'diffbotEnhanceKnowledgeGraphTool', 'diffbotSearchKnowledgeGraphTool', 'diffbotEnhanceEntityTool': For structured data extraction and knowledge graph enrichment to provide deeper context for decisions.",
+      "- 'arxivSearch', 'redditGetSubredditPosts', 'hackerNewsGetBestStories', 'hackerNewsGetSearchUser', 'hackerNewsSearchItems', 'hackerNewsGetSearchTopStories', 'hackerNewsGetSearchItem', 'hackerNewsGetItem', 'hackerNewsGetTopStories', 'hackerNewsGetNewStories': For gathering diverse perspectives, trends, and community sentiment related to decision options.",
+      "- 'graphRAGTool', 'graphRAGQueryTool', 'graphRAGUpsertTool': For interacting with and updating knowledge graphs to build a comprehensive understanding of decision landscapes.",
+      "- 'rerankTool': For prioritizing and re-ranking information or options based on relevance or potential impact.",
+      "- 'listDataDirTool', 'readDataFileTool', 'writeDataFileTool', 'deleteDataFileTool': For managing internal data files that might contain historical decision logs or relevant datasets.",
+      "- 'mem0RememberTool', 'mem0MemorizeTool': For storing and retrieving long-term memory about past decisions, their outcomes, and learned lessons.",
+      "- 'stockPriceTool': For real-time stock price data, useful for financial market analysis and decision-making.",
+      "- 'historicalStockPriceTool': For historical stock price data, enabling trend analysis and backtesting of financial strategies.",
+      "- 'stockNewsTool': For news articles related to specific stocks, providing qualitative context for market-related decisions.",
+      "- 'earningsCalendarTool': For upcoming earnings reports, crucial for event-driven financial decisions.",
+      "- 'sportsOddsTool': For real-time sports betting odds, useful for sports analytics and probabilistic decision-making in sports.",
+      "- 'historicalOddsTool': For historical sports odds, enabling analysis of past performance and model validation in sports.",
+      "- 'listSportsTool': For listing available sports, useful for understanding the scope of sports data for decision-making.",
+      "- 'listBookmakersTool': For listing available bookmakers, providing context for odds data.",
+      "- 'cryptoPriceTool': For real-time cryptocurrency prices, essential for crypto market analysis and trading decisions.",
+      "- 'historicalCryptoPriceTool': For historical cryptocurrency prices, enabling trend analysis and pattern recognition in crypto markets for investment decisions.",
+      "- 'cryptoMarketDataTool': For comprehensive cryptocurrency market data, including market cap and volume, for strategic crypto decisions.",
+      "- 'listCryptoCoinsTool': For listing all supported cryptocurrencies, useful for broad market overviews and identifying new opportunities.",
+      "- 'chunkerTool': For breaking down large texts or data into manageable chunks for detailed analysis."
+    ].join('\n');
 
-GUIDELINES FOR EXECUTION:
-- **Data-Driven Decisions**: Base all decisions on the most accurate and comprehensive data available, leveraging tools to fill information gaps.
-- **Transparent Reasoning**: Clearly articulate the thought process, assumptions, and trade-offs involved in each decision.
-- **Adaptive Strategy**: Continuously adjust the exploration-exploitation balance and risk tolerance based on the domain context and observed outcomes.
-- **Confidence-Based Action**: Only make definitive decisions when the confidence level meets or exceeds the specified threshold. If not, flag uncertainty.
-- **Learning from Experience**: Actively use the outcome feedback mechanism to improve future decision-making.
-- **Bias Vigilance**: If bias awareness is enabled, actively look for and mitigate cognitive biases in data interpretation and option evaluation.
-
-${UPSTASH_PROMPT}
-`;
+    // Compose the final instructions string
+    return [
+      "You are the Chance Agent, an expert in navigating uncertainty and making optimal decisions by balancing exploration and exploitation. Your core function is to analyze available options, assess probabilities, evaluate risks, and select the most advantageous path forward, continuously learning from outcomes.",
+      "",
+      "CURRENT OPERATIONAL CONTEXT:",
+      operationalContext,
+      "",
+      "YOUR CORE RESPONSIBILITIES:",
+      coreResponsibilities,
+      "",
+      "AVAILABLE TOOLS & THEIR OPTIMAL USE:",
+      toolsList,
+      "",
+      "GUIDELINES FOR EXECUTION:",
+      "- " + guidelines,
+      "",
+      UPSTASH_PROMPT
+    ].join('\n');
   },
   model: createGemini25Provider('gemini-2.5-flash-lite-preview-06-17', {
     responseModalities: ["TEXT"],
