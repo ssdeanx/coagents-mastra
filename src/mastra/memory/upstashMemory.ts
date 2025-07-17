@@ -825,7 +825,7 @@ export async function upsertVectors(
 export async function queryVectors(
   indexName: string,
   queryVector: number[],
-  topK: number = 5,
+  topK = 5,
   filter?: MetadataFilter,
   includeVector: boolean = false
 ): Promise<VectorQueryResult[]> {
@@ -894,12 +894,19 @@ export function transformToUpstashFilter(filter: MetadataFilter): string {
   const parse = (f: any): string => {
       const conditions = Object.entries(f).map(([key, value]) => {
           if (key === '$and' || key === '$or') {
-              if (!Array.isArray(value)) return '';
+              if (!Array.isArray(value)) {
+                return '';
+              }
               const operator = key === '$and' ? ' AND ' : ' OR ';
               return `(${value.map(parse).join(operator)})`;
           }
           if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+              // Only allow specific, expected operators to prevent object injection
+              const allowedOps = ['$eq', '$ne', '$gt', '$gte', '$lt', '$lte', '$in', '$nin'];
               const op = Object.keys(value)[0];
+              if (!allowedOps.includes(op)) {
+                throw new Error(`Unsupported or potentially unsafe operator: ${op}`);
+              }
               const val = (value as any)[op];
               switch (op) {
                   case '$eq': return `${key} = ${JSON.stringify(val)}`;
@@ -1337,18 +1344,18 @@ export function validateMetadataFilter(filter: MetadataFilter): MetadataFilter {
  * });
  * ```
  */
-export async function extractChunkMetadata(
-  chunks: Array<{
+export function extractChunkMetadata(
+  chunks: {
     id: string;
     content: string;
     metadata: Record<string, unknown>;
-  }>,
+  }[],
   extractParams: ExtractParams
-): Promise<Array<{
+): {
   id: string;
   content: string;
   metadata: Record<string, unknown>;
-}>> {
+}[] {
   const startTime = Date.now();
 
   try {
@@ -1369,7 +1376,7 @@ export async function extractChunkMetadata(
         if (!docGroups.has(docId)) {
           docGroups.set(docId, []);
         }
-        docGroups.get(docId)!.push(chunk);
+        docGroups.get(docId)?.push(chunk);
       });
 
       // Extract titles for each document group
@@ -1390,7 +1397,7 @@ export async function extractChunkMetadata(
     // Keywords extraction
     if (extractParams.keywords) {
       const keywordConfig = typeof extractParams.keywords === 'boolean' ? { keywords: 5 } : extractParams.keywords;
-      const keywordCount = keywordConfig.keywords || 5;
+      const keywordCount = keywordConfig.keywords ?? 5;
 
       enhancedChunks.forEach(chunk => {
         // Simplified keyword extraction
@@ -1404,7 +1411,7 @@ export async function extractChunkMetadata(
     // Questions extraction
     if (extractParams.questions) {
       const questionConfig = typeof extractParams.questions === 'boolean' ? { questions: 3 } : extractParams.questions;
-      const questionCount = questionConfig.questions || 3;
+      const questionCount = questionConfig.questions ?? 3;
 
       if (!questionConfig.embeddingOnly) {
         enhancedChunks.forEach(chunk => {

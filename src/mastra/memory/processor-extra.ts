@@ -65,13 +65,81 @@ interface WorkflowMemoryProcessorOpts extends MemoryProcessorOpts {
  * ```
  */
 export class BiasMitigationProcessor extends MemoryProcessor {
-  private readonly detectionStrategies: Array<'confirmation' | 'recency' | 'framing' | 'anchoring' | 'availability' | 'overconfidence' | 'bandwagon' | 'status-quo' | 'survivorship-bias' | 'outgroup-bias' | 'in-group-bias' | 'negativity-bias' | 'optimism-bias' | 'self-serving-bias' | 'hindsight-bias' | 'fundamental-attribution-error' | 'halo-effect' | 'horns-effect' | 'confirmation-bias'>;
-  private readonly mitigationStrategies: Array<'re-weight' | 'rephrase' | 'add-counter-arguments' | 'remove' | 'flag' | 'ignore' | 'contextualize' | 'reframe' | 'balance' | 'rephrase' | 're-weight' | 'add-counter-arguments' | 'remove'>;
+  private readonly detectionStrategies: (
+    | 'confirmation'
+    | 'recency'
+    | 'framing'
+    | 'anchoring'
+    | 'availability'
+    | 'overconfidence'
+    | 'bandwagon'
+    | 'status-quo'
+    | 'survivorship-bias'
+    | 'outgroup-bias'
+    | 'in-group-bias'
+    | 'negativity-bias'
+    | 'optimism-bias'
+    | 'self-serving-bias'
+    | 'hindsight-bias'
+    | 'fundamental-attribution-error'
+    | 'halo-effect'
+    | 'horns-effect'
+    | 'confirmation-bias'
+  )[];
+  private readonly mitigationStrategies: (
+    | 're-weight'
+    | 'rephrase'
+    | 'add-counter-arguments'
+    | 'remove'
+    | 'flag'
+    | 'ignore'
+    | 'contextualize'
+    | 'reframe'
+    | 'balance'
+    | 'rephrase'
+    | 're-weight'
+    | 'add-counter-arguments'
+    | 'remove'
+  )[];
   biasThreshold: number;
 
   constructor(options: {
-    detectionStrategies?: Array<'confirmation' | 'recency' | 'framing' | 'anchoring' | 'availability' | 'overconfidence' | 'bandwagon' | 'status-quo' | 'survivorship-bias' | 'outgroup-bias' | 'in-group-bias' | 'negativity-bias' | 'optimism-bias' | 'self-serving-bias' | 'hindsight-bias' | 'fundamental-attribution-error' | 'halo-effect' | 'horns-effect' | 'confirmation-bias'>;
-    mitigationStrategies?: Array<'re-weight' | 'rephrase' | 'add-counter-arguments' | 'remove' | 'flag' | 'ignore' | 'contextualize' | 'reframe' | 'balance' | 'rephrase' | 're-weight' | 'add-counter-arguments' | 'remove'>;
+    detectionStrategies?: (
+      | 'confirmation'
+      | 'recency'
+      | 'framing'
+      | 'anchoring'
+      | 'availability'
+      | 'overconfidence'
+      | 'bandwagon'
+      | 'status-quo'
+      | 'survivorship-bias'
+      | 'outgroup-bias'
+      | 'in-group-bias'
+      | 'negativity-bias'
+      | 'optimism-bias'
+      | 'self-serving-bias'
+      | 'hindsight-bias'
+      | 'fundamental-attribution-error'
+      | 'halo-effect'
+      | 'horns-effect'
+      | 'confirmation-bias'
+    )[];
+    mitigationStrategies?: (
+      | 're-weight'
+      | 'rephrase'
+      | 'add-counter-arguments'
+      | 'remove'
+      | 'flag'
+      | 'ignore'
+      | 'contextualize'
+      | 'reframe'
+      | 'balance'
+      | 'rephrase'
+      | 're-weight'
+      | 'add-counter-arguments'
+      | 'remove'
+    )[];
     biasThreshold?: number;
   } = {}) {
     super({ name: 'BiasMitigationProcessor' });
@@ -128,9 +196,10 @@ export class BiasMitigationProcessor extends MemoryProcessor {
     // and re-weight them if they lack new information.
     const mitigatedMessages: CoreMessage[] = [];
     for (let i = 0; i < messages.length; i++) {
-      const current = messages[i];
+      // Defensive: Only allow expected message structure to prevent object injection
+      const current = Object.assign({}, messages[i]);
       if (i > 0) {
-        const previous = messages[i - 1];
+        const previous = Object.assign({}, messages[i - 1]);
         const currentContent = current.content?.toString().toLowerCase() || '';
         const previousContent = previous.content?.toString().toLowerCase() || '';
 
@@ -167,12 +236,9 @@ export class BiasMitigationProcessor extends MemoryProcessor {
       const olderMessage = mitigatedMessages[0]; // Compare with the oldest for simplicity
 
       // If the recent message is very short and just a confirmation, and older message is substantial
-      if (recentMessage.content?.toString().length < 50 && olderMessage.content?.toString().length > 200) {
-        if (this.mitigationStrategies.includes('re-weight')) {
-          logger.debug(`Mitigating recency bias for message: ${recentMessage.content?.toString().substring(0, 30)}...`);
-          recentMessage.metadata = { ...recentMessage.metadata, biasMitigated: true, biasType: 'recency', originalScore: (recentMessage.metadata?.score as number | undefined) ?? 1.0 };
-          // In a real scenario, you might adjust a score property if messages had one
-        }
+      if (recentMessage.content?.toString().length < 50 && olderMessage.content?.toString().length > 200 && this.mitigationStrategies.includes('re-weight')) {
+            logger.debug(`Mitigating recency bias for message: ${recentMessage.content?.toString().substring(0, 30)}...`);
+            recentMessage.metadata = { ...recentMessage.metadata, biasMitigated: true, biasType: 'recency', originalScore: (recentMessage.metadata?.score as number | undefined) ?? 1.0 };
       }
     }
     return mitigatedMessages;
@@ -181,7 +247,8 @@ export class BiasMitigationProcessor extends MemoryProcessor {
   private detectAndMitigateFramingBias(messages: CoreMessage[]): CoreMessage[] {
     const mitigatedMessages = [...messages];
     for (let i = 0; i < messages.length; i++) {
-      const current = messages[i];
+      // Defensive: Only allow expected message structure to prevent object injection
+      const current = Object.assign({}, messages[i]);
       const content = current.content?.toString().toLowerCase() || '';
 
       // Very basic check for framing bias: presence of strong positive/negative words without balance
@@ -361,9 +428,21 @@ export class AttentionGuidedMemoryProcessor extends MemoryProcessor {
     let magnitude2 = 0;
 
     for (let i = 0; i < vec1.length; i++) {
-      dotProduct += vec1[i] * vec2[i];
-      magnitude1 += vec1[i] * vec1[i];
-      magnitude2 += vec2[i] * vec2[i];
+      // Defensive: Only operate on numbers, prevent prototype pollution/object injection
+      if (!Number.isFinite(i)) continue;
+      if (
+        !Object.prototype.hasOwnProperty.call(vec1, i) ||
+        !Object.prototype.hasOwnProperty.call(vec2, i) ||
+        typeof vec1[i] !== "number" ||
+        typeof vec2[i] !== "number"
+      ) {
+        continue;
+      }
+      const a = Number.isFinite(vec1[i]) ? vec1[i] : 0;
+      const b = Number.isFinite(vec2[i]) ? vec2[i] : 0;
+      dotProduct += a * b;
+      magnitude1 += a * a;
+      magnitude2 += b * b;
     }
 
     magnitude1 = Math.sqrt(magnitude1);
@@ -379,17 +458,22 @@ export class AttentionGuidedMemoryProcessor extends MemoryProcessor {
   /**
    * Score messages based on importance factors and retrieve embeddings from metadata
    */
-  private scoreMessageImportance(messages: CoreMessage[]): Array<{ message: CoreMessage; score: number; index: number; embedding?: number[] }> {
+  private scoreMessageImportance(messages: CoreMessage[]): { message: CoreMessage; score: number; index: number; embedding?: number[] }[] {
     return messages.map((message, index) => {
       let score = 0;
       const content = message.content?.toString().toLowerCase() || '';
       const embedding = message.metadata?.embedding as number[] | undefined; // Retrieve embedding from metadata
 
       // Base score for message type
-      if (message.role === 'user') score += 1.0;
-      else if (message.role === 'assistant') score += 0.8;
-      else if (message.role === 'system') score += 1.2;
-      else if (message.role === 'tool') score += 0.6;
+      if (message.role === 'user') {
+        score += 1.0;
+      } else if (message.role === 'assistant') {
+               score += 0.8;
+             } else if (message.role === 'system') {
+                      score += 1.2;
+                    } else if (message.role === 'tool') {
+                             score += 0.6;
+                           }
       // Importance keyword bonus
       this.importanceKeywords.forEach(keyword => {
         if (content.includes(keyword)) {
@@ -415,9 +499,9 @@ export class AttentionGuidedMemoryProcessor extends MemoryProcessor {
    * Remove semantically similar/redundant messages using embeddings if available, otherwise word overlap
    */
   private removeRedundantMessages(
-    scoredMessages: Array<{ message: CoreMessage; score: number; index: number; embedding?: number[] }>
-  ): Array<{ message: CoreMessage; score: number; index: number; embedding?: number[] }> {
-    const filtered: Array<{ message: CoreMessage; score: number; index: number; embedding?: number[] }> = [];
+    scoredMessages: { message: CoreMessage; score: number; index: number; embedding?: number[] }[]
+  ): { message: CoreMessage; score: number; index: number; embedding?: number[] }[] {
+    const filtered: { message: CoreMessage; score: number; index: number; embedding?: number[] }[] = [];
 
     for (const current of scoredMessages) {
       const currentContent = current.message.content?.toString().toLowerCase() || '';
@@ -450,8 +534,8 @@ export class AttentionGuidedMemoryProcessor extends MemoryProcessor {
    * Apply dynamic context pruning based on attention patterns
    */
   private applyContextPruning(
-    messages: Array<{ message: CoreMessage; score: number; index: number }>
-  ): Array<{ message: CoreMessage; score: number; index: number }> {
+    messages: { message: CoreMessage; score: number; index: number }[]
+  ): { message: CoreMessage; score: number; index: number }[] {
     // Sort by score (descending) and select top messages
     const sortedByScore = [...messages].sort((a, b) => b.score - a.score);
     // Calculate how many messages to keep
@@ -472,7 +556,7 @@ export class AttentionGuidedMemoryProcessor extends MemoryProcessor {
    * Preserve conversation flow and coherence
    */
   private preserveConversationFlow(
-    messages: Array<{ message: CoreMessage; score: number; index: number }>
+    messages: { message: CoreMessage; score: number; index: number }[]
   ): CoreMessage[] {
     // Sort by original index to maintain chronological order
     const chronologicalMessages = messages
@@ -578,11 +662,13 @@ export class ContextualRelevanceProcessor extends MemoryProcessor {
     const segments: CoreMessage[][] = [];
     let currentSegment: CoreMessage[] = [];
     for (let i = 0; i < messages.length; i++) {
-      currentSegment.push(messages[i]);
+      // Defensive: Only allow expected message structure to prevent object injection
+      const safeMessage = Object.assign({}, messages[i]);
+      currentSegment.push(safeMessage);
       // Check for topic shift
       if (i < messages.length - 1) {
-        const current = messages[i].content?.toString() || '';
-        const next = messages[i + 1].content?.toString() || '';
+        const current = safeMessage.content?.toString() || '';
+        const next = messages[i + 1]?.content?.toString() || '';
         if (this.detectTopicShift(current, next)) {
           segments.push([...currentSegment]);
           currentSegment = [];
@@ -689,7 +775,7 @@ export class WorkflowAwareMemoryProcessor extends MemoryProcessor {
    */
   process(messages: CoreMessage[], opts: MemoryProcessorOpts = {}): CoreMessage[] {
     const workflowOpts = opts as WorkflowMemoryProcessorOpts;
-    const currentWorkflowStage = workflowOpts.currentWorkflowStage;
+    const {currentWorkflowStage} = workflowOpts;
 
     if (!currentWorkflowStage || !this.workflowStages.includes(currentWorkflowStage)) {
       logger.warn('No valid currentWorkflowStage provided or stage not recognized. Applying default retention strategy.', { currentWorkflowStage });
@@ -787,16 +873,33 @@ export class WorkflowAwareMemoryProcessor extends MemoryProcessor {
       return relevantStages;
     }
 
-    const currentStageEmbedding = this.workflowStageEmbeddings[currentWorkflowStage];
+    // Defensive: Only allow expected keys to prevent object injection
+    const allowedStages = Object.keys(this.workflowStageEmbeddings ?? {});
+    if (!allowedStages.includes(currentWorkflowStage)) {
+      logger.warn(`Current workflow stage '${currentWorkflowStage}' is not a valid stage key. Preventing object injection.`);
+      return this._getAdjacentRelevantStages(currentWorkflowStage); // Fallback
+    }
+    const currentStageEmbedding = this.workflowStageEmbeddings![currentWorkflowStage];
     if (!currentStageEmbedding) {
       logger.warn(`No pre-computed embedding found for current workflow stage '${currentWorkflowStage}'. Cannot apply semantic relevance.`);
       return this._getAdjacentRelevantStages(currentWorkflowStage); // Fallback
     }
 
     for (const stageName of this.workflowStages) {
-      if (stageName === currentWorkflowStage) continue;
+      if (stageName === currentWorkflowStage) {
+        continue;
+      }
 
-      const stageEmbedding = this.workflowStageEmbeddings[stageName];
+      // Defensive: Only allow expected keys to prevent object injection
+      const allowedStages = Object.keys(this.workflowStageEmbeddings ?? {});
+      if (!allowedStages.includes(stageName)) {
+        logger.warn(`Stage name '${stageName}' is not a valid stage key. Preventing object injection.`);
+        continue;
+      }
+      // Defensive: Only allow expected keys to prevent object injection
+      const stageEmbedding = Object.prototype.hasOwnProperty.call(this.workflowStageEmbeddings, stageName)
+        ? this.workflowStageEmbeddings[stageName]
+        : undefined;
       if (!stageEmbedding) {
         logger.warn(`No pre-computed embedding found for stage '${stageName}'. Skipping semantic comparison.`);
         continue;
@@ -902,7 +1005,7 @@ export class ToolUsageTrackerProcessor extends MemoryProcessor {
   process(messages: CoreMessage[], opts: WorkflowMemoryProcessorOpts = {}): CoreMessage[] {
     this.processCount++;
     const workflowOpts = opts as WorkflowMemoryProcessorOpts;
-    const currentWorkflowStage = workflowOpts.currentWorkflowStage || 'global'; // Default to 'global' if no stage
+    const currentWorkflowStage = workflowOpts.currentWorkflowStage ?? 'global'; // Default to 'global' if no stage
 
     try {
       messages.forEach(msg => {
@@ -912,8 +1015,10 @@ export class ToolUsageTrackerProcessor extends MemoryProcessor {
           if (!this.toolUsage.has(currentWorkflowStage)) {
             this.toolUsage.set(currentWorkflowStage, new Map<string, number>());
           }
-          const stageToolUsage = this.toolUsage.get(currentWorkflowStage)!;
-          stageToolUsage.set(toolName, (stageToolUsage.get(toolName) || 0) + 1);
+          const stageToolUsage = this.toolUsage.get(currentWorkflowStage);
+          if (stageToolUsage) {
+            stageToolUsage.set(toolName, (stageToolUsage.get(toolName) ?? 0) + 1);
+          }
         }
       });
 
@@ -999,18 +1104,19 @@ export class AgentInteractionPatternProcessor extends MemoryProcessor {
       if (!this.agentSequence.has(currentWorkflowStage)) {
         this.agentSequence.set(currentWorkflowStage, []);
       }
-      const stageAgentSequence = this.agentSequence.get(currentWorkflowStage)!;
-
-      messages.forEach(msg => {
-        if (msg.metadata?.agentName) {
-          const agentName = msg.metadata.agentName as string;
-          if (stageAgentSequence[stageAgentSequence.length - 1] !== agentName) {
-            stageAgentSequence.push(agentName);
+      const stageAgentSequence = this.agentSequence.get(currentWorkflowStage);
+      if (stageAgentSequence) {
+        messages.forEach(msg => {
+          if (msg.metadata?.agentName) {
+            const agentName = msg.metadata.agentName as string;
+            if (stageAgentSequence[stageAgentSequence.length - 1] !== agentName) {
+              stageAgentSequence.push(agentName);
+            }
           }
-        }
-      });
+        });
 
-      this.analyzePatterns(currentWorkflowStage);
+        this.analyzePatterns(currentWorkflowStage);
+      }
     } catch (error) {
       logger.error('AgentInteractionPatternProcessor failed', {
         error: (error as Error).message,
@@ -1021,27 +1127,36 @@ export class AgentInteractionPatternProcessor extends MemoryProcessor {
   }
 
   private analyzePatterns(stage: string): void {
-    const stageAgentSequence = this.agentSequence.get(stage)!;
+    const stageAgentSequence = this.agentSequence.get(stage);
+    if (!stageAgentSequence) {
+      logger.warn(`No agent sequence found for stage: ${stage}`);
+      return;
+    }
     if (stageAgentSequence.length >= this.sequenceLength) {
       if (!this.interactionPatterns.has(stage)) {
         this.interactionPatterns.set(stage, new Map<string, number>());
       }
-      const stagePatterns = this.interactionPatterns.get(stage)!;
+      const stagePatterns = this.interactionPatterns.get(stage);
+      if (!stagePatterns) {
+        logger.warn(`No interaction patterns map found for stage: ${stage}`);
+        return;
+      }
 
       for (let i = 0; i <= stageAgentSequence.length - this.sequenceLength; i++) {
         const sequence = stageAgentSequence.slice(i, i + this.sequenceLength).join(' -> ');
-        stagePatterns.set(sequence, (stagePatterns.get(sequence) || 0) + 1);
+        stagePatterns.set(sequence, (stagePatterns.get(sequence) ?? 0) + 1);
       }
       this.logInteractionPatterns(stage);
     }
   }
 
   private logInteractionPatterns(stage: string): void {
-    const stagePatterns = this.interactionPatterns.get(stage)!;
-    if (stagePatterns.size > 0) {
+    const stagePatterns = this.interactionPatterns.get(stage);
+    const stageAgentSequence = this.agentSequence.get(stage);
+    if (stagePatterns && stageAgentSequence && stagePatterns.size > 0) {
       const sortedPatterns = [...stagePatterns.entries()].sort((a, b) => b[1] - a[1]);
       logger.info(`Agent Interaction Patterns for Stage: ${stage}` , {
-        totalSequences: this.agentSequence.get(stage)!.length,
+        totalSequences: stageAgentSequence.length,
         uniquePatterns: stagePatterns.size,
         topPatterns: Object.fromEntries(sortedPatterns.slice(0, 5)),
       });
