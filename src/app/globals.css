@@ -290,6 +290,43 @@ html {
   .rotate-y-12 {
     transform: rotateY(12deg);
   }
+
+  /* Additional utilities from v4.1 */
+  .text-shadow-sky-300 {
+    text-shadow: 0 2px 4px oklch(0.6 0.118 184.704 / 0.5);
+  }
+
+  .drop-shadow-indigo-500 {
+    filter: drop-shadow(0 4px 6px oklch(0.398 0.07 227.392 / 0.5));
+  }
+
+  .mask-radial-from-50\% {
+    mask: radial-gradient(circle at center, black 50%, transparent 100%);
+  }
+
+  .justify-center-safe {
+    justify-content: safe center;
+  }
+
+  .items-baseline-last {
+    align-items: last baseline;
+  }
+
+  .self-baseline-last {
+    align-self: last baseline;
+  }
+
+  .wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
+
+  .pointer-touch {
+    pointer-events: touch;
+  }
+
+  .pointer-mouse {
+    pointer-events: auto;
+  }
 }
 
 @keyframes float {

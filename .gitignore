@@ -93,3 +93,7 @@ src/lib/__tests__/performance-data-service.test.ts
 
 #Ignore vscode AI rules
 .github/copilot-instructions.md
+.aispec.md
+.gitignore
+GEMINI.md
+.aitasks.json
