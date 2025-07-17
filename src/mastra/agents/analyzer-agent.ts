@@ -51,7 +51,7 @@ export interface AnalyzerAgentRuntimeContext {
   "sports-league-preference"?: string;
   /** Cryptocurrency asset focus for analysis */
   "crypto-asset-focus"?: string;
-};
+}
 
 /**
  * Comprehensive Zod schemas for Analyzer Agent validation

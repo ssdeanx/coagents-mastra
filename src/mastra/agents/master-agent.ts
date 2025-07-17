@@ -40,7 +40,7 @@ export interface MasterAgentRuntimeContext {
   "actions": string;
   "tool-selection": string;
   "debug-mode": boolean;
-};
+}
 
 // Create dual logger that sends logs to both PinoLogger (console) and Upstash (distributed)
 const logger = new PinoLogger({ name: 'masterAgent', level: 'info' });

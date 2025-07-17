@@ -57,7 +57,7 @@ export interface LangGraphAgentRuntimeContext {
   "max-iterations": number;
   "domain-focus": string;
   "output-format": "structured" | "narrative" | "technical" | "summary";
-};
+}
 
 /**
  * LangGraph Agent - Advanced Multi-Step Reasoning and Workflow Orchestration
@@ -394,7 +394,20 @@ function generateWorkflowSteps(
     ]
   };
 
-  let steps = baseSteps[workflowType] || baseSteps["research-analysis"];
+  // Validate workflowType to prevent prototype pollution and object injection
+  const allowedTypes = [
+    "research-analysis",
+    "problem-solving",
+    "data-processing",
+    "creative-synthesis",
+    "technical-review"
+  ];
+  let steps: string[];
+  if (allowedTypes.includes(workflowType)) {
+    steps = baseSteps[workflowType];
+  } else {
+    steps = baseSteps["research-analysis"];
+  }
 
   // Enhance steps based on complexity
   if (complexity === "advanced" || complexity === "expert" || complexity === "enterprise") {
@@ -445,11 +458,11 @@ function enhanceStepsForComplexity(baseSteps: string[], complexity: string, doma
 
 /**
  * Get optimal temperature based on workflow type and complexity
- * 
+ *
  * @param workflowType - Type of workflow
  * @param complexity - Complexity level
  * @returns Optimal temperature setting
- * 
+ *
  * [EDIT: 2025-06-23] [BY: Claude]
  */
 function getOptimalTemperature(workflowType: string, complexity: string): number {
@@ -461,12 +474,31 @@ function getOptimalTemperature(workflowType: string, complexity: string): number
     "technical-review": 0.1
   };
 
-  let baseTemp = temperatureMap[workflowType] || 0.5;
+  // Validate workflowType to prevent object injection
+  const allowedTypes = [
+    "research-analysis",
+    "problem-solving",
+    "data-processing",
+    "creative-synthesis",
+    "technical-review"
+  ];
+  let baseTemp: number;
+  if (allowedTypes.includes(workflowType)) {
+    baseTemp = temperatureMap[workflowType];
+  } else {
+    baseTemp = 0.5;
+  }
 
   // Adjust for complexity
-  if (complexity === "advanced") baseTemp += 0.1;
-  if (complexity === "expert") baseTemp += 0.15;
-  if (complexity === "enterprise") baseTemp += 0.05; // More conservative for enterprise
+  if (complexity === "advanced") {
+    baseTemp += 0.1;
+  }
+  if (complexity === "expert") {
+    baseTemp += 0.15;
+  }
+  if (complexity === "enterprise") {
+    baseTemp += 0.05;
+  } // More conservative for enterprise
 
   return Math.min(baseTemp, 1.0);
 }

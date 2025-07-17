@@ -101,7 +101,7 @@ export interface ChanceAgentRuntimeContext {
   "sports-league-preference"?: string;
   /** Cryptocurrency asset focus for decision-making */
   "crypto-asset-focus"?: string;
-};
+}
 
 /**
  * Zod schema for validating Chance Agent input

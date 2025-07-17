@@ -1,4 +1,4 @@
-import { Agent } from "@mastra/core/agent";
+import { Agent } from '@mastra/core/agent';
 import { mastraMemory } from '../memory/upstashMemory';
 import { graphRAGTool } from '../tools/graphRAG';
 import { vectorQueryTool } from "../tools/vectorQueryTool";
@@ -24,7 +24,7 @@ import {
  * @mastra ResearchAgent runtime context interface
  * [EDIT: 2025-06-14] [BY: GitHub Copilot]
  */
-export type ResearchAgentRuntimeContext = {
+export interface ResearchAgentRuntimeContext {
   /** Unique identifier for the user */
   "user-id": string;
   /** Unique identifier for the session */
@@ -53,7 +53,7 @@ export type ResearchAgentRuntimeContext = {
   "sports-league-preference"?: string;
   /** Cryptocurrency asset focus for research */
   "crypto-asset-focus"?: string;
-};
+}
 
 const logger = new PinoLogger({ name: 'ResearchAgent', level: 'info' });
 logger.info('Initializing ResearchAgent');

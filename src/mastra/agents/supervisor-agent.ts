@@ -28,7 +28,7 @@ export interface SupervisorAgentRuntimeContext {
   "qa-level": "basic" | "standard" | "rigorous" | "comprehensive";
   "delegation-level": "limited" | "moderate" | "extensive" | "full";
   "escalation-threshold": "low" | "medium" | "high" | "critical-only";
-};
+}
 
 const logger = new PinoLogger({ name: 'supervisorAgent', level: 'info' });
 logger.info('Initializing supervisorAgent');
