@@ -8,6 +8,15 @@ import { HumanInTheLoop } from "../components/copilotkit/human-in-the-loop";
 import "../globals.css";
 
 
+/**
+ * Renders the main dashboard page for the application.
+ *
+ * This component manages the theme color state and sets up a CopilotKit action to allow dynamic theme changes.
+ * It provides the main layout and passes the current theme color to the main content area.
+ *
+ * Returns:
+ *   The dashboard page layout with CopilotKit integration and dynamic theming.
+ */
 export default function DashboardPage() {
   const [themeColor, setThemeColor] = useState("oklch(0.147 0.004 49.25)"); //globals.css --primary
 
@@ -40,6 +49,16 @@ export default function DashboardPage() {
   );
 }
 
+/**
+ * Displays the main content area of the dashboard with dynamic theming.
+ *
+ * This component integrates CopilotKit generative UI actions and renders detailed information about CopilotKit actions and results.
+ *
+ * Args:
+ *   themeColor: The current theme color to apply to the content area.
+ * Returns:
+ *   The main dashboard content with CopilotKit action integration and theming.
+ */
 function YourMainContent({ themeColor }: { themeColor: string }) {
   //🪁 Generative UI: https://docs.copilotkit.ai/coagents/generative-ui
   useCopilotAction({

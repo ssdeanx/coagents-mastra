@@ -70,6 +70,14 @@ export function CopilotChatComponent({
   hideStopButton = false,
   children,
 }: CopilotChatComponentProps) {
+  /**
+   * Determines the CSS class names for the selected design variant.
+   *
+   * This helper function returns the appropriate class names for glassmorphic, neumorphic, or default styling.
+   *
+   * Returns:
+   *   A string of CSS class names for the selected variant.
+   */
   const getVariantStyles = () => {
     switch (variant) {
       case "glassmorphic":
