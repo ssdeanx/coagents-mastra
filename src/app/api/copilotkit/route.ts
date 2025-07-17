@@ -30,8 +30,9 @@ import { MastraAgent } from "@ag-ui/mastra";
 import { MastraClient } from "@mastra/client-js";
 import type { AbstractAgent } from "@ag-ui/client";
 
- // 1. Base address for the Mastra server
-const MASTRA_URL = process.env.MASTRA_URL || "http://localhost:4111";
+// 1. Base address for the Mastra server
+const MASTRA_URL = process.env.MASTRA_URL ?? "http://localhost:4111";
+
 
 // Common init logic moved to top‐level
 async function initRuntime() {
