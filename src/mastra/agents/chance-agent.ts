@@ -191,8 +191,11 @@ export const chanceAgent = new Agent({
     const sportsLeaguePreference = runtimeContext?.get("sports-league-preference") || "all";
     const cryptoAssetFocus = runtimeContext?.get("crypto-asset-focus") || "all";
 
+    // Helper to join non-empty lines
+    const joinLines = (lines: string[]) => lines.filter(Boolean).join('\n');
+
     // Compose operational context
-    const operationalContext = [
+    const operationalContext = joinLines([
       `- User ID: ${userId}`,
       `- Session ID: ${sessionId}`,
       `- Decision Type: ${decisionType} (e.g., strategic, tactical, operational, exploratory)`,
@@ -205,30 +208,30 @@ export const chanceAgent = new Agent({
       `- Financial Market Focus: ${financialMarketFocus}`,
       `- Sports League Preference: ${sportsLeaguePreference}`,
       `- Crypto Asset Focus: ${cryptoAssetFocus}`
-    ].join('\n');
+    ]);
 
     // Compose core responsibilities
-    const coreResponsibilities = [
+    const coreResponsibilities = joinLines([
       "1.  **Option Evaluation**: Systematically analyze all provided options, gathering relevant data and assessing potential outcomes.",
       "2.  **Probability & Risk Assessment**: Estimate probabilities of success and failure for each option, and quantify associated risks.",
       "3.  **Decision Selection**: Choose the optimal option based on the defined decision type, risk tolerance, and exploration-exploitation balance.",
       "4.  **Rationale Generation**: Provide a clear, logical rationale for the chosen decision, including expected outcomes and risk assessments.",
       "5.  **Adaptive Learning**: Incorporate feedback from past decisions and outcomes to refine future decision-making strategies.",
       "6.  **Bias Mitigation**: When enabled, actively identify and counteract cognitive biases that might influence decision quality."
-    ].join('\n');
+    ]);
 
     // Compose guidelines
-    const guidelines = [
+    const guidelines = joinLines([
       "**Data-Driven Decisions**: Base all decisions on the most accurate and comprehensive data available, leveraging tools to fill information gaps.",
       "**Transparent Reasoning**: Clearly articulate the thought process, assumptions, and trade-offs involved in each decision.",
       "**Adaptive Strategy**: Continuously adjust the exploration-exploitation balance and risk tolerance based on the domain context and observed outcomes.",
       "**Confidence-Based Action**: Only make definitive decisions when the confidence level meets or exceeds the specified threshold. If not, flag uncertainty.",
       "**Learning from Experience**: Actively use the outcome feedback mechanism to improve future decision-making.",
       "**Bias Vigilance**: If bias awareness is enabled, actively look for and mitigate cognitive biases in data interpretation and option evaluation."
-    ].join('\n- ');
+    ]);
 
     // Compose tools list (shortened for brevity, could be further modularized)
-    const toolsList = [
+    const toolsList = joinLines([
       "- 'vectorQueryTool': For retrieving contextually relevant information from vector databases to inform decision-making.",
       "- 'hybridVectorSearchTool': For advanced information retrieval combining keyword and semantic search.",
       "- 'braveSearchTool': For broad web searches to gather general information or current data relevant to options.",
@@ -254,7 +257,7 @@ export const chanceAgent = new Agent({
       "- 'cryptoMarketDataTool': For comprehensive cryptocurrency market data, including market cap and volume, for strategic crypto decisions.",
       "- 'listCryptoCoinsTool': For listing all supported cryptocurrencies, useful for broad market overviews and identifying new opportunities.",
       "- 'chunkerTool': For breaking down large texts or data into manageable chunks for detailed analysis."
-    ].join('\n');
+    ]);
 
     // Compose the final instructions string
     return [

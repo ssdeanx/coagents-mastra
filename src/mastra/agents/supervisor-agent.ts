@@ -88,12 +88,12 @@ const supervisorAgentConfigSchema = z.object({
  * Supervisor Agent for orchestrating and managing multi-agent workflows
  * Specializes in task delegation, quality assurance, and performance monitoring
  * @examples
- * 
+ *
  *
  * @mastra SupervisorAgent
  * @since 2025-07-09
  * @remarks
- * 
+ *
  */
 export const supervisorAgent = new Agent({
   name: "Supervisor Agent",
