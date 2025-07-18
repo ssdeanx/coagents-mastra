@@ -10,7 +10,7 @@ import { masterAgent } from '../agents/master-agent';
 import { supervisorAgent } from '../agents/supervisor-agent';
 import { researchAgent } from '../agents/research-agent';
 import { analyzerAgent } from '../agents/analyzer-agent';
-import { weatherWorkflow } from './weather-workflow';
+import { weatherWorkflow } from '../workflows/weather-workflow';
 import { chunkerTool, createBraveSearchTool, createTavilySearchTool, graphRAGTool, graphRAGUpsertTool, hybridVectorSearchTool, mem0MemorizeTool, mem0RememberTool, stockPriceTool, vectorQueryTool, weatherTool } from '../tools/index';
 import { mastraMemory } from '../memory/upstashMemory';
 // Tool imports

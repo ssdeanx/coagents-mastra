@@ -2,8 +2,8 @@ import { Mastra } from "@mastra/core/mastra";
 import { weatherAgent, researchAgent, supervisorAgent, analyzerAgent, masterAgent, generationAgent, chanceAgent, langGraphAgent } from "./agents/index";
 import { createLogger, LogLevel } from "@mastra/core/logger";
 import { weatherWorkflow, researchAnalysisWorkflow, documentAnalysisWorkflow, researchReportWorkflow, agentPerformanceWorkflow } from "./workflows/index";
-import { baseNetwork } from "./networks/base-network";
-import { vNextNetwork } from "./workflows/vnext-workflow";
+import { vNextNetwork, baseNetwork } from "./networks/index";
+
 import { LangfuseExporter } from 'langfuse-vercel';
 //import { registerCopilotKit } from "@ag-ui/mastra";
 //import { CopilotRuntime, copilotRuntimeNodeHttpEndpoint, ExperimentalEmptyAdapter } from "@copilotkit/runtime";
