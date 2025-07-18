@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkflowPageLayout } from "@/app/components/layout";
+import { WorkflowCanvas } from "@/app/components/workflows";
 
 /**
  * Workflows Page - Multi-Agent Orchestration and Automation
@@ -67,13 +68,9 @@ export default function WorkflowsPage() {
           </div>
         </div>
 
-        {/* Coming Soon Notice */}
-        <div className="glass-subtle p-8 rounded-xl text-center">
-          <h2 className="text-2xl font-bold mb-4">Workflow Builder Coming Soon</h2>
-          <p className="text-muted-foreground mb-6">
-            Advanced workflow automation is being implemented in Phase 2.
-            This page will feature visual workflow creation, agent orchestration, and real-time monitoring.
-          </p>
+        {/* Workflow Canvas */}
+        <div className="h-[600px]">
+          <WorkflowCanvas />
         </div>
       </div>
     </WorkflowPageLayout>

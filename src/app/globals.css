@@ -240,6 +240,56 @@ html {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Workflow Canvas specific utilities */
+  .workflow-canvas {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+  }
+
+  .workflow-canvas .react-flow__background {
+    background-color: transparent;
+  }
+
+  .workflow-canvas .react-flow__controls {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+  }
+
+  .workflow-canvas .react-flow__minimap {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+  }
+
+  /* Node animations */
+  .agent-node, .tool-node, .condition-node, .start-node, .end-node {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .agent-node:hover, .tool-node:hover, .condition-node:hover {
+    transform: scale(1.02);
+  }
+
+  /* Edge styles */
+  .react-flow__edge-path {
+    stroke: rgba(59, 130, 246, 0.6);
+    stroke-width: 2;
+  }
+
+  .react-flow__edge.selected .react-flow__edge-path {
+    stroke: rgba(59, 130, 246, 1);
+    stroke-width: 3;
+  }
+
+  /* Progress bar with CSS custom properties */
+  .bg-blue-400[style*="--progress-width"] {
+    width: var(--progress-width);
+  }
   }
 
   .glass-dark {

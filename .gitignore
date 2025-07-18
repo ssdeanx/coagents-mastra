@@ -97,3 +97,4 @@ src/lib/__tests__/performance-data-service.test.ts
 .gitignore
 GEMINI.md
 .aitasks.json
+.specstory/history/2025-07-15_10-30Z-in-src-app-components-researchcanvas-editresourced.md
