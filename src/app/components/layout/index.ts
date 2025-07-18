@@ -1,6 +1,6 @@
 /**
  * Layout Components Export Index
- * 
+ *
  * Centralized exports for all layout components used throughout the application.
  * Includes navigation, page layouts, and theme components.
  */
@@ -10,21 +10,21 @@ export { TopNavbar } from "./top-navbar";
 export { Sidebar } from "./sidebar";
 export { Footer } from "./footer";
 
-// Theme Components  
+// Theme Components
 export { ThemeProvider } from "./theme-provider";
 export { ThemeSwitch } from "./theme-switch";
 
 // Page Layout Components
-export { 
+export {
   PageLayout,
   DashboardPageLayout,
-  ResearchPageLayout, 
+  ResearchPageLayout,
   WorkflowPageLayout,
   AnalyticsPageLayout
 } from "./page-layout";
 
 // Types
-export type { 
+export type {
   PageLayoutProps,
-  MastraAgent 
+  MastraAgent
 } from "./page-layout";

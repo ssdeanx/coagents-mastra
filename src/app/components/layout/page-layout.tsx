@@ -10,8 +10,7 @@ import {
   ChevronLeft,
   Bot,
   Settings,
-  HelpCircle,
-  Sparkles
+  HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
