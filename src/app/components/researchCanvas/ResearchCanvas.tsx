@@ -37,9 +37,9 @@ export function ResearchCanvas() {
     name: agent,
     initialState: {
       model,
-      resources: [],
     },
   });
+
   useCoAgentStateRender({
     name: agent,
     render: ({ state, nodeName, status }) => {
@@ -111,7 +111,7 @@ export function ResearchCanvas() {
   const resources: Resource[] = state.resources || [];
   const setResources = (resources: Resource[]) => {
     setState((prevState: AgentState | undefined) => ({
-      ...(prevState || state),
+      ...prevState!,
       resources,
     }));
   };

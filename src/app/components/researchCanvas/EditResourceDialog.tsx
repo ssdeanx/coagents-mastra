@@ -10,9 +10,8 @@ import { Button } from "@/app/components/ui/button";
 import { Label } from "@/app/components/ui/label";
 import { Badge } from "@/app/components/ui/badge";
 import { Resource } from "@/lib/types";
-import { validateUrl, detectResourceType, getResourceIcon } from "@/lib/resource-utils";
-import { Edit3, Save, X } from "lucide-react";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { Edit3, Save, X, Link, FileText, Globe } from "lucide-react";
+import { useState, useEffect } from "react";
 
 /**
  * Enhanced Edit Resource Dialog
@@ -53,25 +52,44 @@ export function EditResourceDialog({
     }
   }, [editResource, isOpen]);
 
-  // Memoize the resource icon component based on the URL
-  const ResourceIcon = useMemo(() => {
-    return getResourceIcon(editResource?.url);
-  }, [editResource?.url]);
+  const validateUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
-  // Memoize the resource type detection
-  const resourceType = useMemo(() => {
-    return editResource?.url ? detectResourceType(editResource.url) : 'web';
-  }, [editResource?.url]);
+  const detectResourceType = (url: string): 'web' | 'document' | 'academic' | 'news' => {
+    if (url.includes('arxiv.org') || url.includes('scholar.google')) {
+      return 'academic';
+    }
+    if (url.includes('.pdf') || url.includes('.doc')) {
+      return 'document';
+    }
+    if (url.includes('news') || url.includes('reuters') || url.includes('bbc')) {
+      return 'news';
+    }
+    return 'web';
+  };
 
-  // Memoized URL validation callback
-  const validateUrlCallback = useCallback((url: string) => {
-    return validateUrl(url);
-  }, []);
+  const getResourceIcon = (url?: string) => {
+    if (!url) {
+      return Link;
+    }
+    const type = detectResourceType(url);
+    switch (type) {
+      case 'document': return FileText;
+      case 'academic': return Globe;
+      case 'news': return Globe;
+      default: return Link;
+    }
+  };
 
   const handleFieldChange = (field: keyof Resource, value: string) => {
     if (field === 'url') {
-      const trimmedValue = value.trim();
-      const valid = trimmedValue === '' || validateUrlCallback(trimmedValue);
+      const valid = value === '' || validateUrl(value);
       setIsValidUrl(valid);
     }
 
@@ -92,6 +110,9 @@ export function EditResourceDialog({
       return updated;
     });
   };
+
+  const ResourceIcon = getResourceIcon(editResource?.url);
+  const resourceType = editResource?.url ? detectResourceType(editResource.url) : 'web';
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>

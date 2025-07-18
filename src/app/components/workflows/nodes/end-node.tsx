@@ -28,7 +28,7 @@ export const EndNode = memo(({ data, selected }: NodeProps<EndNodeType>) => {
         position={Position.Top}
         className="w-3 h-3 !bg-red-400 !border-red-300"
       />
-
+      
       <Card className={`
         glass border-red-400/50 bg-red-500/20 min-w-[120px] transition-all duration-200
         ${selected ? 'ring-2 ring-red-400 ring-opacity-50' : ''}
@@ -38,7 +38,7 @@ export const EndNode = memo(({ data, selected }: NodeProps<EndNodeType>) => {
             <div className="p-2 rounded-full bg-red-500/30">
               <Square className="h-4 w-4 text-red-400" />
             </div>
-            <span className="text-sm font-semibold text-white">{nodeData.label || 'End'}</span>
+            <span className="text-sm font-semibold text-white">{nodeData.label}</span>
           </div>
         </CardContent>
       </Card>

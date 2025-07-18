@@ -91,7 +91,7 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
         position={Position.Top}
         className="w-3 h-3 !bg-white/50 !border-white"
       />
-
+      
       <Card className={`
         glass border-white/20 min-w-[200px] transition-all duration-200
         ${selected ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
@@ -108,9 +108,9 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
                 <p className="text-xs text-gray-300">{config.description}</p>
               </div>
             </div>
-
-            <Badge
-              variant="outline"
+            
+            <Badge 
+              variant="outline" 
               className={`text-xs border-white/30 text-white ${
                 nodeData.status === 'running' ? 'animate-pulse' : ''
               }`}
@@ -119,7 +119,7 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
             </Badge>
           </div>
         </CardHeader>
-
+        
         <CardContent className="pt-0">
           {/* Progress bar for running status */}
           {nodeData.status === 'running' && nodeData.progress !== undefined && (
@@ -133,7 +133,7 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
               <p className="text-xs text-gray-400 mt-1">{nodeData.progress}% complete</p>
             </div>
           )}
-
+          
           {/* Tools */}
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-medium">Available Tools:</p>
@@ -148,8 +148,8 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
                 </Badge>
               ))}
               {config.tools.length > 3 && (
-                <Badge
-                  variant="secondary"
+                <Badge 
+                  variant="secondary" 
                   className="text-xs px-1.5 py-0.5 bg-white/10 text-gray-300"
                 >
                   +{config.tools.length - 3}
@@ -157,7 +157,7 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
               )}
             </div>
           </div>
-
+          
           {/* Last result preview */}
           {nodeData.lastResult != null && nodeData.status === 'completed' && (
             <div className="mt-3 pt-2 border-t border-white/10">
@@ -172,7 +172,7 @@ export const AgentNode = memo(({ data, selected }: NodeProps<AgentNodeType>) => 
           )}
         </CardContent>
       </Card>
-
+      
       <Handle
         type="source"
         position={Position.Bottom}

@@ -10,7 +10,7 @@ import { Textarea } from "@/app/components/ui/textarea";
 import { Button } from "@/app/components/ui/button";
 import { Label } from "@/app/components/ui/label";
 import { Badge } from "@/app/components/ui/badge";
-import { PlusCircle, Plus, Link, FileText, Globe } from "lucide-react";
+import { PlusCircle, Plus, Link, FileText, Globe, ExternalLink } from "lucide-react";
 import { Resource } from "@/lib/types";
 import { useState } from "react";
 
