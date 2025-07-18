@@ -70,7 +70,8 @@ export function EditResourceDialog({
 
   const handleFieldChange = (field: keyof Resource, value: string) => {
     if (field === 'url') {
-      const valid = value === '' || validateUrlCallback(value);
+      const trimmedValue = value.trim();
+      const valid = trimmedValue === '' || validateUrlCallback(trimmedValue);
       setIsValidUrl(valid);
     }
 

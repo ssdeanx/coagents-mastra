@@ -203,6 +203,7 @@ export function WorkflowCanvas() {
   });
 
   const generateWorkflowNodes = (description: string, agents: string[], complexity: string): Node[] => {
+    let nodeCounter = 0; // Initialize a counter for unique IDs
     const baseNodes: Node[] = [
       {
         id: 'start',
@@ -249,8 +250,9 @@ export function WorkflowCanvas() {
 
     // Add conditional nodes for advanced workflows
     if (isAdvanced && description.toLowerCase().includes('condition')) {
+      nodeCounter++;
       baseNodes.push({
-        id: 'condition-1',
+        id: `condition-${nodeCounter}`, // Dynamic ID
         type: 'conditionNode',
         position: { x: xCenter, y: yOffset + 100 } as XYPosition,
         data: {
@@ -264,8 +266,9 @@ export function WorkflowCanvas() {
 
     // Add tool nodes for complex workflows
     if (isComplex) {
+      nodeCounter++;
       baseNodes.push({
-        id: 'tool-search',
+        id: `tool-${nodeCounter}`, // Dynamic ID
         type: 'toolNode',
         position: { x: xCenter - 100, y: yOffset + 150 } as XYPosition,
         data: {
@@ -292,7 +295,7 @@ export function WorkflowCanvas() {
 
   const generateWorkflowEdges = (nodes: Node[]): Edge[] => {
     const edges: Edge[] = [];
-    
+
     // Simple linear connection for now
     for (let i = 0; i < nodes.length - 1; i++) {
       edges.push({

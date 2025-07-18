@@ -32,7 +32,7 @@ export const StartNode = memo(({ data, selected }: NodeProps<StartNodeType>) => 
             <div className="p-2 rounded-full bg-green-500/30">
               <Play className="h-4 w-4 text-green-400" />
             </div>
-            <span className="text-sm font-semibold text-white">{nodeData.label}</span>
+            <span className="text-sm font-semibold text-white">{nodeData.label || 'Start'}</span>
           </div>
         </CardContent>
       </Card>
