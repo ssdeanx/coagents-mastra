@@ -364,3 +364,22 @@ export function AnalyticsPageLayout(props: Omit<PageLayoutProps, "agent">) {
     />
   );
 }
+
+/**
+ * Specialized layout for development workspace pages
+ */
+export function DevPageLayout(props: Omit<PageLayoutProps, "agent">) {
+  return (
+    <PageLayout
+      {...props}
+      agent="generationAgent"
+      showBackButton={true}
+      copilotConfig={{
+        title: "Development Agent - Deanmachines",
+        initialMessage: "🚀 I'm your Development Agent! I can help you:\n\n• **Code Generation** - Create components and functions\n• **Component Building** - Design React components with TypeScript\n• **File Operations** - Manage project files and structure\n• **AI-Assisted Development** - Rapid prototyping and development\n\nLet's build something amazing together!",
+        defaultOpen: true,
+        ...props.copilotConfig
+      }}
+    />
+  );
+}

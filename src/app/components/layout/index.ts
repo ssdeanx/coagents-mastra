@@ -20,7 +20,8 @@ export {
   DashboardPageLayout,
   ResearchPageLayout,
   WorkflowPageLayout,
-  AnalyticsPageLayout
+  AnalyticsPageLayout,
+  DevPageLayout
 } from "./page-layout";
 
 // Types

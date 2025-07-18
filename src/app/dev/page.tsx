@@ -1,48 +1,34 @@
 "use client";
 
-import { PageLayout } from "@/app/components/layout/page-layout";
-import { useCopilotAction } from "@copilotkit/react-core";
-import { useState } from "react";
+import { DevPageLayout } from "@/app/components/layout";
+import { DevWorkspace } from "@/app/components/dev/dev-workspace";
 
+/**
+ * Development Workspace Page - AI-Powered Development Environment
+ *
+ * This page provides an AI-powered development workspace with:
+ * - Monaco code editor with TypeScript support
+ * - Component generator with live preview
+ * - File manager with tree view and CRUD operations
+ * - Terminal integration with command simulation
+ * - Project scaffolding capabilities
+ */
 export default function DevelopmentWorkspacePage() {
-  const [generatedCode, setGeneratedCode] = useState("");
-
-  useCopilotAction({
-    name: "generateCode",
-    description: "Generates code based on user specifications.",
-    parameters: [
-      {
-        name: "prompt",
-        type: "string",
-        description: "The prompt for code generation.",
-      },
-    ],
-    handler: async ({ prompt }) => {
-      // Placeholder for actual code generation logic with a Mastra agent
-      const code = `// Generated code for: ${prompt}\nconsole.log("Hello from AI-generated code!");`;
-      setGeneratedCode(code);
-      alert(`Code generated: ${code}`);
-    },
-    render: "Generating code...",
-  });
-
   return (
-    <PageLayout
+    <DevPageLayout
       title="Development Workspace"
-      description="AI-powered environment for code generation and component creation."
+      description="AI-powered development environment with Monaco editor, component generator, and file management"
+      showCopilot={true}
+      copilotConfig={{
+        defaultOpen: false
+      }}
     >
-      <div className="space-y-8">
-        <h2 className="text-2xl font-bold">Code Editor (Coming Soon)</h2>
-        <p>This section will feature an integrated code editor.</p>
-
-        <h2 className="text-2xl font-bold">Component Generator (Coming Soon)</h2>
-        <p>This section will allow AI-powered component generation.</p>
-
-        <h2 className="text-2xl font-bold">Generated Code Preview</h2>
-        <pre className="bg-gray-800 text-white p-4 rounded-md overflow-auto">
-          {generatedCode || "// No code generated yet."}
-        </pre>
-      </div>
-    </PageLayout>
+      <DevWorkspace
+        showTerminal={true}
+        showComponentGenerator={true}
+        enableScaffolding={true}
+        className="h-[calc(100vh-12rem)]"
+      />
+    </DevPageLayout>
   );
 }
