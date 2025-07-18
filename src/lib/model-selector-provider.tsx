@@ -23,9 +23,9 @@ export const ModelSelectorProvider = ({
 }) => {
   const model =
     globalThis.window === undefined
-      ? "mastra"
+      ? "google_genai"
       : new URL(window.location.href).searchParams.get("coAgentsModel") ??
-        "mastra";
+        "google_genai";
   const [hidden, setHidden] = useState<boolean>(false);
 
   const setModel = (model: string) => {

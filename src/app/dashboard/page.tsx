@@ -3,7 +3,7 @@
 import { CatchAllActionRenderProps, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties } from "@copilotkit/react-ui";
 import { useState } from "react";
-import { DashboardPageLayout } from "@/app/components/layout";
+import { Sidebar } from "@/app/components/layout/sidebar";
 import { HumanInTheLoop } from "../components/copilotkit/human-in-the-loop";
 import "../globals.css";
 
@@ -34,18 +34,30 @@ export default function DashboardPage() {
   });
 
   return (
-    <DashboardPageLayout
-      title="AI Dashboard"
-      description="Your intelligent workspace powered by Deanmachines"
-      showCopilot={true}
-      copilotConfig={{
-        defaultOpen: true
-      }}
-    >
-      <div style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
-        <YourMainContent themeColor={themeColor} />
+    <div className="flex h-screen bg-background">
+      {/* Sidebar Navigation */}
+      <Sidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Dashboard Header */}
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="flex h-16 items-center justify-between px-6">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">AI Dashboard</h1>
+              <p className="text-sm text-muted-foreground">Your intelligent workspace powered by Deanmachines</p>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto">
+          <div style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
+            <YourMainContent themeColor={themeColor} />
+          </div>
+        </main>
       </div>
-    </DashboardPageLayout>
+    </div>
   );
 }
 
@@ -95,11 +107,36 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
   return (
     <div
       style={{ backgroundColor: themeColor }}
-      className="h-screen w-screen flex justify-center items-center flex-col transition-colors duration-300"
+      className="min-h-full flex justify-center items-center flex-col transition-colors duration-300 p-6"
     >
-      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-2xl w-full">
-        <h1 className="text-4xl font-bold text-white mb-2 text-center">Deanmachines</h1>
-        <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it can be anything you want! 🪁 Just </p>
+      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-4xl w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">Deanmachines AI Dashboard</h1>
+          <p className="text-gray-200 italic mb-6">
+            Welcome to your intelligent workspace! This dashboard integrates with 8 specialized AI agents
+            and provides access to 20+ production tools. 🪁
+          </p>
+        </div>
+
+        {/* Dashboard Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl">
+            <h3 className="text-white font-semibold mb-2">Active Agents</h3>
+            <p className="text-2xl font-bold text-white">8</p>
+            <p className="text-gray-300 text-sm">Specialized AI agents ready</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl">
+            <h3 className="text-white font-semibold mb-2">Available Tools</h3>
+            <p className="text-2xl font-bold text-white">20+</p>
+            <p className="text-gray-300 text-sm">Production-ready tools</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl">
+            <h3 className="text-white font-semibold mb-2">Status</h3>
+            <p className="text-2xl font-bold text-green-400">Online</p>
+            <p className="text-gray-300 text-sm">All systems operational</p>
+          </div>
+        </div>
+
         <HumanInTheLoop themeColor={themeColor} />
       </div>
     </div>

@@ -10,15 +10,16 @@ import { Badge } from "@/app/components/ui/badge";
 import {
   Bot,
   LayoutDashboard,
-  MessageSquare,
+  Search,
   Settings,
   Users,
   Workflow,
-  Palette,
-  Zap,
+  BarChart3,
+  Code,
   BookOpen,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Info
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -36,47 +37,46 @@ const navigationItems = [
     badge: null,
   },
   {
-    title: "Chat",
-    href: "/dashboard/chat",
-    icon: MessageSquare,
+    title: "Research",
+    href: "/research",
+    icon: Search,
     badge: "AI",
   },
   {
     title: "Workflows",
-    href: "/dashboard/workflows",
+    href: "/workflows",
     icon: Workflow,
     badge: null,
   },
   {
+    title: "Analytics",
+    href: "/analytics",
+    icon: BarChart3,
+    badge: null,
+  },
+  {
     title: "Agents",
-    href: "/dashboard/agents",
+    href: "/agents",
     icon: Bot,
-    badge: "7",
+    badge: "8",
   },
   {
-    title: "Generative UI",
-    href: "/dashboard/generative-ui",
-    icon: Palette,
+    title: "Development",
+    href: "/dev",
+    icon: Code,
     badge: "New",
-  },
-  {
-    title: "Frontend Actions",
-    href: "/dashboard/frontend-actions",
-    icon: Zap,
-    badge: null,
-  },
-  {
-    title: "Team",
-    href: "/dashboard/team",
-    icon: Users,
-    badge: null,
   },
 ];
 
 const bottomItems = [
   {
+    title: "About",
+    href: "/about",
+    icon: Info,
+  },
+  {
     title: "Documentation",
-    href: "/docs",
+    href: "/documentation",
     icon: BookOpen,
   },
   {
@@ -120,7 +120,7 @@ export function Sidebar({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <Bot className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">Mastra</span>
+            <span className="text-xl font-bold">Deanmachines</span>
           </Link>
         )}
 

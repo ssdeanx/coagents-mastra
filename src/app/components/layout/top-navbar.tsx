@@ -48,7 +48,7 @@ const navigationItems = [
   {
     title: "Research",
     href: "/research",
-    description: "Document analysis and research tools",
+    description: "AI-powered document analysis and research",
     icon: Search,
   },
   {
@@ -231,7 +231,7 @@ export function TopNavbar({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => { setIsMobileMenuOpen(false); }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -251,7 +251,7 @@ export function TopNavbar({
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "hover:bg-accent/50 hover:text-accent-foreground"
                         )}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={() => { setIsMobileMenuOpen(false); }}
                       >
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.title}</span>
@@ -263,13 +263,13 @@ export function TopNavbar({
                 {showAuthButtons && (
                   <div className="flex flex-col space-y-2 pt-4 border-t">
                     <Button variant="ghost" asChild>
-                      <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href="/dashboard" onClick={() => { setIsMobileMenuOpen(false); }}>
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
                       </Link>
                     </Button>
                     <Button asChild>
-                      <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href="/dashboard" onClick={() => { setIsMobileMenuOpen(false); }}>
                         Get Started
                       </Link>
                     </Button>
