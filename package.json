@@ -46,8 +46,8 @@
     "@mdx-js/react": "^3.1.0",
     "@mermaid-js/parser": "^0.6.2",
     "@monaco-editor/react": "^4.7.0",
-    "@nangohq/node": "^0.63.0",
-    "@nangohq/types": "^0.63.0",
+    "@nangohq/node": "^0.63.1",
+    "@nangohq/types": "^0.63.1",
     "@next/mdx": "^15.4.1",
     "@octokit/rest": "^22.0.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -156,8 +156,6 @@
   },
   "overrides": {
     "undici": "^7.11.0",
-    "trim-newlines": "^5.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "trim-newlines": "^5.0.0"
   }
 }

@@ -17,13 +17,13 @@ graph TB
     B --> F[Analytics & Monitoring ✅]
     B --> G[Development Workspace 🔄]
     B --> H[Agent Management 🔄]
-    
+
     I[CopilotKit Provider ✅] --> J[Production Component Library ✅]
     J --> K[Research Interface ✅]
     J --> L[Workflow Builder ✅]
     J --> M[Analytics Dashboard ✅]
     J --> N[Agent Controllers ✅]
-    
+
     O[API Route ✅] --> P[Mastra Runtime ✅]
     P --> Q[Production Agent Collection ✅]
     Q --> R[Research Agent ✅]
@@ -31,7 +31,7 @@ graph TB
     Q --> T[Analyzer Agent ✅]
     Q --> U[Generation Agent ✅]
     Q --> V[Weather Agent ✅]
-    
+
     C --> I
     D --> I
     E --> I
