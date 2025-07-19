@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Post-Commit Changelog Generator",
+  "description": "Automatically generates changelog entries after git commits by analyzing the commit message and changes",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".git/logs/HEAD"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new commit has been made to the repository. Please analyze the latest commit and generate an appropriate changelog entry. Look at the commit message, files changed, and the nature of the changes to create a meaningful changelog entry. If a CHANGELOG.md file exists, append to it following the existing format. If it doesn't exist, create one following conventional changelog format with sections like Added, Changed, Fixed, Removed, etc. Make sure to include the commit hash and date for reference."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Codacy Analysis Hook",
+  "description": "Triggers Codacy code quality analysis using the CLI and extension when the user requests to use Codacy for code analysis",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".codacy/cli.sh",
+      ".codacy/codacy.yaml",
+      ".codacy/cli-config.yaml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The user has requested to run Codacy analysis. Please execute the Codacy CLI using the configuration files in the .codacy directory. Run the analysis and provide a summary of the code quality findings, including any issues detected and recommendations for improvement. Use the existing Codacy workflow and CLI setup that's already configured in the project."
+  }
+}

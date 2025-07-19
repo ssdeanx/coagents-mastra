@@ -1,3 +1,16 @@
 {
-  "typescript.tsserver.experimental.enableProjectDiagnostics": true
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "typescript.autoClosingTags": false,
+  "typescript.suggest.enabled": true,
+  "typescript.experimental.expandableHover": true,
+  "typescript.format.enable": true,
+  "typescript.enablePromptUseWorkspaceTsdk": false,
+  "typescript.tsserver.maxTsServerMemory": 4000,
+  "typescript.tsserver.web.projectWideIntellisense.enabled": true,
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.check.npmIsInstalled": true,
+  "typescript.preferGoToSourceDefinition": true,
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.experimental.updateImportsOnPaste": true
 }

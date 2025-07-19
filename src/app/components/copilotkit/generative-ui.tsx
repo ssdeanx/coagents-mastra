@@ -117,7 +117,7 @@ export function GenerativeUI({
               </Badge>
             </div>
           </CardHeader>
-          
+
           <CardContent className="space-y-4 relative z-10">
             {/* Input Arguments */}
             {args && typeof args === 'object' && Object.keys(args).length > 0 && (
@@ -175,3 +175,4 @@ export function GenerativeUI({
  *   render: (props) => <YourCustomComponent {...props} />
  * });
  */
+// FIXME: Thia ia critical.

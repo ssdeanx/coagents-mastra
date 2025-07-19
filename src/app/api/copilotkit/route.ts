@@ -101,7 +101,8 @@ export const config = {
   runtime: "edge",
 };
 
-/* This file sets up the CopilotKit runtime for Next.js, allowing it to handle requests
+/*
+ * This file sets up the CopilotKit runtime for Next.js, allowing it to handle requests
  * and interact with the Mastra backend. It initializes the runtime with agents,
  * sets up the service adapter, and provides endpoints for handling POST and GET requests.
  * The runtime is configured to use the Mastra client for agent management and telemetry/logging.
