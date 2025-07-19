@@ -176,7 +176,7 @@ export const DevWorkspace: React.FC<DevWorkspaceProps> = ({
 
   // Memoized active terminal
   const activeTerminal = useMemo(() => {
-    return terminalSessions.find(session => session.id === activeTerminalId) || null;
+    return terminalSessions.find(session => session.id === activeTerminalId) ?? null;
   }, [terminalSessions, activeTerminalId]);
 
   // Handle file selection from file manager
@@ -559,7 +559,7 @@ export const DevWorkspace: React.FC<DevWorkspaceProps> = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setIsComponentGeneratorVisible(!isComponentGeneratorVisible)}
+                      onClick={() => { setIsComponentGeneratorVisible(!isComponentGeneratorVisible); }}
                     >
                       <Layers className="h-4 w-4" />
                     </Button>

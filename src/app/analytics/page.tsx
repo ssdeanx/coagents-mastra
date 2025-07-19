@@ -56,7 +56,7 @@ export default function AnalyticsPage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span>Response Time</span>
-                <span className="font-medium">< 2s</span>
+                <span className="font-medium">&lt; 2s</span>
               </div>
               <div className="flex justify-between">
                 <span>Success Rate</span>

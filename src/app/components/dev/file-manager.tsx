@@ -385,7 +385,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
       return file.isExpanded ? FolderOpen : Folder;
     }
 
-    const extension = file.extension || file.name.split('.').pop()?.toLowerCase();
+    const extension = file.extension ?? file.name.split('.').pop()?.toLowerCase();
     const IconComponent = extension ? FILE_TYPE_ICONS[extension as keyof typeof FILE_TYPE_ICONS] : FILE_TYPE_ICONS.default;
     return IconComponent || FILE_TYPE_ICONS.default;
   }, []);
@@ -953,7 +953,7 @@ export const use${name} = () => {
             <Input
               placeholder="Search files and folders..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => { setSearchQuery(e.target.value); }}
               className="pl-10"
             />
           </div>
