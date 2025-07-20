@@ -199,7 +199,7 @@ export const DevWorkspace: React.FC<DevWorkspaceProps> = ({
       id: `tab-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       name: file.name,
       path: file.path,
-      content: file.content || '',
+      content: file.content ?? '',
       isDirty: false,
       language: file.extension === 'tsx' ? 'typescriptreact' : 
                 file.extension === 'ts' ? 'typescript' :
@@ -542,7 +542,7 @@ export const DevWorkspace: React.FC<DevWorkspaceProps> = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setIsTerminalVisible(!isTerminalVisible)}
+                      onClick={() => { setIsTerminalVisible(!isTerminalVisible); }}
                     >
                       <TerminalIcon className="h-4 w-4" />
                     </Button>
@@ -586,7 +586,7 @@ export const DevWorkspace: React.FC<DevWorkspaceProps> = ({
                   ? "bg-background border border-b-0"
                   : "bg-muted hover:bg-muted/80"
               )}
-              onClick={() => setActiveTabId(tab.id)}
+              onClick={() => { setActiveTabId(tab.id); }}
             >
               <FileText className="h-3 w-3" />
               <span className="truncate max-w-32">{tab.name}</span>
