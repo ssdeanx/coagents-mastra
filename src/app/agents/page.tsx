@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PageLayout } from "@/app/components/layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
@@ -115,6 +115,7 @@ export default function AgentsPage() {
         const requestCount = Array.isArray(logs) ? logs.length : 0;
         const errorCount = errorLogs.length;
         const successRate = requestCount > 0 ? ((requestCount - errorCount) / requestCount) * 100 : 100;
+        const errorRate = 100 - successRate;
 
         // Check if agent exists in the remote agents list
         const agentExists = agents && Object.keys(agents).includes(agent.id);
@@ -123,7 +124,7 @@ export default function AgentsPage() {
           id: agent.id,
           name: agent.name,
           status: agentExists ? 'active' as const : 'inactive' as const,
-          health: errorCount === 0 ? 'healthy' as const : 'warning' as const,
+          health: errorRate > 15 ? 'critical' as const : errorRate > 8 ? 'warning' as const : 'healthy' as const,
           responseTime: telemetry.averageResponseTime || Math.random() * 100 + 50,
           successRate: Math.round(successRate * 100) / 100,
           requestCount,
