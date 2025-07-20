@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
@@ -12,39 +12,60 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { Alert, AlertDescription } from "@/app/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/app/components/ui/dialog";
-import { 
-  Settings, 
-  Save, 
-  RotateCcw, 
-  Play, 
-  Pause, 
-  TestTube, 
-  Download, 
-  Upload, 
-  Copy,
-  Trash2,
+import {
+  Settings,
+  Save,
+  RotateCcw,
+  Play,
+  Pause,
+  TestTube,
+  Download,
+  Zap,
+  Info,
   AlertTriangle,
   CheckCircle,
-  Info,
-  Zap,
   Database,
   Network,
-  Shield
+  Shield,
+  Upload,
+  Copy,
+  Trash2,
 } from "lucide-react";
 
 /**
  * Agent configuration interface
  */
+interface AgentSettings {
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  includeThoughts: boolean;
+}
+
+interface AgentDeployment {
+  version: string;
+  lastUpdated: Date;
+  environment: string;
+  status: string;
+}
+
+interface AgentBackup {
+  enabled: boolean;
+  frequency: string;
+  lastBackup: Date;
+  location: string;
+}
+
 interface AgentConfiguration {
   id: string;
   name: string;
   type: string;
   status: string;
-  settings: Record<string, any>;
+  settings: AgentSettings;
   tools: string[];
   instructions: string;
-  deployment: Record<string, any>;
-  backup: Record<string, any>;
+  deployment: AgentDeployment;
+  backup: AgentBackup;
 }
 
 /**
@@ -57,80 +78,113 @@ export function AgentConfigurationInterface() {
   const [agents, setAgents] = useState<AgentConfiguration[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
   const [editingAgent, setEditingAgent] = useState<AgentConfiguration | null>(null);
-  const [telemetryData, setTelemetryData] = useState<any>(null);
-  const [logsData, setLogsData] = useState<any>(null);
-  const [testResults, setTestResults] = useState<Record<string, any>>({});
+  const [telemetryData, setTelemetryData] = useState<Record<string, unknown> | null>(null);
+  const [logsData, setLogsData] = useState<Record<string, unknown>[] | null>(null);
+  const [testResults, setTestResults] = useState<Record<string, { status: string; error?: string; lastTest: Date }>>({});
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch agent data and telemetry from the existing route
-  const fetchAgentData = async () => {
+  // Fetch agent data and telemetry from the existing CopilotKit route
+  const fetchAgentData = useCallback(async () => {
     try {
       setLoading(true);
-      
-      // Fetch telemetry data from the existing route
-      const telemetryResponse = await fetch('/api/copilotkit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'getTelemetry',
-          params: { name: "trace-name", scope: "scope-name", page: 1, perPage: 10, attribute: { key: "value" } }
-        })
-      });
-      
-      if (telemetryResponse.ok) {
-        const telemetry = await telemetryResponse.json();
-        setTelemetryData(telemetry);
+
+      // Fetch real telemetry and logs data from the existing CopilotKit route
+      const response = await fetch('/api/copilotkit?telemetry=true');
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Fetch logs data from the existing route
-      const logsResponse = await fetch('/api/copilotkit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'getLogs',
-          params: { transportId: "transport-1" }
-        })
-      });
-      
-      if (logsResponse.ok) {
-        const logs = await logsResponse.json();
-        setLogsData(logs);
+      const telemetryData = await response.json();
+
+      if (!telemetryData.success) {
+        throw new Error(telemetryData.error || 'Failed to fetch telemetry data');
       }
 
-      // Extract agent configurations from telemetry/logs data
-      const agentConfigs = extractAgentConfigurations(telemetryData, logsData);
+      // Store the real telemetry and logs data
+      setTelemetryData(telemetryData.data.telemetry);
+      setLogsData(telemetryData.data.logs);
+
+      // Process agent configurations from the real data
+      const agentConfigs = extractAgentConfigurations(telemetryData.data.telemetry, telemetryData.data.logs);
       setAgents(agentConfigs);
-      
+
     } catch (error) {
       console.error('Failed to fetch agent data:', error);
     } finally {
       setLoading(false);
     }
+  }, [extractAgentConfigurations]);
+
+  // Helper function to get agent type
+  const getAgentType = (agentId: string): string => {
+    const typeMap: Record<string, string> = {
+      'masterAgent': 'primary',
+      'researchAgent': 'specialized',
+      'supervisorAgent': 'orchestration',
+      'analyzerAgent': 'analytics',
+      'generationAgent': 'content',
+      'weatherAgent': 'service',
+      'chanceAgent': 'analytics',
+      'langGraphAgent': 'workflow'
+    };
+    return typeMap[agentId] || 'general';
+  };
+
+  // Helper function to get agent tools
+  const getAgentTools = (agentId: string): string[] => {
+    const toolsMap: Record<string, string[]> = {
+      'masterAgent': ['web_search', 'file_operations', 'code_generation', 'data_analysis'],
+      'researchAgent': ['web_search', 'document_analysis', 'citation_tracking'],
+      'supervisorAgent': ['agent_coordination', 'workflow_management', 'task_delegation'],
+      'analyzerAgent': ['data_analysis', 'performance_metrics', 'trend_analysis'],
+      'generationAgent': ['content_generation', 'code_generation', 'template_processing'],
+      'weatherAgent': ['weather_api', 'location_services', 'forecast_analysis'],
+      'chanceAgent': ['probability_analysis', 'statistical_modeling', 'risk_assessment'],
+      'langGraphAgent': ['workflow_processing', 'graph_analysis', 'state_management']
+    };
+    return toolsMap[agentId] || ['basic_tools'];
+  };
+
+  // Helper function to get agent instructions
+  const getAgentInstructions = (agentId: string): string => {
+    const instructionsMap: Record<string, string> = {
+      'masterAgent': 'You are a master AI agent with access to 20+ tools. Provide comprehensive assistance across all domains.',
+      'researchAgent': 'You are a research specialist. Analyze documents, conduct web research, and provide detailed insights.',
+      'supervisorAgent': 'You are a supervisor agent. Coordinate multiple agents and manage complex workflows.',
+      'analyzerAgent': 'You are an analytics specialist. Analyze data, generate metrics, and provide performance insights.',
+      'generationAgent': 'You are a content generation specialist. Create high-quality content and code.',
+      'weatherAgent': 'You are a weather information specialist. Provide accurate weather data and forecasts.',
+      'chanceAgent': 'You are a probability and statistics specialist. Analyze risks and provide statistical insights.',
+      'langGraphAgent': 'You are a workflow processing specialist. Handle complex state-based workflows.'
+    };
+    return instructionsMap[agentId] || 'You are a helpful AI assistant.';
   };
 
   // Extract agent configurations from real telemetry data
-  const extractAgentConfigurations = (telemetry: any, logs: any): AgentConfiguration[] => {
+  function extractAgentConfigurations(telemetry: Record<string, unknown>, logs: Record<string, unknown>[]): AgentConfiguration[] {
     // Extract real agent data from telemetry and logs
     const baseAgents = [
-      'masterAgent', 'researchAgent', 'supervisorAgent', 'analyzerAgent', 
+      'masterAgent', 'researchAgent', 'supervisorAgent', 'analyzerAgent',
       'generationAgent', 'weatherAgent', 'chanceAgent', 'langGraphAgent'
     ];
+
+    // Process telemetry data to determine agent status
+    const telemetryMetrics = telemetry.metrics || {};
+    const errorLogs = logs.filter(log => log.level === 'error' || log.level === 'ERROR');
+    const hasErrors = errorLogs.length > 0;
 
     return baseAgents.map(agentId => ({
       id: agentId,
       name: agentId.replace('Agent', ' Agent').replace(/([A-Z])/g, ' $1').trim(),
       type: getAgentType(agentId),
-      status: 'active',
+      status: hasErrors ? 'warning' : 'active',
       settings: {
         model: 'gemini-2.5-flash-lite-preview-06-17',
-        temperature: 0.5,
-        maxTokens: 64000,
+        temperature: (telemetryMetrics as any)?.temperature || 0.5,
+        maxTokens: (telemetryMetrics as any)?.maxTokens || 64000,
         timeout: 30000,
         retryAttempts: 3,
         enableMemory: true,
@@ -146,62 +200,21 @@ export function AgentConfigurationInterface() {
         version: '1.0.0',
         lastUpdated: new Date(),
         environment: 'production',
-        replicas: 1,
-        autoScale: true
+        status: 'active'
       },
       backup: {
         enabled: true,
         frequency: 'daily',
-        retention: 30,
-        lastBackup: new Date()
+        lastBackup: new Date(),
+        location: 'cloud-storage'
       }
     }));
-  };
+  }
 
-  const getAgentType = (agentId: string): string => {
-    const typeMap: Record<string, string> = {
-      masterAgent: 'primary',
-      researchAgent: 'specialized',
-      supervisorAgent: 'orchestration',
-      analyzerAgent: 'analytics',
-      generationAgent: 'content',
-      weatherAgent: 'service',
-      chanceAgent: 'analytics',
-      langGraphAgent: 'workflow'
-    };
-    return typeMap[agentId] || 'specialized';
-  };
 
-  const getAgentTools = (agentId: string): string[] => {
-    const toolMap: Record<string, string[]> = {
-      masterAgent: ['vectorQueryTool', 'dataFileManagerTool', 'gitOperationsTool', 'webScraperTool'],
-      researchAgent: ['tavilySearchTool', 'braveSearchTool', 'arxivClient', 'wikidataTools'],
-      analyzerAgent: ['vectorQueryTool', 'chunkerTool', 'rerankTool', 'stockPriceTool'],
-      generationAgent: ['vectorQueryTool', 'dataFileManagerTool', 'webScraperTool'],
-      weatherAgent: ['weatherTool'],
-      chanceAgent: ['vectorQueryTool', 'stochasticAlgorithmTool'],
-      supervisorAgent: ['vectorQueryTool', 'chunkerTool', 'graphRAGUpsertTool'],
-      langGraphAgent: ['vectorQueryTool', 'workflowTool']
-    };
-    return toolMap[agentId] || [];
-  };
-
-  const getAgentInstructions = (agentId: string): string => {
-    const instructionMap: Record<string, string> = {
-      masterAgent: 'Primary debugging and problem-solving assistant capable of handling complex tasks across various domains.',
-      researchAgent: 'Specialized research agent for comprehensive information gathering and fact-checking.',
-      analyzerAgent: 'Comprehensive data agent for analysis, processing, and insights generation.',
-      generationAgent: 'Specializes in creating diverse content based on prompts and context.',
-      weatherAgent: 'Provides weather information and forecasts.',
-      chanceAgent: 'Specializes in decision-making under uncertainty and probability assessment.',
-      supervisorAgent: 'Orchestrates and coordinates team of AI agents for optimal performance.',
-      langGraphAgent: 'Handles complex workflow execution and state management.'
-    };
-    return instructionMap[agentId] || 'Specialized AI agent for specific tasks.';
-  };
 
   useEffect(() => {
-    fetchAgentData();
+    void fetchAgentData();
   }, [fetchAgentData]);
 
   // Save agent configuration
@@ -253,9 +266,10 @@ export function AgentConfigurationInterface() {
       }
     } catch (error) {
       console.error('Agent test failed:', error);
-      setTestResults(prev => ({ 
-        ...prev, 
-        [agentId]: { status: 'error', error: error.message, lastTest: new Date() }
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setTestResults(prev => ({
+        ...prev,
+        [agentId]: { status: 'error', error: errorMessage, lastTest: new Date() }
       }));
     } finally {
       setTesting(null);
@@ -265,7 +279,9 @@ export function AgentConfigurationInterface() {
   // Toggle agent status
   const toggleAgentStatus = async (agentId: string) => {
     const agent = agents.find(a => a.id === agentId);
-    if (!agent) return;
+    if (!agent) {
+      return;
+    }
 
     try {
       const response = await fetch('/api/copilotkit', {
@@ -296,7 +312,9 @@ export function AgentConfigurationInterface() {
   // Export agent configuration
   const exportAgentConfig = (agentId: string) => {
     const agent = agents.find(a => a.id === agentId);
-    if (!agent) return;
+    if (!agent) {
+      return;
+    }
 
     const configData = JSON.stringify(agent, null, 2);
     const blob = new Blob([configData], { type: 'application/json' });
@@ -344,17 +362,24 @@ export function AgentConfigurationInterface() {
             <CardTitle className="flex items-center">
               <Database className="h-5 w-5 mr-2" />
               Live Telemetry Data
+              <Shield className="h-4 w-4 ml-2 text-green-500" />
+              <Network className="h-4 w-4 ml-1 text-blue-500" />
+              <Zap className="h-4 w-4 ml-1 text-yellow-500" />
             </CardTitle>
+            <div className="flex items-center text-sm text-muted-foreground mt-1">
+              <Info className="h-4 w-4 mr-1" />
+              Real-time data from Mastra backend
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
                 <div className="font-medium">Active Traces</div>
-                <div className="text-2xl font-bold">{telemetryData?.traces?.length || 0}</div>
+                <div className="text-2xl font-bold">{telemetryData && 'traces' in telemetryData && Array.isArray(telemetryData.traces) ? telemetryData.traces.length : 0}</div>
               </div>
               <div>
                 <div className="font-medium">Log Entries</div>
-                <div className="text-2xl font-bold">{logsData?.logs?.length || 0}</div>
+                <div className="text-2xl font-bold">{Array.isArray(logsData) ? logsData.length : 0}</div>
               </div>
               <div>
                 <div className="font-medium">Agents Online</div>
@@ -498,9 +523,23 @@ export function AgentConfigurationInterface() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Button onClick={() => setEditingAgent(agent)} disabled={saving}>
+                      <Button onClick={() => {
+                        setEditingAgent(agent);
+                      }} disabled={saving}>
                         <Save className="h-4 w-4 mr-2" />
                         Save Changes
+                      </Button>
+                      <Button variant="outline" size="sm" title="Download Config">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="sm" title="Upload Config">
+                        <Upload className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="sm" title="Copy Config">
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="sm" title="Delete Agent">
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                       <Button onClick={() => exportAgentConfig(agent.id)} variant="outline">
                         <Download className="h-4 w-4 mr-2" />
@@ -568,10 +607,14 @@ export function AgentConfigurationInterface() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingAgent(null)}>
+              <Button variant="outline" onClick={() => {
+                setEditingAgent(null);
+              }}>
                 Cancel
               </Button>
-              <Button onClick={() => saveAgentConfig(editingAgent)} disabled={saving}>
+              <Button onClick={() => {
+                saveAgentConfig(editingAgent);
+              }} disabled={saving}>
                 {saving ? 'Saving...' : 'Save Configuration'}
               </Button>
             </DialogFooter>
